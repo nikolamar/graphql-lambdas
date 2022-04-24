@@ -1,0 +1,6 @@
+query cognito {
+  cognito {
+    poolId
+    clientId
+  }
+}

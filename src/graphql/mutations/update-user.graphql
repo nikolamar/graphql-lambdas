@@ -1,0 +1,6 @@
+mutation updateUser ($where: UserFilter!, $input: UpdateUserInput!) {
+  updateUser (where: $where, input: $input) {
+    _id
+    email
+  }
+}

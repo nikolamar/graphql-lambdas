@@ -1,0 +1,538 @@
+## Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+## SPDX-License-Identifier: MIT-0
+
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  App Designer Backend
+
+  Services for the App Designer
+
+###################
+#     GLOBALS     #
+###################
+
+Globals:
+  Function: # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Runtime: nodejs14.x
+    Timeout: 20
+    MemorySize: 256
+    Architectures:
+      - x86_64
+    Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
+      Variables:
+        STAGE: !Ref Stage
+        REGION: !Sub ${AWS::Region}
+        WEBSOCKETE_API_ID: !Ref WebSocketApi
+        DB_NAME: !Sub ${ProjectName}-${Stage}
+        DB_USER: !Ref DBUser
+        DB_PASSWORD: !Ref DBPassword
+        POOL_ID: !Ref CognitoUserPool
+        CLIENT_ID: !Ref CognitoUserPoolClient
+        NODE_ENV: !Ref Environment
+        VERSION: !Ref Version
+
+###################
+#   PARAMETERS    #
+###################
+
+Parameters:
+  Stage:
+    Type: String
+    Description: Environment name
+
+  ProjectName:
+    Type: String
+    Description: Project name
+
+  HostedZoneId:
+    Type: String
+    Description: Domain hosted zone id
+  SubDomainName:
+    Type: String
+    Description: Sub domain for APIs
+
+  DomainName:
+    Type: String
+    Description: Main domain
+
+  DBUser:
+    Type: String
+    Description: DB user
+
+  DBPassword:
+    Type: String
+    Description: DB pasword
+
+  Environment:
+    Type: String
+    Description: Environment
+
+  Version:
+    Type: String
+    Description: Version
+
+
+###################
+#    RESOURCES    #
+###################
+
+Resources:
+
+  ###################
+  #     Cognito     #
+  ###################
+
+  CognitoUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: !Sub ${ProjectName}-${Stage}
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+          RequireLowercase: true
+          RequireNumbers: true
+          RequireSymbols: true
+          RequireUppercase: true
+          TemporaryPasswordValidityDays: 30
+      UsernameConfiguration:
+        CaseSensitive: true
+      AccountRecoverySetting:
+        RecoveryMechanisms:
+          - Name: verified_email
+            Priority: 1
+      EmailVerificationSubject: Confirm your email
+      EmailVerificationMessage: verification code  {####}
+      SmsVerificationMessage: Your verification code {####}
+      AdminCreateUserConfig:
+        InviteMessageTemplate: 
+          EmailMessage: Your username is {username} and temporary password is {####}
+          EmailSubject: Your temporary password
+      # AutoVerifiedAttributes:
+      #   - phone_number
+      # SmsConfiguration:
+      #   ExternalId: 'xxx-xxx-xxx'
+      #   SnsCallerArn: !GetAtt CognitoSMSRole.Arn
+      EnabledMfas:
+        - SOFTWARE_TOKEN_MFA
+      MfaConfiguration: OPTIONAL
+      UsernameAttributes:
+        - email
+        - phone_number
+      Schema:
+        - AttributeDataType: String
+          Name: phone_number
+          Mutable: false
+          Required: false
+        - AttributeDataType: String
+          Name: email
+          Mutable: false
+          Required: true
+        - AttributeDataType: String
+          Name: tenant
+          Mutable: true
+          Required: false
+        - AttributeDataType: String
+          Name: roles
+          Mutable: true
+          Required: false
+
+  # CognitoSMSRole:
+  #   Type: AWS::IAM::Role
+  #   Properties:
+  #     AssumeRolePolicyDocument:
+  #       Version: 2012-10-17
+  #       Statement:
+  #         - Effect: Allow
+  #           Principal:
+  #             Service: 'cognito-idp.amazonaws.com'
+  #           Action:
+  #             - 'sts:AssumeRole'
+  #           Condition:
+  #             StringEquals:
+  #               'sts:ExternalId': 'xxx-xxx-xxx'
+  #     Policies:
+  #       - PolicyDocument:
+  #           Version: 2012-10-17
+  #           Statement:
+  #             - Effect: Allow
+  #               Action:
+  #                 - 'sns:Publish'
+  #               Resource:
+  #                 - '*'
+  #         PolicyName: CognitoSendSMS
+  #     RoleName: CognitoSMSRole
+  
+  CognitoUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      UserPoolId: !Ref CognitoUserPool
+      ClientName: !Sub ${ProjectName}-client-${Stage}
+      GenerateSecret: false
+      ExplicitAuthFlows:
+        - ALLOW_CUSTOM_AUTH
+        - ALLOW_USER_SRP_AUTH
+        - ALLOW_USER_PASSWORD_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
+      ReadAttributes:
+        - email
+        - custom:roles
+        - custom:tenant
+      WriteAttributes:
+        - email
+        - custom:roles
+        - custom:tenant
+
+  ###################
+  #       HTTP      #
+  ###################
+
+  HttpApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      StageName: !Ref Stage
+      AccessLogSettings:
+        DestinationArn: !GetAtt AccessLogs.Arn
+        Format: $context.requestId
+      DefaultRouteSettings:
+        ThrottlingBurstLimit: 200
+      RouteSettings:
+        "GET /graphql":
+          ThrottlingBurstLimit: 200
+        "POST /graphql":
+          ThrottlingBurstLimit: 200
+      StageVariables:
+        StageVar: Value
+      FailOnWarnings: true
+      CorsConfiguration:
+        AllowOrigins:
+          - "*"
+        AllowHeaders:
+          - "*"
+        AllowMethods:
+          - GET
+          - POST
+        MaxAge: 600
+      Domain:
+        DomainName: !Sub ${SubDomainName}.${DomainName}
+        CertificateArn: !Ref SSLAPICert
+        EndpointConfiguration: REGIONAL
+        Route53:
+          HostedZoneId: !Ref HostedZoneId
+        BasePath: !Sub /${Stage}
+        # AllowCredentials: true
+
+  SSLAPICert:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      CertificateTransparencyLoggingPreference: ENABLED
+      DomainName: !Sub ${SubDomainName}.${DomainName}
+      DomainValidationOptions:
+        - DomainName: !Sub ${SubDomainName}.${DomainName}
+          HostedZoneId: !Ref HostedZoneId
+      ValidationMethod: DNS
+      Tags:
+        - Key: Name
+          Value: !Sub ${SubDomainName}.${DomainName}
+
+  ###################
+  #    WEBSOCKET    #
+  ###################
+
+  WebSocketApi:
+    Type: AWS::ApiGatewayV2::Api
+    Properties:
+      Name: !Sub ${ProjectName}-web-socket-${Stage}
+      ProtocolType: WEBSOCKET
+      RouteSelectionExpression: "$request.body.action"
+
+  ###################
+  # WS DEPLOYMENT  #
+  ###################
+
+  WebSocketDeployment:
+    Type: AWS::ApiGatewayV2::Deployment
+    DependsOn:
+    - ConnectRoute
+    - DisconnectRoute
+    - DefaultRoute
+    Properties:
+      ApiId: !Ref WebSocketApi
+
+  ###################
+  #    WS STAGE     #
+  ###################
+
+  WebsSocketStage:
+    Type: AWS::ApiGatewayV2::Stage
+    Properties:
+      StageName: !Sub ${Stage}
+      Description: prod stage
+      DeploymentId: !Ref WebSocketDeployment
+      ApiId: !Ref WebSocketApi
+
+  ###################
+  #       LOGS      #
+  ###################
+
+  AccessLogs:
+    Type: AWS::Logs::LogGroup
+
+  ###################
+  #    WS ROUTES    #
+  ###################
+
+  ConnectRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref WebSocketApi
+      RouteKey: $connect
+      AuthorizationType: NONE
+      OperationName: ConnectRoute
+      Target: !Join
+        - '/'
+        - - 'integrations'
+          - !Ref ConnectInteg
+
+  ConnectInteg:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref WebSocketApi
+      Description: Connect Integration
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Sub:
+            arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ConnectFunction.Arn}/invocations
+
+  DisconnectRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref WebSocketApi
+      RouteKey: $disconnect
+      AuthorizationType: NONE
+      OperationName: DisconnectRoute
+      Target: !Join
+        - '/'
+        - - 'integrations'
+          - !Ref DisconnectInteg
+
+  DisconnectInteg:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref WebSocketApi
+      Description: Disconnect Integration
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Sub:
+            arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${DisconnectFunction.Arn}/invocations
+
+  DefaultRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref WebSocketApi
+      RouteKey: $default
+      AuthorizationType: NONE
+      OperationName: DefaultRoute
+      Target: !Join
+        - '/'
+        - - 'integrations'
+          - !Ref DefaultInteg
+
+  DefaultInteg:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref WebSocketApi
+      Description: Default Integration
+      IntegrationType: AWS_PROXY
+      IntegrationUri:
+        Fn::Sub:
+            arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${DefaultFunction.Arn}/invocations
+
+  ###################
+  #  WS FUNCTIONS   #
+  ###################
+
+  ConnectFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub ${ProjectName}-connect-${Stage}
+      Description: !Sub ${ProjectName} - websocket connect function
+      CodeUri: dist/connect/
+      Handler: app.handler
+      Layers:
+        - !Ref DependenciesLayers
+
+  DisconnectFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub ${ProjectName}-disconnect-${Stage}
+      Description: !Sub ${ProjectName} - websocket disconnect function
+      CodeUri: dist/disconnect/
+      Handler: app.handler
+      Layers:
+        - !Ref DependenciesLayers
+
+  DefaultFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub ${ProjectName}-default-${Stage}
+      Description: !Sub ${ProjectName} - websocket default function
+      CodeUri: dist/default/
+      Handler: app.handler
+      Layers:
+        - !Ref DependenciesLayers
+      Policies:
+      - Statement:
+        - Effect: Allow
+          Action:
+          - 'execute-api:ManageConnections'
+          Resource:
+          - !Sub 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketApi}/*'
+
+  ###################
+  # HTTP FUNCTIONS  #
+  ###################
+
+  GraphqlFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub ${ProjectName}-graphql-${Stage}
+      Description: !Sub ${ProjectName} - graphql function
+      CodeUri: dist/graphql/
+      Handler: app.handler
+      Layers:
+        - !Ref DependenciesLayers
+      Policies:
+      - Statement:
+        - Effect: Allow
+          Action:
+          - 'execute-api:ManageConnections'
+          Resource:
+          - !Sub 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketApi}/*'
+      Events:
+        GraphqlGetEvent:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Method: GET
+            Path: /graphql
+            TimeoutInMillis: 5000
+            PayloadFormatVersion: "2.0"
+            RouteSettings:
+              ThrottlingBurstLimit: 10
+        GraphqlPostEvent:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Method: POST
+            Path: /graphql
+            TimeoutInMillis: 5000
+            PayloadFormatVersion: "2.0"
+            RouteSettings:
+              ThrottlingBurstLimit: 600
+
+  ###################
+  #   DEPENDENCIES  #
+  ###################
+
+  DependenciesLayers:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: !Sub ${ProjectName}-dependencies-${Stage}
+      Description: !Sub ${ProjectName} - dependencies for all functions
+      ContentUri: dist/dependencies/
+      CompatibleRuntimes:
+        - nodejs14.x
+      LicenseInfo: MIT
+      RetentionPolicy: Retain
+
+  ###################
+  #   PERMISSIONS   #
+  ###################
+
+  ConnectPermission:
+    Type: AWS::Lambda::Permission
+    DependsOn:
+      - WebSocketApi
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref ConnectFunction
+      Principal: apigateway.amazonaws.com
+
+  DisconnectPermission:
+    Type: AWS::Lambda::Permission
+    DependsOn:
+      - WebSocketApi
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref DisconnectFunction
+      Principal: apigateway.amazonaws.com
+
+  DefaultPermission:
+    Type: AWS::Lambda::Permission
+    DependsOn:
+      - WebSocketApi
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref DefaultFunction
+      Principal: apigateway.amazonaws.com
+      
+  GraphqlPermission:
+    Type: AWS::Lambda::Permission
+    DependsOn:
+      - HttpApi
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref GraphqlFunction
+      Principal: apigateway.amazonaws.com
+
+###################
+#     OUTPUTS     #
+###################
+
+Outputs:
+  ConnectFunctionArn:
+    Description: On connect function arn
+    Value: !GetAtt ConnectFunction.Arn
+
+  DisconnectFunctionArn:
+    Description: On disconnect function arn
+    Value: !GetAtt DisconnectFunction.Arn
+
+  DefaultFunctionArn:
+    Description: Default function arn
+    Value: !GetAtt DefaultFunction.Arn
+
+  WebSocketURI:
+    Description: WSS protocol uri to connect to
+    Value: !Sub wss://${WebSocketApi}.execute-api.${AWS::Region}.amazonaws.com/${Stage}
+
+  WebSocketStageInfo:
+    Description: WebSocket Stage Info
+    Value:
+      Ref: WebsSocketStage
+
+  HttpApiUrl:
+    Description: URL of your API endpoint
+    Value:
+      Fn::Sub: https://${HttpApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/${Stage}/
+
+  HttpApiId:
+    Description: Api id of HttpApi
+    Value:
+      Ref: HttpApi
+
+  CognitoUserPoolId:
+    Description: Cognito pool id
+    Value:
+      Ref: CognitoUserPool
+
+  CognitoUserPoolClientKey:
+    Description: Cognito client key
+    Value:
+      Ref: CognitoUserPoolClient
+
+  SSLAPICertificate:
+    Description: SSL Api Certificate
+    Value:
+      Ref: SSLAPICert

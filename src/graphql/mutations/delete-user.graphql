@@ -1,0 +1,3 @@
+mutation deleteUser ($where: UserFilter!) {
+  deleteUser (where: $where)
+}

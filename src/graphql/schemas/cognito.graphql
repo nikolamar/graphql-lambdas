@@ -1,0 +1,32 @@
+type Query {
+  cognito: Cognito!
+  mfaStatus: Boolean!
+  mfaAuthUrl: String!
+}
+
+type Mutation {
+  userPasswordAuth (clientId: String! username: String! password: String!): Challenge!
+  challengeNewPassword (clientId: String! session: String! username: String! newPassword: String!): Tokens!
+  validateMfaCode (verificationCode: String!): Boolean!
+  updateMfaAuthPreference (email: String! isMFAEnabled: Boolean!): User
+  setUserMfaPreference (isMFAEnabled: Boolean!): Boolean!
+}
+
+type Challenge {
+  session: String
+  challengeName: String
+  idToken: String
+  accessToken: String
+  refreshToken: String
+}
+
+type Tokens {
+  idToken: String!
+  accessToken: String!
+  refreshToken: String!
+}
+
+type Cognito {
+  poolId: String!
+  clientId: String!
+}

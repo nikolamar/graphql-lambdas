@@ -1,0 +1,3 @@
+type Mutation {
+  sendMessage(connectionId: String! message: String!): String!
+}

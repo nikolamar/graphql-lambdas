@@ -1,0 +1,8 @@
+mutation createUser ($input: CreateUserInput!) {
+  createUser (input: $input) {
+    _id
+    email
+    role
+    tenantId
+  }
+}

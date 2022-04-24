@@ -1,0 +1,76 @@
+type Query {  
+  tenant (where: TenantFilter!): Tenant
+  tenants (where: TenantFilter order: Order first: Int offset: Int after: String sortBy: String): Tenants!
+}
+
+type Mutation {
+  createTenant(input: CreateTenantInput!): Tenant!
+  updateTenant(where: TenantFilter! input: UpdateTenantInput!): Tenant!
+  deleteTenant(where: TenantFilter!): Int!
+  deleteManyTenants(where: TenantFilter!): Int!
+}
+
+type Tenants {
+  edges: [TenantEdge]!
+  pageInfo: PageInfo
+}
+
+type TenantEdge {
+  cursor: String!
+  node: Tenant!
+}
+
+input TenantFilter {
+  _id: StringMatchOperators
+  name: StringMatchOperators
+  logoUrl: StringMatchOperators
+  status: StringMatchOperators
+  color: StringMatchOperators
+  accentColor: StringMatchOperators
+  address: StringMatchOperators
+  email: StringMatchOperators
+  phone: StringMatchOperators
+  website: StringMatchOperators
+  createdAt: DateMatchOperators
+  updatedAt: DateMatchOperators
+  _or: [TenantFilter!]
+}
+
+type Tenant implements Node {
+  _id: ObjectId!
+  name: String
+  logoUrl: String
+  status: String
+  color: String
+  accentColor: String
+  address: String
+  email: String
+  phone: String
+  website: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+input CreateTenantInput {
+  name: String!
+  logoUrl: String
+  status: String!
+  color: String!
+  accentColor: String!
+  address: String
+  email: String
+  phone: String
+  website: String
+}
+
+input UpdateTenantInput {
+  name: String
+  logoUrl: String
+  status: String
+  color: String
+  accentColor: String
+  address: String
+  email: String
+  phone: String
+  website: String
+}

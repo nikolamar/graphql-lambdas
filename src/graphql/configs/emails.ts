@@ -1,0 +1,1 @@
+export const SUPPORT_EMAIL_ADDRESS = process.env.SUPPORT_EMAIL_ADDRESS;

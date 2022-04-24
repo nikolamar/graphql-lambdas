@@ -1,0 +1,85 @@
+type Query {
+  me: User
+  user (where: UserFilter!): User
+  users (where: UserFilter order: Order first: Int offset: Int after: String sortBy: String): Users!
+}
+
+type Mutation {
+  createUser (input: CreateUserInput!): User!
+  updateUser (where: UserFilter! input: UpdateUserInput!): User!
+  deleteUser (where: UserFilter!): Int!
+  deleteManyUsers (where: UserFilter!): Int!
+}
+
+type Users {
+  edges: [UserEdge]!
+  pageInfo: PageInfo
+}
+
+type UserEdge {
+  cursor: String!
+  node: User!
+}
+
+type TermsAndConditionsMetaData {
+  accepted: Boolean!
+  version: Int!
+}
+
+type User implements Node {
+  _id: ObjectId!
+  sub: String
+  email: String
+  role: String
+  tenantId: String
+  active: String
+  isMFAEnabled: Boolean
+  emailVerified: Boolean
+  termsAndConditionsMetaData: TermsAndConditionsMetaData
+  tenant: Tenant
+  lastLogin: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+input UserFilter {
+  _id: StringMatchOperators
+  sub: StringMatchOperators
+  email: StringMatchOperators
+  role: StringMatchOperators
+  tenantId: StringMatchOperators
+  tenantName: StringMatchOperators
+  active: StringMatchOperators
+  isMFAEnabled: BooleanMatchOperators
+  emailVerified: BooleanMatchOperators
+  lastLogin: StringMatchOperators
+  createdAt: DateMatchOperators
+  updatedAt: DateMatchOperators
+  _or: [UserFilter!]
+}
+
+input TermsAndConditionsMetaDataInput  {
+  accepted: Boolean
+  version: Int
+}
+
+input CreateUserInput {
+  email: String!
+  role: String!
+  tenantId: ObjectId!
+  password: String
+  termsAndConditionsMetaData: TermsAndConditionsMetaDataInput
+}
+
+input UpdateUserInput {
+  sub: String
+  email: String
+  role: String
+  tenantId: ObjectId
+  tenantName: String
+  lastLogin: String
+  active: String
+  isMFAEnabled: Boolean
+  emailVerified: Boolean
+  termsAndConditionsMetaData: TermsAndConditionsMetaDataInput
+}

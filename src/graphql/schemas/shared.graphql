@@ -1,0 +1,49 @@
+scalar ObjectId
+scalar DateTime
+
+enum Order {
+  asc
+  desc
+}
+
+interface Node {
+  _id: ObjectId!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+input DateMatchOperators {
+  _eq: String
+  _lte: String
+  _gte: String
+}
+
+input ObjectIdMatchOperators {
+  _eq: ObjectId
+  _in: [ObjectId]
+}
+
+input StringMatchOperators {
+  _eq: String
+  _regex: String
+  _in: [String]
+}
+
+input IntMatchOperators {
+  _eq: Int
+  _regex: Int
+}
+
+input BooleanMatchOperators {
+  _eq: Boolean
+  _regex: Boolean
+}
+
+type PageInfo {
+  hasPreviousPage: Boolean
+  hasNextPage: Boolean
+  startCursor: String
+  endCursor: String
+  count: Int
+  totalCount: Int
+}

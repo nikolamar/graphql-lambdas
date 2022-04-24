@@ -1,0 +1,41 @@
+{
+  "compilerOptions": {
+    "lib": ["es2020"],
+    "module": "commonjs",
+    "target": "es2020",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "/opt/*": ["src/dependencies/*"],
+      "@graphql-tools/*": ["src/dependencies/nodejs/node_modules/@graphql-tools/*"],
+      "axios": ["src/dependencies/nodejs/node_modules/axios"],
+      "otplib": ["src/dependencies/nodejs/node_modules/otplib"],
+      "jsonwebtoken": ["src/dependencies/nodejs/node_modules/jsonwebtoken"],
+      "jwk-to-pem": ["src/dependencies/nodejs/node_modules/jwk-to-pem"],
+      "mongodb": ["src/dependencies/nodejs/node_modules/mongodb"],
+      "apollo-datasource": ["src/dependencies/nodejs/node_modules/apollo-datasource"],
+      "apollo-datasource-rest": ["src/dependencies/nodejs/node_modules/apollo-datasource-rest"],
+      "graphql-middleware": ["src/dependencies/nodejs/node_modules/graphql-middleware"],
+      "apollo-server-core": ["src/dependencies/nodejs/node_modules/apollo-server-core"],
+      "apollo-server-lambda": ["src/dependencies/nodejs/node_modules/apollo-server-lambda"]
+    }
+  },
+  "include": [
+    "src/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    ".aws-sam",
+    ".husky",
+    ".vscode",
+    "cicd",
+    "configs",
+    "coverage",
+    "devlab_scripts",
+    "docs",
+    "events",
+    "patches",
+    "build"
+  ]
+}

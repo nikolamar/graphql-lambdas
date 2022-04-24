@@ -1,0 +1,8 @@
+type Query {
+  db: DB!
+}
+
+type DB {
+  user: String!
+  password: String!
+}
