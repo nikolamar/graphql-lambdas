@@ -47,7 +47,7 @@ jobs:
   deploy_to_production:
     name: Deploy Prod
     if: github.event.ref == 'refs/heads/feature/AD-1_initial_commit'
-    needs: deploy_to_stage
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
