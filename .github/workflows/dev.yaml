@@ -51,7 +51,6 @@ jobs:
 
   deploy_to_development:
     name: Deploy Dev
-    if: github.event.ref == 'refs/heads/feature/AD-1_initial_commit'
     needs: build
     runs-on: ubuntu-latest
     steps:
