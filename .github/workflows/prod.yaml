@@ -1,14 +1,9 @@
-name: Dev Deploy
+name: Deploy Prod
 
 on:
-  workflow_dispatch:
   push:
-    branches: 
-      - master
-      
-  pull_request:
-    branches:
-      - master
+    tags:
+      - "v*"
 
 jobs:
   test:
@@ -49,8 +44,8 @@ jobs:
           name: dist
           path: dist.tar
 
-  deploy_to_development:
-    name: Deploy Dev
+  deploy_to_production:
+    name: Deploy Prod
     needs: build
     runs-on: ubuntu-latest
     steps:
@@ -69,8 +64,8 @@ jobs:
 
       - name: Deploy
         env:
-          STAGE: dev
-          SUB_DOMAIN_NAME: app-designer-backend.dev
+          STAGE: prod
+          SUB_DOMAIN_NAME: app-designer-backend
           REGION:  ${{ secrets.REGION }}
           AWS_ACCESS_KEY_ID:  ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
