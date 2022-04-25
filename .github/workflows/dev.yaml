@@ -1,14 +1,14 @@
-name: Dev Deploy
+name: Deploy Dev
 
 on:
   workflow_dispatch:
   push:
     branches: 
-      - master
+      - fix/AD-3_dev_workflow
       
   pull_request:
     branches:
-      - master
+      - fix/AD-3_dev_workflow
 
 jobs:
   test:
@@ -63,7 +63,6 @@ jobs:
       - name: Tar extract build files
         run: tar -xf dist.tar
 
-      - name: Get version
       - id: get_version
         uses: battila7/get-version-action@v2
 
