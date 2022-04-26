@@ -4,11 +4,11 @@ on:
   workflow_dispatch:
   push:
     branches: 
-      - fix/AD-3_dev_workflow
+      - main
       
   pull_request:
     branches:
-      - fix/AD-3_dev_workflow
+      - main
 
 jobs:
   test:
