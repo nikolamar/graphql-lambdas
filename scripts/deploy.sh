@@ -20,13 +20,43 @@ export SUB_DOMAIN_NAME=$SUB_DOMAIN_NAME
 export VERSION=$VERSION
 
 if [ -z "$AWS_ACCESS_KEY_ID" ] ; then
-  read -p 'Enter a value for AWS_ACCESS_KEY_ID: ' AWS_ACCESS_KEY_ID
+  read -rep "Enter a value for AWS_ACCESS_KEY_ID: " AWS_ACCESS_KEY_ID
   export AWS_ACCESS_KEY_ID
 fi
 
 if [ -z "$AWS_SECRET_ACCESS_KEY" ] ; then
-  read -sp 'Enter a value for AWS_SECRET_ACCESS_KEY (terminal will not echo your input): ' AWS_SECRET_ACCESS_KEY
+  read -rep  "Enter a value for AWS_SECRET_ACCESS_KEY: " AWS_SECRET_ACCESS_KEY
   export AWS_SECRET_ACCESS_KEY
+fi
+
+if [ -z "$STAGE" ] ; then
+  read -rep  "Enter a value for STAGE: " STAGE
+  export STAGE
+fi
+
+if [ -z "$REGION" ] ; then
+  read -rep  "Enter a value for REGION: " REGION
+  export REGION
+fi
+
+if [ -z "$DB_USER" ] ; then
+  read -rep  "Enter a value for DB_USER: " DB_USER
+  export DB_USER
+fi
+
+if [ -z "$DB_PASSWORD" ] ; then
+  read -rep  "Enter a value for DB_PASSWORD: " DB_PASSWORD
+  export DB_PASSWORD
+fi
+
+if [ -z "$HOSTED_ZONE_ID" ] ; then
+  read -rep  "Enter a value for HOSTED_ZONE_ID: " HOSTED_ZONE_ID
+  export HOSTED_ZONE_ID
+fi
+
+if [ -z "$SUB_DOMAIN_NAME" ] ; then
+  read -rep  "Enter a value for SUB_DOMAIN_NAME: " SUB_DOMAIN_NAME
+  export SUB_DOMAIN_NAME
 fi
 
 echo "Deploying the project"
@@ -50,7 +80,7 @@ sam deploy \
     ParameterKey=Version,ParameterValue=${VERSION} \
     "> >(tee "${PROJECT_ROOT}/deploy.out") 2>&1
 if [ $? -ne 0 ] ; then
-  if grep -q 'Error: No changes to deploy\. Stack [^ ]\+ is up to date$' "${PROJECT_ROOT}/deploy.out" ; then
+  if grep -q "Error: No changes to deploy\. Stack [^ ]\+ is up to date$" "${PROJECT_ROOT}/deploy.out" ; then
     echo "No changes needed, stack is already up to date"
   else
     echo "Failed deploying the project to the environment. Aborting"
