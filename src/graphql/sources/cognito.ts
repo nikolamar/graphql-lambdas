@@ -29,37 +29,37 @@ export class CognitoDataSource extends DataSource {
     });
   }
 
-  async getCognitoUser (username) {
+  getCognitoUser (username) {
     const params = {
       UserPoolId: POOL_ID,
       Username: username,
     };
     return new Promise((resolve, reject) => {
-      this._cognitoIdentityServiceProvider.adminGetUser(params, (err, data) => {
-        if (err) {
-          return reject(err);
+      this._cognitoIdentityServiceProvider.adminGetUser(params, (error, data) => {
+        if (error) {
+          reject(error);
         }
         resolve(data);
       });
     });
   }
   
-  async deleteCognitoUser (email) {
+  deleteCognitoUser (email): Promise<any> {
     const params = {
       UserPoolId: POOL_ID,
       Username: email,
     };
     return new Promise((resolve, reject) => {
-      this._cognitoIdentityServiceProvider.adminDeleteUser(params, (err, data) => {
-        if (err) {
-          return reject(err);
+      this._cognitoIdentityServiceProvider.adminDeleteUser(params, (error, data) => {
+        if (error) {
+          reject(error);
         }
         resolve(data);
       });
     });
   }
   
-  async updateCognitoUserAttributes (username: string, userAttributes) {
+  updateCognitoUserAttributes (username: string, userAttributes): Promise<any> {
     const params = {
       UserAttributes: userAttributes,
       UserPoolId: POOL_ID,
@@ -67,60 +67,47 @@ export class CognitoDataSource extends DataSource {
     };
   
     return new Promise((resolve, reject) => {
-      this._cognitoIdentityServiceProvider.adminUpdateUserAttributes(
-        params,
-        (err, data) => {
-          if (err) {
-            reject(err);
-          }
-          resolve(data);
-        },
-      );
+      this._cognitoIdentityServiceProvider.adminUpdateUserAttributes(params, (error, data) => {
+        if (error) {
+          reject(error);
+        }
+        resolve(data);
+      });
     });
   }
   
-  async checkCognitoUserMFAStatus (accessToken: string) {
+  checkCognitoUserMFAStatus (accessToken: string): Promise<boolean> {
     const params = {
       AccessToken: accessToken,
     };
   
-    return new Promise((resolve, reject) =>
+    return new Promise((resolve, reject) => {
       this._cognitoIdentityServiceProvider.getUser(params, async (error, data) => {
         if (error) {
-          console.log(error);
-          reject(false);
+          reject(error);
         }
-        const isEnabled =
-          data.UserMFASettingList &&
-          data.UserMFASettingList.includes("SOFTWARE_TOKEN_MFA");
+        const isEnabled = data?.UserMFASettingList?.includes("SOFTWARE_TOKEN_MFA");
   
-        resolve(isEnabled);
-      }),
-    ).catch((error) => {
-      console.log(error);
-      return false;
+        resolve(!!isEnabled);
+      });
     });
   }
   
-  async fetchCognitoUserMultiFactorAuthUrl (accessToken: string): Promise<string> {
+  fetchCognitoUserMultiFactorAuthUrl (accessToken: string): Promise<string> {
     const params = {
       AccessToken: accessToken,
     };
   
-    return new Promise((resolve, reject) =>
+    return new Promise((resolve, reject) => {
       this._cognitoIdentityServiceProvider.associateSoftwareToken(params, (error, result) => {
         if (error) {
           reject(error);
-        } else {
-          const mfaTitle = "App_Designer";
-          const url = `otpauth://totp/${decodeURI(mfaTitle)}?secret=${result.SecretCode}`;
-          resolve(url);
         }
-      }),
-    ).catch((error) => {
-      console.log(error);
-      return "";
-    }) as Promise<string>;
+        const mfaTitle = "App_Designer";
+        const url = `otpauth://totp/${decodeURI(mfaTitle)}?secret=${result.SecretCode}`;
+        resolve(url);
+      });
+    });
   }
   
   async setCognitoUserMFAPreference (email: string, isMFAEnabled: boolean) {
@@ -139,20 +126,16 @@ export class CognitoDataSource extends DataSource {
     };
   
     return new Promise((resolve, reject) => {
-      this._cognitoIdentityServiceProvider.adminSetUserMFAPreference(
-        params,
-        (err, data) => {
-          if (err) {
-            console.log(err);
-            reject(err);
-          }
-          resolve(data);
-        },
-      );
+      this._cognitoIdentityServiceProvider.adminSetUserMFAPreference(params, (error, data) => {
+        if (error) {
+          reject(error);
+        }
+        resolve(data);
+      });
     });
   }
   
-  async validateCognitoUserMFA (userCode: string, accessToken: string) {
+  validateCognitoUserMFA (userCode: string, accessToken: string): Promise<boolean> {
     const params = {
       AccessToken: accessToken,
       UserCode: userCode,
@@ -161,14 +144,14 @@ export class CognitoDataSource extends DataSource {
     return new Promise((resolve, reject) =>
       this._cognitoIdentityServiceProvider.verifySoftwareToken(params, (error) => {
         if (error) {
-          return reject(error);
+          reject(error);
         }
-        return resolve(true);
+        resolve(true);
       }),
     );
   }
-  
-  async createCognitoUser (input) {
+
+  createCognitoUser (input) {
     const tempPassword = rndletters() + rndnums() + rndchars();
     const params = {
       UserPoolId: POOL_ID,

@@ -13,10 +13,8 @@ export const cognito: Resolvers<Context> = {
       };
     },
 
-    async mfaStatus (_, __, ctx) {
-      const isMFAEnabled = await ctx?.dataSources?.cognito?.checkCognitoUserMFAStatus(ctx?.headers?.AccessToken);
-      
-      return !!isMFAEnabled;
+    mfaStatus (_, __, ctx) {
+      return ctx?.dataSources?.cognito?.checkCognitoUserMFAStatus(ctx?.headers?.AccessToken);
     },
     
     async mfaAuthUrl (_, __, ctx) {
@@ -28,7 +26,7 @@ export const cognito: Resolvers<Context> = {
       const tenant = await ctx?.dataSources.db.tenant({ where: { _id: { _eq: tenantId } } });
       assert(tenant, ERROR_MESSAGES.TENANT_REQUIRED, ERROR_CODES.NOT_FOUND);
 
-      return await ctx?.dataSources?.cognito?.fetchCognitoUserMultiFactorAuthUrl(ctx?.headers?.AccessToken);
+      return ctx?.dataSources?.cognito?.fetchCognitoUserMultiFactorAuthUrl(ctx?.headers?.AccessToken);
     },
   },
   Mutation: {
@@ -40,9 +38,8 @@ export const cognito: Resolvers<Context> = {
       return ctx.dataSources.cognito.challengeNewPassword(args.clientId, args.session, args.username, args.newPassword);
     },
 
-    async validateMfaCode (_, args, ctx) {
-      const isValid = await ctx?.dataSources?.cognito?.validateCognitoUserMFA(args?.verificationCode, ctx?.headers?.AccessToken);
-      return !!isValid;
+    validateMfaCode (_, args, ctx) {
+      return ctx?.dataSources?.cognito?.validateCognitoUserMFA(args?.verificationCode, ctx?.headers?.AccessToken);
     },
 
     setUserMfaPreference (_, args, ctx) {

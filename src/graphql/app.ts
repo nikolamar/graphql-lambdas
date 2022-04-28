@@ -4,15 +4,24 @@ import { applyMiddleware } from "graphql-middleware";
 import { DatabaseDataSource } from "./sources/database";
 import { schemaWithResolvers } from "./schema";
 import { CognitoDataSource } from "./sources/cognito";
+import { isDevelopment } from "./configs/environment";
 
 const schemaWithMiddleware = applyMiddleware(
   schemaWithResolvers,
 );
 
+let plugins = [];
+
+if (isDevelopment) {
+  plugins = [
+    ApolloServerPluginLandingPageGraphQLPlayground(),
+  ];
+}
+
 const server = new ApolloServer({
   schema: schemaWithMiddleware,
   introspection: true,
-  plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
+  plugins,
 
   dataSources: () => ({
     db: new DatabaseDataSource(),
