@@ -1,5 +1,8 @@
 import { ApolloServer } from "apollo-server-lambda";
-import { ApolloServerPluginLandingPageGraphQLPlayground } from "apollo-server-core";
+import {
+  ApolloServerPluginLandingPageGraphQLPlayground,
+  ApolloServerPluginLandingPageDisabled
+} from "apollo-server-core";
 import { applyMiddleware } from "graphql-middleware";
 import { DatabaseDataSource } from "./sources/database";
 import { schemaWithResolvers } from "./schema";
@@ -10,7 +13,9 @@ const schemaWithMiddleware = applyMiddleware(
   schemaWithResolvers,
 );
 
-let plugins = [];
+let plugins = [
+  ApolloServerPluginLandingPageDisabled(),
+];
 
 if (isDevelopment) {
   plugins = [
@@ -20,7 +25,8 @@ if (isDevelopment) {
 
 const server = new ApolloServer({
   schema: schemaWithMiddleware,
-  introspection: true,
+  introspection: isDevelopment,
+  debug: isDevelopment,
   plugins,
 
   dataSources: () => ({
