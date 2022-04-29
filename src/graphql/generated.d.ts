@@ -56,12 +56,6 @@ export type CreateUserInput = {
   termsAndConditionsMetaData?: InputMaybe<TermsAndConditionsMetaDataInput>;
 };
 
-export type Db = {
-  __typename?: 'DB';
-  password: Scalars['String'];
-  user: Scalars['String'];
-};
-
 export type DateMatchOperators = {
   _eq?: InputMaybe<Scalars['String']>;
   _gte?: InputMaybe<Scalars['String']>;
@@ -199,7 +193,6 @@ export type PageInfo = {
 export type Query = {
   __typename?: 'Query';
   cognito: Cognito;
-  db: Db;
   env?: Maybe<Scalars['String']>;
   me?: Maybe<User>;
   mfaAuthUrl: Scalars['String'];
@@ -456,7 +449,6 @@ export type ResolversTypes = {
   Cognito: ResolverTypeWrapper<Cognito>;
   CreateTenantInput: CreateTenantInput;
   CreateUserInput: CreateUserInput;
-  DB: ResolverTypeWrapper<Db>;
   DateMatchOperators: DateMatchOperators;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']>;
   Int: ResolverTypeWrapper<Scalars['Int']>;
@@ -493,7 +485,6 @@ export type ResolversParentTypes = {
   Cognito: Cognito;
   CreateTenantInput: CreateTenantInput;
   CreateUserInput: CreateUserInput;
-  DB: Db;
   DateMatchOperators: DateMatchOperators;
   DateTime: Scalars['DateTime'];
   Int: Scalars['Int'];
@@ -533,12 +524,6 @@ export type ChallengeResolvers<ContextType = any, ParentType extends ResolversPa
 export type CognitoResolvers<ContextType = any, ParentType extends ResolversParentTypes['Cognito'] = ResolversParentTypes['Cognito']> = {
   clientId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   poolId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
-export type DbResolvers<ContextType = any, ParentType extends ResolversParentTypes['DB'] = ResolversParentTypes['DB']> = {
-  password?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  user?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -586,7 +571,6 @@ export type PageInfoResolvers<ContextType = any, ParentType extends ResolversPar
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   cognito?: Resolver<ResolversTypes['Cognito'], ParentType, ContextType>;
-  db?: Resolver<ResolversTypes['DB'], ParentType, ContextType>;
   env?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   me?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   mfaAuthUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -673,7 +657,6 @@ export type UsersResolvers<ContextType = any, ParentType extends ResolversParent
 export type Resolvers<ContextType = any> = {
   Challenge?: ChallengeResolvers<ContextType>;
   Cognito?: CognitoResolvers<ContextType>;
-  DB?: DbResolvers<ContextType>;
   DateTime?: GraphQLScalarType;
   Mutation?: MutationResolvers<ContextType>;
   Node?: NodeResolvers<ContextType>;
