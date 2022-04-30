@@ -4,6 +4,7 @@ import { authenticator } from "otplib";
 import { CLIENT_ID } from "../configs/cognito";
 import { ApolloTestServer, mockRequestOptions } from "../utils/server-test";
 import { randomIntFromInterval } from "../utils/numbers";
+import { getMongodbConnectionWithClient } from "/opt/db";
 
 describe("sign-up", () => {
   let user;
@@ -13,9 +14,14 @@ describe("sign-up", () => {
   let accessToken;
   let verificationCode;
 
-  const server = new ApolloTestServer();
+  let server;
 
   const testEmail = `admin+${randomIntFromInterval(1, 1000)}@test.com`;
+
+  beforeAll(async () => {
+    const [connection, client] = await getMongodbConnectionWithClient();
+    server = new ApolloTestServer(connection, client);
+  });
   
   afterAll(() => {
     return server.dbConnection.then((mongo) => mongo.close());

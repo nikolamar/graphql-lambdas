@@ -7,7 +7,6 @@ import httpMocks, { RequestOptions, ResponseOptions } from "node-mocks-http";
 import { ApolloServer as ApolloServerLambda } from "apollo-server-lambda";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { applyMiddleware } from "graphql-middleware";
-import { MongoClient } from "mongodb";
 import { resolvers } from "../resolvers";
 import { mergeTypeDefs } from "@graphql-tools/merge";
 import { loadFilesSync } from "@graphql-tools/load-files";
@@ -47,14 +46,13 @@ export class ApolloTestServer {
   private readonly _cognitoIdentityProvider;
   private readonly _cognitoIdentityServiceProvider;
 
-  constructor () {
+  constructor (connection, client) {
     // Initialize apollo server and test client
     this._apolloServer = this._createServer();
 
     // Initialize memory mongo db
-    const [dbConnection, dbClient] = this._initializeMongoDB();
-    this._dbConnection = dbConnection;
-    this._dbClient = dbClient;
+    this._dbConnection = connection;
+    this._dbClient = client;
 
     // Initialize cognito
     this._cognitoIdentityProvider = new CognitoIdentityProvider({ region: REGION });
@@ -63,12 +61,6 @@ export class ApolloTestServer {
 
   get dbConnection () {
     return this._dbConnection;
-  }
-
-  private _initializeMongoDB () {
-    const mongodbConnection = MongoClient.connect(process.env.MONGO_URL);
-    const mongodbClient = mongodbConnection.then(client => client.db());
-    return [mongodbConnection, mongodbClient];
   }
 
   private _createServer () {
