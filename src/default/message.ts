@@ -1,4 +1,4 @@
-import { client, DB_NAME } from "/opt/db";
+import { getMongodbClient } from "/opt/db";
 import { sendMessage } from "/opt/websocket";
 import { parseBody, response } from "/opt/response";
 import { assert, ERROR_MESSAGES, ERROR_CODES } from "/opt/errors";
@@ -25,8 +25,8 @@ export async function message (event) {
 
   if (failedConnections.length) {
     try {
-      await client.connect();
-      const collection = client.db(DB_NAME).collection(CHANNELS_COLLECTION);
+      const client = await getMongodbClient();
+      const collection = client.collection(CHANNELS_COLLECTION);
       const dbChannel = await collection.findOne({ name: channel });
 
       if (dbChannel) {
@@ -35,7 +35,6 @@ export async function message (event) {
     } catch (e) {
       console.log(e);
     }
-    client.close();
   }
 
   return response(200, "message sent");

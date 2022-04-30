@@ -1,4 +1,4 @@
-import { client, DB_NAME } from "/opt/db";
+import { getMongodbClient } from "/opt/db";
 import { response } from "/opt/response";
 import { CHANNELS_COLLECTION } from "/opt/configs/collections";
 
@@ -6,8 +6,8 @@ export async function remove (event) {
   const myConnectionId = event?.requestContext?.connectionId;
 
   try {
-    await client.connect();
-    const collection = client.db(DB_NAME).collection(CHANNELS_COLLECTION);
+    const client = await getMongodbClient();
+    const collection = client.collection(CHANNELS_COLLECTION);
     const channel = await collection.findOne({
       name: "public"
     });
@@ -19,6 +19,5 @@ export async function remove (event) {
     console.log(e);
   }
 
-  client.close();
   return response(200, "disconnected");
 }

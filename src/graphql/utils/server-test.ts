@@ -7,8 +7,6 @@ import httpMocks, { RequestOptions, ResponseOptions } from "node-mocks-http";
 import { ApolloServer as ApolloServerLambda } from "apollo-server-lambda";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { applyMiddleware } from "graphql-middleware";
-import { MongoClient } from "mongodb";
-import { createTestClient } from "apollo-server-testing";
 import { resolvers } from "../resolvers";
 import { mergeTypeDefs } from "@graphql-tools/merge";
 import { loadFilesSync } from "@graphql-tools/load-files";
@@ -42,55 +40,34 @@ export const schemaWithMiddleware = applyMiddleware(
 );
 
 export class ApolloTestServer {
-  private readonly _mongodbConnection;
-  private readonly _mongodbClient;
+  private readonly _dbConnection;
+  private readonly _dbClient;
   private readonly _apolloServer;
-  private readonly _apolloClient;
   private readonly _cognitoIdentityProvider;
   private readonly _cognitoIdentityServiceProvider;
 
-  constructor () {
+  constructor (connection, client) {
     // Initialize apollo server and test client
     this._apolloServer = this._createServer();
-    this._apolloClient = createTestClient(this._apolloServer);
 
     // Initialize memory mongo db
-    const [mongodbConnection, mongodbClient] = this._initializeMongoDB();
-    this._mongodbConnection = mongodbConnection;
-    this._mongodbClient = mongodbClient;
+    this._dbConnection = connection;
+    this._dbClient = client;
 
     // Initialize cognito
     this._cognitoIdentityProvider = new CognitoIdentityProvider({ region: REGION });
     this._cognitoIdentityServiceProvider = new AWS.CognitoIdentityServiceProvider({ apiVersion: "2016-04-18", region: REGION });
   }
 
-  get mongoodbConnection () {
-    return this._mongodbConnection;
-  }
-
-  get mongodbClient () {
-    return this._mongodbClient;
-  }
-
-  get apolloServer () {
-    return this._apolloServer;
-  }
-
-  get apolloClient () {
-    return this._apolloClient;
-  }
-
-  private _initializeMongoDB () {
-    const mongodbConnection = MongoClient.connect(process.env.MONGO_URL);
-    const mongodbClient = mongodbConnection.then(client => client.db());
-    return [mongodbConnection, mongodbClient];
+  get dbConnection () {
+    return this._dbConnection;
   }
 
   private _createServer () {
     const apolloServer = new ApolloServerLambda({
       schema: schemaWithMiddleware,
       dataSources: () => ({
-        db: new DatabaseDataSource(this._mongodbClient),
+        db: new DatabaseDataSource(this._dbClient),
         cognito: new CognitoDataSource(this._cognitoIdentityProvider, this._cognitoIdentityServiceProvider),
       }),
       context: ctx => ({ ...mockRequestOptions })
