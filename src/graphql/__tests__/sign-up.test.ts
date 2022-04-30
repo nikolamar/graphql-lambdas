@@ -15,10 +15,10 @@ describe("sign-up", () => {
 
   const server = new ApolloTestServer();
 
-  const testEmail = `admin+${randomIntFromInterval(1, 100)}@test.com`;
+  const testEmail = `admin+${randomIntFromInterval(1, 1000)}@test.com`;
   
   afterAll(() => {
-    return server.mongoodbConnection.then((mongo) => mongo.close());
+    return server.dbConnection.then((mongo) => mongo.close());
   });
 
   test("create tenant", async () => {
