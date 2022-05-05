@@ -40,6 +40,9 @@ Parameters:
   Stage:
     Type: String
     Description: Environment name
+    AllowedValues:
+      - dev
+      - prod
 
   ProjectName:
     Type: String
@@ -67,6 +70,10 @@ Parameters:
   Environment:
     Type: String
     Description: Environment
+    AllowedValues:
+      - local
+      - development
+      - production
 
   Version:
     Type: String

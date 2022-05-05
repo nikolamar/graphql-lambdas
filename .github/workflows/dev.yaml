@@ -69,6 +69,7 @@ jobs:
       - name: Deploy
         env:
           STAGE: dev
+          ENVIRONMENT: development
           SUB_DOMAIN_NAME: app-designer-backend.dev
           REGION:  ${{ secrets.REGION }}
           AWS_ACCESS_KEY_ID:  ${{ secrets.AWS_ACCESS_KEY_ID }}
