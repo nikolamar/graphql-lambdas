@@ -3,6 +3,7 @@ import {
   TENANTS_COLLECTION,
   USERS_COLLECTION
 } from "/opt/configs/collections";
+import { getMongodbClient } from "/opt/utils/db";
 import {
   MutationCreateTenantArgs,
   MutationCreateUserArgs,
@@ -18,7 +19,6 @@ import {
   QueryUsersArgs
 } from "../generated";
 import { CollectionPlugin } from "../plugins/collection";
-import { getMongodbClient } from "/opt/db";
 import { DataLoaderPlugin } from "../plugins/data-loader";
 import type { Db } from "mongodb";
 

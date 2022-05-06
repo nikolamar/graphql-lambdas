@@ -1,6 +1,6 @@
-import { assert, ERROR_CODES, ERROR_MESSAGES } from "/opt/errors";
+import { assert, ERROR_CODES, ERROR_MESSAGES } from "/opt/utils/errors";
+import { CLIENT_ID, POOL_ID } from "/opt/configs/cognito";
 import { getClaim } from "../utils/token";
-import { CLIENT_ID, POOL_ID } from "../configs/cognito";
 import type { Resolvers } from "../generated";
 import type { Context } from "../types";
 

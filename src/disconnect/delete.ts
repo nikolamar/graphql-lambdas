@@ -1,5 +1,5 @@
-import { getMongodbClient } from "/opt/db";
-import { response } from "/opt/response";
+import { getMongodbClient } from "/opt/utils/db";
+import { response } from "/opt/utils/response";
 import { CHANNELS_COLLECTION } from "/opt/configs/collections";
 
 export async function remove (event) {

@@ -1,5 +1,5 @@
-import { sendMessage } from "/opt/websocket";
-import { parseBody, response } from "/opt/response";
+import { sendMessage } from "/opt/utils/websocket";
+import { parseBody, response } from "/opt/utils/response";
 
 export async function connection (event) {
   const myConnectionId = event?.requestContext?.connectionId;

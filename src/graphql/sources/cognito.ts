@@ -1,8 +1,8 @@
 import AWS from "aws-sdk";
 import { DataSource } from "apollo-datasource";
-import { rndchars, rndletters, rndnums } from "/opt/nanoid";
-import { REGION, POOL_ID } from "../configs/cognito";
 import { CognitoIdentityProvider } from "@aws-sdk/client-cognito-identity-provider";
+import { rndchars, rndletters, rndnums } from "/opt/utils/nanoid";
+import { REGION, POOL_ID } from "/opt/configs/cognito";
 
 export class CognitoDataSource extends DataSource {
   private _cognitoIdentityProvider: CognitoIdentityProvider;
