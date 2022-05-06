@@ -1,4 +1,4 @@
-import { isNodeEnvOneOf, Namespace } from "/opt/configs/environment";
+import { isNodeEnvOneOf, Namespace } from "../environment";
 
 const ORIGINAL_NODE_ENV = process.env.NODE_ENV;
 

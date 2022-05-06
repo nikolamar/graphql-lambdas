@@ -1,4 +1,4 @@
-import { createMatchFromOperators } from "../utils/operators";
+import { createMatchFromOperators } from "../operators";
 
 const expectedOrCondition = {
   $or: [

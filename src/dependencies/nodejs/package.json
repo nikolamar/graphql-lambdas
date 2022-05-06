@@ -20,6 +20,7 @@
     "apollo-server-lambda": "^3.6.6",
     "axios": "^0.26.1",
     "dataloader": "^2.0.0",
+    "dayjs": "^1.11.1",
     "graphql": "^15.0.0",
     "graphql-middleware": "^6.1.19",
     "jsonwebtoken": "^8.5.1",
