@@ -5,15 +5,6 @@ import { ASC } from "../configs/orders";
 import { createMatchFromOperators } from "../utils/operators";
 import type { Db } from "mongodb";
 
-// TODO: FIXME
-const objectIdFields = {
-  _id: 1,
-  tenantId: 1,
-  flowId: 1,
-  credentialTemplateId: 1,
-  proofRequestTemplateId: 1,
-};
-
 export interface ItemChangeParams {
   where?: any
   field?: string
@@ -113,8 +104,8 @@ export class CollectionPlugin implements DatabasePluginInterface {
       // less and greater than depends on order
       const sortCond = order === ASC ? "$gt" : "$lt";
 
-      // const value = ObjectId.isValid(afterBase64) ? new ObjectId(afterBase64) : afterBase64
-      const value = objectIdFields[sortBy] ? new ObjectId(afterBase64) : afterBase64;
+      // const value = objectIdFields[sortBy] ? new ObjectId(afterBase64) : afterBase64;
+      const value = ObjectId.isValid(afterBase64) ? new ObjectId(afterBase64) : afterBase64;
 
       const cond = {
         [sortCond]: [`$$item.${sortBy}`, value],
