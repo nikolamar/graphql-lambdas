@@ -110,7 +110,7 @@ export class CognitoDataSource extends DataSource {
     });
   }
   
-  async setCognitoUserMFAPreference (email: string, isMFAEnabled: boolean) {
+  async setCognitoUserMFAPreference (email: string, mfa: boolean) {
     const cognitoUser: any = await this.getCognitoUser(email);
     if (!cognitoUser.UserMFASettingList) {
       return;
@@ -120,8 +120,8 @@ export class CognitoDataSource extends DataSource {
       UserPoolId: POOL_ID,
       Username: email,
       SoftwareTokenMfaSettings: {
-        Enabled: isMFAEnabled,
-        PreferredMfa: isMFAEnabled,
+        Enabled: mfa,
+        PreferredMfa: mfa,
       },
     };
   
@@ -238,14 +238,14 @@ export class CognitoDataSource extends DataSource {
     };
   }
 
-  async setUserMfaPreference (accessToken: string, isMFAEnabled: boolean) {
+  async setUserMfaPreference (accessToken: string, mfa: boolean) {
     await this._cognitoIdentityProvider.setUserMFAPreference({
       AccessToken: accessToken,
       SoftwareTokenMfaSettings: {
-        Enabled: isMFAEnabled,
-        PreferredMfa: isMFAEnabled,
+        Enabled: mfa,
+        PreferredMfa: mfa,
       }
     });
-    return isMFAEnabled;
+    return mfa;
   }
 }

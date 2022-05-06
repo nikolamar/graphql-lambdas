@@ -2,9 +2,9 @@ import fs from "fs";
 import path from "path";
 import { authenticator } from "otplib";
 import { CLIENT_ID } from "/opt/configs/cognito";
-import { randomIntFromInterval } from "/opt/utils/numbers";
 import { getMongodbConnectionWithClient } from "/opt/utils/db";
 import { ApolloTestServer, mockRequestOptions } from "../../utils/server-test";
+import type { Challenge, Tenant, User } from "../../generated";
 
 const createTenant = fs.readFileSync(path.resolve(__dirname, "../../mutations/create-tenant.graphql"), "utf8");
 const createUser = fs.readFileSync(path.resolve(__dirname, "../../mutations/create-user.graphql"), "utf8");
@@ -18,16 +18,16 @@ const deleteUser = fs.readFileSync(path.resolve(__dirname, "../../mutations/dele
 const deleteTenant = fs.readFileSync(path.resolve(__dirname, "../../mutations/delete-tenant.graphql"), "utf8");
 
 describe("sign-up", () => {
-  let user;
-  let tenant;
-  let challenge;
-  let idToken;
-  let accessToken;
-  let verificationCode;
+  let user: User;
+  let tenant: Tenant;
+  let challenge: Challenge;
+  let idToken: string;
+  let accessToken: string;
+  let verificationCode: string;
 
-  let server;
+  let server: ApolloTestServer;
 
-  const testEmail = `admin+${randomIntFromInterval(1, 1000)}@test.com`;
+  const adminEmail = "admin+0@test.com";
 
   beforeAll(async () => {
     const [connection, client] = await getMongodbConnectionWithClient();
@@ -39,11 +39,10 @@ describe("sign-up", () => {
   });
 
   test("create tenant", async () => {
-    
     const response = await server.test(createTenant, {
       variables: { 
         input: {
-          name: "test",
+          name: "Admin Tenant 0",
           status: "active",
           color: "#ffffff",
           accentColor: "#ffffff"
@@ -58,7 +57,7 @@ describe("sign-up", () => {
     const response = await server.test(createUser, {
       variables: {
         input: {
-          email: testEmail,
+          email: adminEmail,
           password: "Password01!",
           role: "admin",
           tenantId: tenant._id,
@@ -74,7 +73,7 @@ describe("sign-up", () => {
     const response = await server.test(userPasswordAuth, {
       variables: {
         clientId: CLIENT_ID,
-        username: testEmail,
+        username: adminEmail,
         password: "Password01!",
       }
     });
@@ -87,7 +86,7 @@ describe("sign-up", () => {
       variables: {
         clientId: CLIENT_ID,
         session: challenge.session,
-        username: testEmail,
+        username: adminEmail,
         newPassword: "NewPassword01!",
       }
     });
@@ -101,7 +100,7 @@ describe("sign-up", () => {
     const response = await server.test(userPasswordAuth, {
       variables: {
         clientId: CLIENT_ID,
-        username: testEmail,
+        username: adminEmail,
         password: "NewPassword01!",
       }
     });
@@ -139,7 +138,7 @@ describe("sign-up", () => {
   test("enable mfa", async () => {
     const response = await server.test(setUserMfaPreference, {
       variables: {
-        isMFAEnabled: true,
+        mfa: true,
       }
     });
     expect(response.data.setUserMfaPreference).toEqual(true);
@@ -155,7 +154,7 @@ describe("sign-up", () => {
     const response = await server.test(userPasswordAuth, {
       variables: {
         clientId: CLIENT_ID,
-        username: testEmail,
+        username: adminEmail,
         password: "NewPassword01!",
       }
     });
