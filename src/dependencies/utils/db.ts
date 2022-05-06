@@ -1,5 +1,5 @@
 import { MongoClient, ServerApiVersion, ObjectId } from "mongodb";
-import { isNodeEnvOneOf } from "/opt/configs/environment";
+import { isNodeEnvOneOf } from "../configs/environment";
 
 const uri = isNodeEnvOneOf("test") ? process.env.MONGO_URL : `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@quick.075mz.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`;
 

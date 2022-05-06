@@ -2,8 +2,8 @@ import jwkToPem from "jwk-to-pem";
 import * as Axios from "axios";
 import * as jsonwebtoken from "jsonwebtoken";
 import { promisify } from "util";
-import { REGION, POOL_ID } from "../configs/cognito";
-import { assert, ERROR_CODES, ERROR_MESSAGES } from "/opt/errors";
+import { REGION, POOL_ID } from "/opt/configs/cognito";
+import { assert, ERROR_CODES, ERROR_MESSAGES } from "/opt/utils/errors";
 
 export type TokenUse = "access" | "id";
 

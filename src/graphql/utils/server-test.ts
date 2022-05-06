@@ -1,19 +1,19 @@
 import AWS from "aws-sdk";
-import { CognitoIdentityProvider } from "@aws-sdk/client-cognito-identity-provider";
 import { join } from "path";
-import { convertNodeHttpToRequest, runHttpQuery } from "apollo-server-core";
 import { print } from "graphql";
+import { convertNodeHttpToRequest, runHttpQuery } from "apollo-server-core";
 import httpMocks, { RequestOptions, ResponseOptions } from "node-mocks-http";
 import { ApolloServer as ApolloServerLambda } from "apollo-server-lambda";
+import { CognitoIdentityProvider } from "@aws-sdk/client-cognito-identity-provider";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { applyMiddleware } from "graphql-middleware";
-import { resolvers } from "../resolvers";
 import { mergeTypeDefs } from "@graphql-tools/merge";
 import { loadFilesSync } from "@graphql-tools/load-files";
+import { REGION } from "/opt/configs/cognito";
+import { resolvers } from "../resolvers";
 import { DatabaseDataSource } from "../sources/database";
 import type { Options, StringOrAst, TestQuery } from "../types";
 import { CognitoDataSource } from "../sources/cognito";
-import { REGION } from "../configs/cognito";
 
 const mockRequest = (options: RequestOptions = {}): any => httpMocks.createRequest({
   method: "POST",

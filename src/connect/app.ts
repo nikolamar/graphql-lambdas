@@ -1,4 +1,4 @@
-import { LambdaResolver } from "/opt/lambda";
+import { LambdaResolver } from "/opt/utils/lambda";
 import { save } from "./save";
 
 export function handler (event) {

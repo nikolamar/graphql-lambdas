@@ -1,6 +1,6 @@
-import { parseBody } from "/opt/response";
-import { LambdaResolver } from "/opt/lambda";
-import { ROUTES } from "/opt/websocket";
+import { parseBody } from "/opt/utils/response";
+import { LambdaResolver } from "/opt/utils/lambda";
+import { ROUTES } from "/opt/utils/websocket";
 import { ping } from "./ping";
 import { message } from "./message";
 import { connection } from "./connection";

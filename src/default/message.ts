@@ -1,7 +1,7 @@
-import { getMongodbClient } from "/opt/db";
-import { sendMessage } from "/opt/websocket";
-import { parseBody, response } from "/opt/response";
-import { assert, ERROR_MESSAGES, ERROR_CODES } from "/opt/errors";
+import { getMongodbClient } from "../dependencies/utils/db";
+import { sendMessage } from "/opt/utils/websocket";
+import { parseBody, response } from "/opt/utils/response";
+import { assert, ERROR_MESSAGES, ERROR_CODES } from "/opt/utils/errors";
 import { CHANNELS_COLLECTION } from "/opt/configs/collections";
 
 export async function message (event) {

@@ -1,10 +1,10 @@
 import fs from "fs";
 import path from "path";
 import { authenticator } from "otplib";
-import { CLIENT_ID } from "../configs/cognito";
+import { CLIENT_ID } from "/opt/configs/cognito";
+import { randomIntFromInterval } from "/opt/utils/numbers";
+import { getMongodbConnectionWithClient } from "/opt/utils/db";
 import { ApolloTestServer, mockRequestOptions } from "../utils/server-test";
-import { randomIntFromInterval } from "../utils/numbers";
-import { getMongodbConnectionWithClient } from "/opt/db";
 
 describe("sign-up", () => {
   let user;

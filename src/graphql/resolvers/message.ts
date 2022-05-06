@@ -1,5 +1,5 @@
-import { sendMessage as send, ROUTES } from "/opt/websocket";
-import { assert, ERROR_MESSAGES, ERROR_CODES } from "/opt/errors";
+import { sendMessage as send, ROUTES } from "/opt/utils/websocket";
+import { assert, ERROR_MESSAGES, ERROR_CODES } from "/opt/utils/errors";
 import type { Resolvers } from "../generated";
 import type { Context } from "../types";
 
