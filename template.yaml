@@ -13,13 +13,13 @@ Description: >
 ###################
 
 Globals:
-  Function: # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+  Function:
     Runtime: nodejs14.x
     Timeout: 20
     MemorySize: 256
     Architectures:
       - x86_64
-    Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
+    Environment:
       Variables:
         STAGE: !Ref Stage
         REGION: !Sub ${AWS::Region}
@@ -29,7 +29,7 @@ Globals:
         DB_PASSWORD: !Ref DBPassword
         POOL_ID: !Ref CognitoUserPool
         CLIENT_ID: !Ref CognitoUserPoolClient
-        NODE_ENV: !Ref Environment
+        NODE_ENV: !Ref Stage
         VERSION: !Ref Version
 
 ###################
@@ -39,8 +39,9 @@ Globals:
 Parameters:
   Stage:
     Type: String
-    Description: Environment name
+    Description: Stage namespace
     AllowedValues:
+      - local
       - dev
       - prod
 
@@ -67,18 +68,9 @@ Parameters:
     Type: String
     Description: DB pasword
 
-  Environment:
-    Type: String
-    Description: Environment
-    AllowedValues:
-      - local
-      - development
-      - production
-
   Version:
     Type: String
     Description: Version
-
 
 ###################
 #    RESOURCES    #

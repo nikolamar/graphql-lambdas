@@ -11,7 +11,6 @@ export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
 # These vars are needed to inject into the SAM template
 export STAGE=$STAGE
 export REGION=$REGION
-export ENVIRONMENT=${ENVIRONMENT:-production}
 export DB_USER=$DB_USER
 export DB_PASSWORD=$DB_PASSWORD
 export HOSTED_ZONE_ID=$HOSTED_ZONE_ID
@@ -70,7 +69,6 @@ sam deploy \
   --parameter-overrides \
     "\
     ParameterKey=Stage,ParameterValue=${STAGE} \
-    ParameterKey=Environment,ParameterValue=${ENVIRONMENT} \
     ParameterKey=ProjectName,ParameterValue=${PROJECT_NAME} \
     ParameterKey=DomainName,ParameterValue=${DOMAIN_NAME} \
     ParameterKey=SubDomainName,ParameterValue=${SUB_DOMAIN_NAME} \
