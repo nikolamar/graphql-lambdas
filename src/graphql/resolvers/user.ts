@@ -1,6 +1,6 @@
+import { assert, ERROR_CODES, ERROR_MESSAGES } from "/opt/utils/errors";
 import { createEdgesWithPageInfo } from "../utils/cursor";
 import { getClaim } from "../utils/token";
-import { assert, ERROR_CODES, ERROR_MESSAGES } from "/opt/errors";
 import { SUPER_ADMIN, USER_ROLES } from "../configs/roles";
 import type { Resolvers } from "../generated";
 import type { Context } from "../types";
