@@ -7,7 +7,7 @@ import { applyMiddleware } from "graphql-middleware";
 import { DatabaseDataSource } from "./sources/database";
 import { schemaWithResolvers } from "./schema";
 import { CognitoDataSource } from "./sources/cognito";
-import { isDevelopment } from "./configs/environment";
+import { isNodeEnvOneOf } from "/opt/configs/environment";
 
 const schemaWithMiddleware = applyMiddleware(
   schemaWithResolvers,
@@ -17,7 +17,7 @@ let plugins = [
   ApolloServerPluginLandingPageDisabled(),
 ];
 
-if (isDevelopment) {
+if (isNodeEnvOneOf("local", "dev")) {
   plugins = [
     ApolloServerPluginLandingPageGraphQLPlayground(),
   ];
@@ -25,8 +25,8 @@ if (isDevelopment) {
 
 const server = new ApolloServer({
   schema: schemaWithMiddleware,
-  introspection: isDevelopment,
-  debug: isDevelopment,
+  introspection: isNodeEnvOneOf("local", "dev"),
+  debug: isNodeEnvOneOf("local", "dev"),
   plugins,
 
   dataSources: () => ({
