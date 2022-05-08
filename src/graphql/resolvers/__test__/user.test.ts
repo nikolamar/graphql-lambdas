@@ -153,8 +153,11 @@ describe("user resolver", () => {
     expect(users2.data.users.edges[0].node).toEqual(allUsers.data.users.edges[5].node);
     expect(users3.data.users.edges[0].node).toEqual(allUsers.data.users.edges[10].node);
     expect(users1.data.users.pageInfo.hasNextPage).toEqual(true);
+    expect(users1.data.users.pageInfo.hasPreviousPage).toEqual(false);
     expect(users2.data.users.pageInfo.hasNextPage).toEqual(true);
+    expect(users2.data.users.pageInfo.hasPreviousPage).toEqual(true);
     expect(users3.data.users.pageInfo.hasNextPage).toEqual(false);
+    expect(users3.data.users.pageInfo.hasPreviousPage).toEqual(true);
   });
 
   test("delete many users", async () => {
