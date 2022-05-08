@@ -28,16 +28,19 @@ export class CollectionPlugin implements DatabasePluginInterface {
     const db = await this._dbClient;
 
     // create new record
+    const newRecord = {
+      ...input,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
     await db.collection(this._collection)
-      .insertOne({
-        ...input,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      })
+      .insertOne(newRecord)
       .then(r => r.insertedId);
 
     // get new record
-    return await db.collection(this._collection).findOne(input) as any;
+    // return newRecord;
+    return await db.collection(this._collection).findOne(newRecord) as any;
   }
 
   async read ({ where = {} as any }) {
@@ -148,7 +151,7 @@ export class CollectionPlugin implements DatabasePluginInterface {
     return {
       data: dbResponse?.data || [],
       totalCount: dbResponse?.count || 0,
-      firstRecord: dbResponse?.first || {},
+      firstRecordId: dbResponse?.first || {},
     };
   }
 
