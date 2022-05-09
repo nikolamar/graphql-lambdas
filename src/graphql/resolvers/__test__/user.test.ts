@@ -15,7 +15,7 @@ const deleteUserMutation = fs.readFileSync(path.resolve(__dirname, "../../mutati
 const deleteTenantMutation = fs.readFileSync(path.resolve(__dirname, "../../mutations/delete-tenant.graphql"), "utf8");
 
 describe("user resolver", () => {
-  let user: User;
+  let adminUser: User;
   let tenant: Tenant;
   let challenge: Challenge;
   let idToken: string;
@@ -66,8 +66,8 @@ describe("user resolver", () => {
       }
     });
     expect(response.errors).toBeUndefined();
-    user = response.data.createUser;
-    expect(user).not.toBeUndefined();
+    adminUser = response.data.createUser;
+    expect(adminUser).not.toBeUndefined();
   });
 
   test("admin user password auth challenge response", async () => {
@@ -178,7 +178,7 @@ describe("user resolver", () => {
     const response = await server.test(deleteUserMutation, {
       variables: {
         where: {
-          _id: { _eq: user._id }
+          _id: { _eq: adminUser._id }
         }
       }
     });
