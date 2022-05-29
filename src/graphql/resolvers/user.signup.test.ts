@@ -3,19 +3,19 @@ import path from "path";
 import { authenticator } from "otplib";
 import { CLIENT_ID } from "/opt/configs/cognito";
 import { getMongodbConnectionWithClient } from "/opt/utils/db";
-import { ApolloTestServer, mockRequestOptions } from "../../utils/server-test";
-import type { Challenge, Tenant, User } from "../../generated";
+import { ApolloTestServer, mockRequestOptions } from "../utils/server-test";
+import type { Challenge, Tenant, User } from "../generated";
 
-const mfaStatusQuery = fs.readFileSync(path.resolve(__dirname, "../../queries/mfa-status.graphql"), "utf8");
-const mfaStatusUrlQuery = fs.readFileSync(path.resolve(__dirname, "../../queries/mfa-auth-url.graphql"), "utf8");
-const createTenantMutation = fs.readFileSync(path.resolve(__dirname, "../../mutations/create-tenant.graphql"), "utf8");
-const createUserMutation = fs.readFileSync(path.resolve(__dirname, "../../mutations/create-user.graphql"), "utf8");
-const userPasswordAuthMutation = fs.readFileSync(path.resolve(__dirname, "../../mutations/user-password-auth.graphql"), "utf8");
-const challengeNewPasswordMutation = fs.readFileSync(path.resolve(__dirname, "../../mutations/challenge-new-password.graphql"), "utf8");
-const validateMfaCodeMutation = fs.readFileSync(path.resolve(__dirname, "../../mutations/validate-mfa-code.graphql"), "utf8");
-const setUserMfaPreferenceMutation = fs.readFileSync(path.resolve(__dirname, "../../mutations/set-user-mfa-preference.graphql"), "utf8");
-const deleteUserMutation = fs.readFileSync(path.resolve(__dirname, "../../mutations/delete-user.graphql"), "utf8");
-const deleteTenantMutation = fs.readFileSync(path.resolve(__dirname, "../../mutations/delete-tenant.graphql"), "utf8");
+const mfaStatusQuery = fs.readFileSync(path.resolve(__dirname, "../queries/mfa-status.graphql"), "utf8");
+const mfaStatusUrlQuery = fs.readFileSync(path.resolve(__dirname, "../queries/mfa-auth-url.graphql"), "utf8");
+const createTenantMutation = fs.readFileSync(path.resolve(__dirname, "../mutations/create-tenant.graphql"), "utf8");
+const createUserMutation = fs.readFileSync(path.resolve(__dirname, "../mutations/create-user.graphql"), "utf8");
+const userPasswordAuthMutation = fs.readFileSync(path.resolve(__dirname, "../mutations/user-password-auth.graphql"), "utf8");
+const challengeNewPasswordMutation = fs.readFileSync(path.resolve(__dirname, "../mutations/challenge-new-password.graphql"), "utf8");
+const validateMfaCodeMutation = fs.readFileSync(path.resolve(__dirname, "../mutations/validate-mfa-code.graphql"), "utf8");
+const setUserMfaPreferenceMutation = fs.readFileSync(path.resolve(__dirname, "../mutations/set-user-mfa-preference.graphql"), "utf8");
+const deleteUserMutation = fs.readFileSync(path.resolve(__dirname, "../mutations/delete-user.graphql"), "utf8");
+const deleteTenantMutation = fs.readFileSync(path.resolve(__dirname, "../mutations/delete-tenant.graphql"), "utf8");
 
 describe("sign-up", () => {
   let user: User;

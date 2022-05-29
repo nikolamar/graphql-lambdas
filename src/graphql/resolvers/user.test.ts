@@ -2,17 +2,17 @@ import fs from "fs";
 import path from "path";
 import { CLIENT_ID } from "/opt/configs/cognito";
 import { getMongodbConnectionWithClient } from "/opt/utils/db";
-import { ApolloTestServer, mockRequestOptions } from "../../utils/server-test";
-import type { Challenge, Tenant, User } from "../../generated";
+import { ApolloTestServer, mockRequestOptions } from "../utils/server-test";
+import type { Challenge, Tenant, User } from "../generated";
 
-const usersQuery = fs.readFileSync(path.resolve(__dirname, "../../queries/users.graphql"), "utf8");
-const mfaStatusQuery = fs.readFileSync(path.resolve(__dirname, "../../queries/mfa-status.graphql"), "utf8");
-const createTenantMutation = fs.readFileSync(path.resolve(__dirname, "../../mutations/create-tenant.graphql"), "utf8");
-const createUserMutation = fs.readFileSync(path.resolve(__dirname, "../../mutations/create-user.graphql"), "utf8");
-const userPasswordAuthMutation = fs.readFileSync(path.resolve(__dirname, "../../mutations/user-password-auth.graphql"), "utf8");
-const challengeNewPasswordMutation = fs.readFileSync(path.resolve(__dirname, "../../mutations/challenge-new-password.graphql"), "utf8");
-const deleteUserMutation = fs.readFileSync(path.resolve(__dirname, "../../mutations/delete-user.graphql"), "utf8");
-const deleteTenantMutation = fs.readFileSync(path.resolve(__dirname, "../../mutations/delete-tenant.graphql"), "utf8");
+const usersQuery = fs.readFileSync(path.resolve(__dirname, "../queries/users.graphql"), "utf8");
+const mfaStatusQuery = fs.readFileSync(path.resolve(__dirname, "../queries/mfa-status.graphql"), "utf8");
+const createTenantMutation = fs.readFileSync(path.resolve(__dirname, "../mutations/create-tenant.graphql"), "utf8");
+const createUserMutation = fs.readFileSync(path.resolve(__dirname, "../mutations/create-user.graphql"), "utf8");
+const userPasswordAuthMutation = fs.readFileSync(path.resolve(__dirname, "../mutations/user-password-auth.graphql"), "utf8");
+const challengeNewPasswordMutation = fs.readFileSync(path.resolve(__dirname, "../mutations/challenge-new-password.graphql"), "utf8");
+const deleteUserMutation = fs.readFileSync(path.resolve(__dirname, "../mutations/delete-user.graphql"), "utf8");
+const deleteTenantMutation = fs.readFileSync(path.resolve(__dirname, "../mutations/delete-tenant.graphql"), "utf8");
 
 describe("user resolver", () => {
   let adminUser: User;

@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
-import * as DateUtils from "../date";
-import { Sort } from "../date";
-import { dateTime, smallDateFullTime, date, simpleDate, timestamp } from "../../configs/date-formats";
+import * as DateUtils from "./date";
+import { Sort } from "./date";
+import { dateTime, smallDateFullTime, date, simpleDate, timestamp } from "../configs/date-formats";
 import MockDate from "mockdate";
 
 describe("dates.utils.ts", () => {

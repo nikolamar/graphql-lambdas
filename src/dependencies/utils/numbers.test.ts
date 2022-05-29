@@ -1,4 +1,4 @@
-import { randomIntFromInterval } from "../numbers";
+import { randomIntFromInterval } from "./numbers";
 
 describe("random.utils.ts", () => {
   describe("randomInt util test", () => {
