@@ -113,8 +113,8 @@ describe("user resolver", () => {
 
   test("admin user mfa status false", async () => {
     mockRequestOptions.headers = {
-      IdToken: idToken,
-      AccessToken: accessToken
+      idtoken: idToken,
+      accesstoken: accessToken
     };
     const response = await server.test(mfaStatusQuery, { variables: {} });
     expect(response.data.mfaStatus).toEqual(false);

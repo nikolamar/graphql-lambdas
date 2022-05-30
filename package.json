@@ -22,7 +22,7 @@
     "cicd:build": "scripts/build.sh",
     "cicd:deploy": "scripts/deploy.sh",
     "cicd:delete": "scripts/delete.sh",
-    "cicd:publish": "npm-run-all -s test cicd:build cicd:deploy"
+    "cicd:publish": "npm-run-all -s cicd:test cicd:build cicd:deploy"
   },
   "keywords": [],
   "author": "",

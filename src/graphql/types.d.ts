@@ -29,7 +29,7 @@ export type Context = {
   expressRequest: Express.Request;
   headers: {
     host: string;
-    IdToken: string;
-    AccessToken: string;
+    idtoken: string;
+    accesstoken: string;
   }
 }
