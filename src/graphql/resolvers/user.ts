@@ -16,7 +16,7 @@ export const user: Resolvers<Context> = {
   },
   Query: {
     async me (_, __, ctx) {
-      const claim = await getClaim(ctx.headers?.IdToken);
+      const claim = await getClaim(ctx.headers?.idtoken);
       assert(claim, ERROR_MESSAGES.ID_TOKEN_REQUIRED, ERROR_CODES.UNAUTHORIZED);
 
       return ctx.dataSources.db.user({ where: { sub: { _eq: claim.sub }}});
@@ -59,7 +59,7 @@ export const user: Resolvers<Context> = {
       const record = await ctx.dataSources.db.user(args);
       assert(record, ERROR_MESSAGES.USER_REQUIRED, ERROR_CODES.NOT_FOUND);
 
-      const claim = await getClaim(ctx.headers?.IdToken);      
+      const claim = await getClaim(ctx.headers?.idtoken);      
       const myRole = claim["custom:roles"];
       const myTenantId = claim["custom:tenant"];
 
@@ -102,7 +102,7 @@ export const user: Resolvers<Context> = {
       const record = await ctx.dataSources.db.user(args);
       assert(record, ERROR_MESSAGES.USER_REQUIRED, ERROR_CODES.NOT_FOUND);
 
-      const claim = await getClaim(ctx.headers?.IdToken);      
+      const claim = await getClaim(ctx.headers?.idtoken);      
       const myRole = claim["custom:roles"];
       const myTenantId = claim["custom:tenant"];
 
