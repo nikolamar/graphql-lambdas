@@ -256,7 +256,9 @@ export class CollectionPlugin implements DatabasePluginInterface {
         );
 
       result = await Promise.race([
-        changeStream.next().then(result => result?.fullDocument),
+        // TODO: change stream
+        // changeStream.next().then(result => result?.fullDocument),
+        changeStream.next().then(result => result?._id),
         new Promise((resolve, reject) => {
           setTimeout(resolve, timeout, null);
         }),
