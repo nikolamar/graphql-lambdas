@@ -45,19 +45,19 @@ export class DatabaseDataSource extends DataSource {
       console.log(`Could not get db client. Err: ${e}`);
     }
 
-    try {
-      // enable change streams for all collections
-      await this._dbClient.admin().command({
-        modifyChangeStreams: 1,
-        database: "",
-        collection: "",
-        enable: true,
-      });
-      this._streamsEnabled = true;
-    } catch (e) {
-      this._streamsEnabled = false;
-      console.log(`Could not enable change stream. Err: ${e}`);
-    }
+    // try {
+    //   // enable change streams for all collections
+    //   await this._dbClient.admin().command({
+    //     modifyChangeStreams: 1,
+    //     database: "",
+    //     collection: "",
+    //     enable: true,
+    //   });
+    //   this._streamsEnabled = true;
+    // } catch (e) {
+    //   this._streamsEnabled = false;
+    //   console.log(`Could not enable change stream. Err: ${e}`);
+    // }
   }
 
   user (args: QueryUserArgs) {
