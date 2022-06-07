@@ -1,15 +1,12 @@
-import AWS from "aws-sdk";
 import { join } from "path";
 import { print } from "graphql";
 import { convertNodeHttpToRequest, runHttpQuery } from "apollo-server-core";
 import httpMocks, { RequestOptions, ResponseOptions } from "node-mocks-http";
 import { ApolloServer as ApolloServerLambda } from "apollo-server-lambda";
-import { CognitoIdentityProvider } from "@aws-sdk/client-cognito-identity-provider";
 import { makeExecutableSchema } from "@graphql-tools/schema";
 import { applyMiddleware } from "graphql-middleware";
 import { mergeTypeDefs } from "@graphql-tools/merge";
 import { loadFilesSync } from "@graphql-tools/load-files";
-import { REGION } from "/opt/configs/cognito";
 import { resolvers } from "../resolvers";
 import { DatabaseDataSource } from "../sources/database";
 import type { Options, StringOrAst, TestQuery } from "../types";
@@ -43,8 +40,6 @@ export class ApolloTestServer {
   private readonly _dbConnection;
   private readonly _dbClient;
   private readonly _apolloServer;
-  private readonly _cognitoIdentityProvider;
-  private readonly _cognitoIdentityServiceProvider;
 
   constructor (connection, client) {
     // Initialize apollo server and test client
@@ -53,10 +48,6 @@ export class ApolloTestServer {
     // Initialize memory mongo db
     this._dbConnection = connection;
     this._dbClient = client;
-
-    // Initialize cognito
-    this._cognitoIdentityProvider = new CognitoIdentityProvider({ region: REGION });
-    this._cognitoIdentityServiceProvider = new AWS.CognitoIdentityServiceProvider({ apiVersion: "2016-04-18", region: REGION });
   }
 
   get dbConnection () {
@@ -68,7 +59,7 @@ export class ApolloTestServer {
       schema: schemaWithMiddleware,
       dataSources: () => ({
         db: new DatabaseDataSource(this._dbClient),
-        cognito: new CognitoDataSource(this._cognitoIdentityProvider, this._cognitoIdentityServiceProvider),
+        cognito: new CognitoDataSource(),
       }),
       context: ctx => ({ ...mockRequestOptions })
     });
