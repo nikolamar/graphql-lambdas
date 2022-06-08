@@ -52,7 +52,7 @@ export type CreateUserInput = {
   email: Scalars['String'];
   password?: InputMaybe<Scalars['String']>;
   role: Scalars['String'];
-  tenantId: Scalars['ObjectId'];
+  tenantId?: InputMaybe<Scalars['ObjectId']>;
   termsAndConditionsMetaData?: InputMaybe<TermsAndConditionsMetaDataInput>;
 };
 

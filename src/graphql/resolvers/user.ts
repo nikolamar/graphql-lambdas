@@ -35,8 +35,22 @@ export const user: Resolvers<Context> = {
     async createUser (_, args, ctx) {
       const user = await ctx.dataSources.db.user({ where: { email: { _eq: args?.input?.email.toLowerCase() } } });
       assert(!user, ERROR_MESSAGES.EMAIL_ALREADY_EXISTS, ERROR_CODES.CONFLICT);
-      
-      const tenant = await ctx.dataSources.db.tenant({ where: { _id: { _eq: args?.input?.tenantId } } });
+
+      let tenant;
+
+      if (args?.input?.tenantId) {
+        tenant = await ctx.dataSources.db.tenant({ where: { _id: { _eq: args?.input?.tenantId } } });
+      } else {
+        tenant = await ctx.dataSources.db.tenant({ where: { name: { _eq: "default" } } });
+        if (!tenant) {
+          tenant = await ctx.dataSources.db.createTenant({
+            input: {
+              name: "default", status: "active", color: "#00ACC1", accentColor: "#FFFFFF",
+            }
+          });
+        }
+      }
+
       assert(tenant, ERROR_MESSAGES.TENANT_REQUIRED, ERROR_CODES.NOT_FOUND);
 
       const newRecord = {
@@ -48,7 +62,7 @@ export const user: Resolvers<Context> = {
       if (args?.skipCognito) {
         return ctx.dataSources.db.createUser({ input: newRecord });
       }
-      
+
       const cognitoUser: any = await ctx?.dataSources?.cognito?.createCognitoUser(newRecord);
       assert(cognitoUser, ERROR_MESSAGES.COGNITO_EMAIL_ALREADY_EXISTS, ERROR_CODES.CONFLICT);
 
@@ -59,7 +73,7 @@ export const user: Resolvers<Context> = {
       const record = await ctx.dataSources.db.user(args);
       assert(record, ERROR_MESSAGES.USER_REQUIRED, ERROR_CODES.NOT_FOUND);
 
-      const claim = await getClaim(ctx.headers?.idtoken);      
+      const claim = await getClaim(ctx.headers?.idtoken);
       const myRole = claim["custom:roles"];
       const myTenantId = claim["custom:tenant"];
 
@@ -72,21 +86,21 @@ export const user: Resolvers<Context> = {
 
       const updatedUser = await ctx.dataSources.db.updateUser(args);
       const updatedAttributes = [];
-      
+
       if (updatedUser?.tenantId) {
         updatedAttributes.push({
           Name: "custom:tenant",
           Value: updatedUser.tenantId,
         });
       }
-      
+
       if (updatedUser?.role) {
         updatedAttributes.push({
           Name: "custom:roles",
           Value: updatedUser.role,
         });
       }
-      
+
       if (updatedAttributes.length) {
         await ctx?.dataSources?.cognito?.updateCognitoUserAttributes(updatedUser.email, updatedAttributes);
       }
@@ -94,7 +108,7 @@ export const user: Resolvers<Context> = {
       if (typeof args?.input?.mfa === "boolean") {
         await ctx?.dataSources?.cognito?.setCognitoUserMFAPreference(updatedUser.email, updatedUser?.mfa);
       }
-      
+
       return updatedUser;
     },
 
@@ -102,7 +116,7 @@ export const user: Resolvers<Context> = {
       const record = await ctx.dataSources.db.user(args);
       assert(record, ERROR_MESSAGES.USER_REQUIRED, ERROR_CODES.NOT_FOUND);
 
-      const claim = await getClaim(ctx.headers?.idtoken);      
+      const claim = await getClaim(ctx.headers?.idtoken);
       const myRole = claim["custom:roles"];
       const myTenantId = claim["custom:tenant"];
 

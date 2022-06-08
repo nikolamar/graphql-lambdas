@@ -66,7 +66,7 @@ input TermsAndConditionsMetaDataInput  {
 input CreateUserInput {
   email: String!
   role: String!
-  tenantId: ObjectId!
+  tenantId: ObjectId
   password: String
   termsAndConditionsMetaData: TermsAndConditionsMetaDataInput
 }
