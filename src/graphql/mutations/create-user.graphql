@@ -1,8 +1,15 @@
-mutation createUser ($input: CreateUserInput!) {
-  createUser (input: $input) {
+mutation createUser ($input: CreateUserInput! $skipCognito: Boolean) {
+  createUser (input: $input skipCognito: $skipCognito) {
     _id
     email
     role
     tenantId
+    tenant {
+      _id
+      name
+      status
+      color
+      accentColor
+    }
   }
 }

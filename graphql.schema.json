@@ -625,6 +625,18 @@
                 "defaultValue": null,
                 "isDeprecated": false,
                 "deprecationReason": null
+              },
+              {
+                "name": "skipCognito",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
               }
             ],
             "type": {
@@ -676,6 +688,18 @@
             "name": "deleteManyUsers",
             "description": null,
             "args": [
+              {
+                "name": "skipCognito",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
               {
                 "name": "where",
                 "description": null,
@@ -742,6 +766,18 @@
             "name": "deleteUser",
             "description": null,
             "args": [
+              {
+                "name": "skipCognito",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
               {
                 "name": "where",
                 "description": null,
@@ -825,7 +861,7 @@
             "description": null,
             "args": [
               {
-                "name": "isMFAEnabled",
+                "name": "mfa",
                 "description": null,
                 "type": {
                   "kind": "NON_NULL",
@@ -874,7 +910,7 @@
                 "deprecationReason": null
               },
               {
-                "name": "isMFAEnabled",
+                "name": "mfa",
                 "description": null,
                 "type": {
                   "kind": "NON_NULL",
@@ -962,6 +998,18 @@
                     "name": "UpdateUserInput",
                     "ofType": null
                   }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              },
+              {
+                "name": "skipCognito",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
                 },
                 "defaultValue": null,
                 "isDeprecated": false,
@@ -2478,11 +2526,11 @@
             "deprecationReason": null
           },
           {
-            "name": "isMFAEnabled",
+            "name": "lastLogin",
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "Boolean",
+              "name": "String",
               "ofType": null
             },
             "defaultValue": null,
@@ -2490,11 +2538,11 @@
             "deprecationReason": null
           },
           {
-            "name": "lastLogin",
+            "name": "mfa",
             "description": null,
             "type": {
               "kind": "SCALAR",
-              "name": "String",
+              "name": "Boolean",
               "ofType": null
             },
             "defaultValue": null,
@@ -2640,24 +2688,24 @@
             "deprecationReason": null
           },
           {
-            "name": "isMFAEnabled",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "Boolean",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "lastLogin",
             "description": null,
             "args": [],
             "type": {
               "kind": "SCALAR",
               "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "mfa",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
               "ofType": null
             },
             "isDeprecated": false,
@@ -2881,11 +2929,11 @@
             "deprecationReason": null
           },
           {
-            "name": "isMFAEnabled",
+            "name": "lastLogin",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "BooleanMatchOperators",
+              "name": "StringMatchOperators",
               "ofType": null
             },
             "defaultValue": null,
@@ -2893,11 +2941,11 @@
             "deprecationReason": null
           },
           {
-            "name": "lastLogin",
+            "name": "mfa",
             "description": null,
             "type": {
               "kind": "INPUT_OBJECT",
-              "name": "StringMatchOperators",
+              "name": "BooleanMatchOperators",
               "ofType": null
             },
             "defaultValue": null,

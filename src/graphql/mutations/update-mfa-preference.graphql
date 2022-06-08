@@ -1,5 +1,5 @@
-mutation updateMfaAuthPreference ($email: String!, $isMFAEnabled: Boolean!) {
-  updateMfaAuthPreference (email: $email, isMFAEnabled: $isMFAEnabled) {
+mutation updateMfaAuthPreference ($email: String!, $mfa: Boolean!) {
+  updateMfaAuthPreference (email: $email, mfa: $mfa) {
     _id
     email
   }

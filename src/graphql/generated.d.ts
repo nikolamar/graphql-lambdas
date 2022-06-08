@@ -101,6 +101,7 @@ export type MutationCreateTenantArgs = {
 
 export type MutationCreateUserArgs = {
   input: CreateUserInput;
+  skipCognito?: InputMaybe<Scalars['Boolean']>;
 };
 
 
@@ -110,6 +111,7 @@ export type MutationDeleteManyTenantsArgs = {
 
 
 export type MutationDeleteManyUsersArgs = {
+  skipCognito?: InputMaybe<Scalars['Boolean']>;
   where: UserFilter;
 };
 
@@ -120,6 +122,7 @@ export type MutationDeleteTenantArgs = {
 
 
 export type MutationDeleteUserArgs = {
+  skipCognito?: InputMaybe<Scalars['Boolean']>;
   where: UserFilter;
 };
 
@@ -131,13 +134,13 @@ export type MutationSendMessageArgs = {
 
 
 export type MutationSetUserMfaPreferenceArgs = {
-  isMFAEnabled: Scalars['Boolean'];
+  mfa: Scalars['Boolean'];
 };
 
 
 export type MutationUpdateMfaAuthPreferenceArgs = {
   email: Scalars['String'];
-  isMFAEnabled: Scalars['Boolean'];
+  mfa: Scalars['Boolean'];
 };
 
 
@@ -149,6 +152,7 @@ export type MutationUpdateTenantArgs = {
 
 export type MutationUpdateUserArgs = {
   input: UpdateUserInput;
+  skipCognito?: InputMaybe<Scalars['Boolean']>;
   where: UserFilter;
 };
 
@@ -320,8 +324,8 @@ export type UpdateUserInput = {
   active?: InputMaybe<Scalars['String']>;
   email?: InputMaybe<Scalars['String']>;
   emailVerified?: InputMaybe<Scalars['Boolean']>;
-  isMFAEnabled?: InputMaybe<Scalars['Boolean']>;
   lastLogin?: InputMaybe<Scalars['String']>;
+  mfa?: InputMaybe<Scalars['Boolean']>;
   role?: InputMaybe<Scalars['String']>;
   sub?: InputMaybe<Scalars['String']>;
   tenantId?: InputMaybe<Scalars['ObjectId']>;
@@ -336,8 +340,8 @@ export type User = Node & {
   createdAt: Scalars['DateTime'];
   email?: Maybe<Scalars['String']>;
   emailVerified?: Maybe<Scalars['Boolean']>;
-  isMFAEnabled?: Maybe<Scalars['Boolean']>;
   lastLogin?: Maybe<Scalars['String']>;
+  mfa?: Maybe<Scalars['Boolean']>;
   role?: Maybe<Scalars['String']>;
   sub?: Maybe<Scalars['String']>;
   tenant?: Maybe<Tenant>;
@@ -359,8 +363,8 @@ export type UserFilter = {
   createdAt?: InputMaybe<DateMatchOperators>;
   email?: InputMaybe<StringMatchOperators>;
   emailVerified?: InputMaybe<BooleanMatchOperators>;
-  isMFAEnabled?: InputMaybe<BooleanMatchOperators>;
   lastLogin?: InputMaybe<StringMatchOperators>;
+  mfa?: InputMaybe<BooleanMatchOperators>;
   role?: InputMaybe<StringMatchOperators>;
   sub?: InputMaybe<StringMatchOperators>;
   tenantId?: InputMaybe<StringMatchOperators>;
@@ -540,8 +544,8 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   deleteTenant?: Resolver<ResolversTypes['Int'], ParentType, ContextType, RequireFields<MutationDeleteTenantArgs, 'where'>>;
   deleteUser?: Resolver<ResolversTypes['Int'], ParentType, ContextType, RequireFields<MutationDeleteUserArgs, 'where'>>;
   sendMessage?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationSendMessageArgs, 'connectionId' | 'message'>>;
-  setUserMfaPreference?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationSetUserMfaPreferenceArgs, 'isMFAEnabled'>>;
-  updateMfaAuthPreference?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationUpdateMfaAuthPreferenceArgs, 'email' | 'isMFAEnabled'>>;
+  setUserMfaPreference?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationSetUserMfaPreferenceArgs, 'mfa'>>;
+  updateMfaAuthPreference?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationUpdateMfaAuthPreferenceArgs, 'email' | 'mfa'>>;
   updateTenant?: Resolver<ResolversTypes['Tenant'], ParentType, ContextType, RequireFields<MutationUpdateTenantArgs, 'input' | 'where'>>;
   updateUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationUpdateUserArgs, 'input' | 'where'>>;
   userPasswordAuth?: Resolver<ResolversTypes['Challenge'], ParentType, ContextType, RequireFields<MutationUserPasswordAuthArgs, 'clientId' | 'password' | 'username'>>;
@@ -631,8 +635,8 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   email?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   emailVerified?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
-  isMFAEnabled?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   lastLogin?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  mfa?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   role?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   sub?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   tenant?: Resolver<Maybe<ResolversTypes['Tenant']>, ParentType, ContextType>;

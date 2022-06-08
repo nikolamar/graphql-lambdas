@@ -2,5 +2,8 @@ mutation createTenant ($input: CreateTenantInput!) {
   createTenant (input: $input) {
     _id
     name
+    status
+    color
+    accentColor
   }
 }

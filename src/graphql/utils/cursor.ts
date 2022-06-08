@@ -14,7 +14,7 @@ type ReturnEdges = {
   totalCount?: number;
 }
 
-export function createEdgesWithPageInfo ({ data, totalCount, firstRecord }, { first = Infinity, sortBy = "_id" }): ReturnEdges {
+export function createEdgesWithPageInfo ({ data, totalCount, firstRecordId }, { first = Infinity, sortBy = "_id" }): ReturnEdges {
   const edges = data?.map(node => ({
     node,
     cursor: Buffer.from(
@@ -22,8 +22,16 @@ export function createEdgesWithPageInfo ({ data, totalCount, firstRecord }, { fi
     ).toString("base64"), // making opaque
   }));
 
-  const hasNextPage = !totalCount ? false : data?.length > first;
-  const hasPreviousPage = !totalCount ? false : firstRecord?._id?.toString() !== data?.[0]?._id?.toString();
+  let hasNextPage;
+  let hasPreviousPage;
+
+  if (totalCount === 0) {
+    hasNextPage = false;
+    hasPreviousPage = false;
+  } else {
+    hasNextPage = data?.length > first;
+    hasPreviousPage = firstRecordId?.toString() !== data?.[0]?._id?.toString();
+  }
 
   /**
    * we are getting one more to check are there more records

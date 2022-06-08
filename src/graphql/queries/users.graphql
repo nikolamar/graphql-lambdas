@@ -1,0 +1,28 @@
+query users ($where: UserFilter, $order: Order, $first: Int, $offset: Int, $after: String, $sortBy: String) {
+  users (where: $where, order: $order, first: $first, offset: $offset, after: $after, sortBy: $sortBy) {
+    edges {
+      cursor
+      node {
+        _id
+        email
+        role
+        tenantId
+        tenant {
+          _id
+          name
+          status
+          color
+          accentColor
+        }
+      }
+    }
+    pageInfo {
+      hasPreviousPage
+      hasNextPage
+      startCursor
+      endCursor
+      count
+      totalCount
+    }
+  }
+}

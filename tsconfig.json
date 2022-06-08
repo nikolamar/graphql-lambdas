@@ -9,6 +9,8 @@
     "paths": {
       "/opt/*": ["src/dependencies/*"],
       "@graphql-tools/*": ["src/dependencies/nodejs/node_modules/@graphql-tools/*"],
+      "dayjs": ["src/dependencies/nodejs/node_modules/dayjs"],
+      "dayjs/*": ["src/dependencies/nodejs/node_modules/dayjs/*"],
       "axios": ["src/dependencies/nodejs/node_modules/axios"],
       "otplib": ["src/dependencies/nodejs/node_modules/otplib"],
       "jsonwebtoken": ["src/dependencies/nodejs/node_modules/jsonwebtoken"],

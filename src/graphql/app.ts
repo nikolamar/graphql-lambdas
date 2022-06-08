@@ -36,7 +36,7 @@ const server = new ApolloServer({
 
   context: ctx => {
     return {
-      headers: ctx.event.headers,
+      headers: ctx.express.req.headers,
       expressRequest: ctx.express.req,
       functionName: ctx.context.functionName,
       stage: ctx.event.requestContext.stage,

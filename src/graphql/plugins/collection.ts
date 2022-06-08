@@ -5,15 +5,6 @@ import { ASC } from "../configs/orders";
 import { createMatchFromOperators } from "../utils/operators";
 import type { Db } from "mongodb";
 
-// TODO: FIXME
-const objectIdFields = {
-  _id: 1,
-  tenantId: 1,
-  flowId: 1,
-  credentialTemplateId: 1,
-  proofRequestTemplateId: 1,
-};
-
 export interface ItemChangeParams {
   where?: any
   field?: string
@@ -37,16 +28,19 @@ export class CollectionPlugin implements DatabasePluginInterface {
     const db = await this._dbClient;
 
     // create new record
+    const newRecord = {
+      ...input,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
     await db.collection(this._collection)
-      .insertOne({
-        ...input,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      })
+      .insertOne(newRecord)
       .then(r => r.insertedId);
 
     // get new record
-    return await db.collection(this._collection).findOne(input) as any;
+    // return newRecord;
+    return await db.collection(this._collection).findOne(newRecord) as any;
   }
 
   async read ({ where = {} as any }) {
@@ -113,8 +107,8 @@ export class CollectionPlugin implements DatabasePluginInterface {
       // less and greater than depends on order
       const sortCond = order === ASC ? "$gt" : "$lt";
 
-      // const value = ObjectId.isValid(afterBase64) ? new ObjectId(afterBase64) : afterBase64
-      const value = objectIdFields[sortBy] ? new ObjectId(afterBase64) : afterBase64;
+      // const value = objectIdFields[sortBy] ? new ObjectId(afterBase64) : afterBase64;
+      const value = ObjectId.isValid(afterBase64) ? new ObjectId(afterBase64) : afterBase64;
 
       const cond = {
         [sortCond]: [`$$item.${sortBy}`, value],
@@ -157,7 +151,7 @@ export class CollectionPlugin implements DatabasePluginInterface {
     return {
       data: dbResponse?.data || [],
       totalCount: dbResponse?.count || 0,
-      firstRecord: dbResponse?.first || {},
+      firstRecordId: dbResponse?.first || {},
     };
   }
 
@@ -227,68 +221,70 @@ export class CollectionPlugin implements DatabasePluginInterface {
     }
   }
 
-  async waitChange ({ where, field, operation = "update", timeout = 100000 }: ItemChangeParams) {
-    const db = await this._dbClient;
+  // async waitChange ({ where, field, operation = "update", timeout = 100000 }: ItemChangeParams) {
+  //   const db = await this._dbClient;
 
-    const conditions: any[] = [{ operationType: operation }];
+  //   const conditions: any[] = [{ operationType: operation }];
 
-    let result;
+  //   let result;
 
-    if (this._streamsEnabled) {
-      // use change streams
-      if (where) {
-        const whereCondition = {};
-        Object.keys(where).forEach((key, index) => {
-          whereCondition[`fullDocument.${key}`] = where[key];
-        });
-        conditions.push(whereCondition);
-      }
-      if (field) {
-        conditions.push({ [`updateDescription.updatedFields.${field}`]: { $exists: true } });
-      }
+  //   if (this._streamsEnabled) {
+  //     // use change streams
+  //     if (where) {
+  //       const whereCondition = {};
+  //       Object.keys(where).forEach((key, index) => {
+  //         whereCondition[`fullDocument.${key}`] = where[key];
+  //       });
+  //       conditions.push(whereCondition);
+  //     }
+  //     if (field) {
+  //       conditions.push({ [`updateDescription.updatedFields.${field}`]: { $exists: true } });
+  //     }
 
-      const filter = [{
-        $match: {
-          $and: conditions,
-        },
-      }];
+  //     const filter = [{
+  //       $match: {
+  //         $and: conditions,
+  //       },
+  //     }];
 
-      const changeStream = db.collection(this._collection)
-        .watch(
-          filter,
-          {
-            fullDocument: "updateLookup",
-          },
-        );
+  //     const changeStream = db.collection(this._collection)
+  //       .watch(
+  //         filter,
+  //         {
+  //           fullDocument: "updateLookup",
+  //         },
+  //       );
 
-      result = await Promise.race([
-        changeStream.next().then(result => result?.fullDocument),
-        new Promise((resolve, reject) => {
-          setTimeout(resolve, timeout, null);
-        }),
-      ]);
+  //     result = await Promise.race([
+  //       // TODO: change stream
+  //       // changeStream.next().then(result => result?.fullDocument),
+  //       changeStream.next().then(result => result?._id),
+  //       new Promise((resolve, reject) => {
+  //         setTimeout(resolve, timeout, null);
+  //       }),
+  //     ]);
 
-      await changeStream.close();
-    } else {
-      // change streams cannot be used -> for instance local development -> use db polling
-      const getDocument = () =>
-        new Promise((resolve) => {
-          const interval = setInterval(async () => {
-            const doc = await db.collection(this._collection).findOne(where);
+  //     await changeStream.close();
+  //   } else {
+  //     // change streams cannot be used -> for instance local development -> use db polling
+  //     const getDocument = () =>
+  //       new Promise((resolve) => {
+  //         const interval = setInterval(async () => {
+  //           const doc = await db.collection(this._collection).findOne(where);
 
-            if (doc?.[field.toString()]) {
-              result = doc;
-            }
+  //           if (doc?.[field.toString()]) {
+  //             result = doc;
+  //           }
 
-            if (result) {
-              clearInterval(interval);
-              resolve(true);
-            }
-          }, 1000);
-        });
+  //           if (result) {
+  //             clearInterval(interval);
+  //             resolve(true);
+  //           }
+  //         }, 1000);
+  //       });
 
-      await getDocument();
-    }
-    return result;
-  }
+  //     await getDocument();
+  //   }
+  //   return result;
+  // }
 }

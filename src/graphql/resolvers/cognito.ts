@@ -14,11 +14,11 @@ export const cognito: Resolvers<Context> = {
     },
 
     mfaStatus (_, __, ctx) {
-      return ctx?.dataSources?.cognito?.checkCognitoUserMFAStatus(ctx?.headers?.AccessToken);
+      return ctx?.dataSources?.cognito?.checkCognitoUserMFAStatus(ctx?.headers?.accesstoken);
     },
     
     async mfaAuthUrl (_, __, ctx) {
-      const claim = await getClaim(ctx?.headers?.IdToken);
+      const claim = await getClaim(ctx?.headers?.idtoken);
 
       const tenantId = claim?.["custom:tenant"];
       assert(tenantId, ERROR_MESSAGES.TENANT_ID_REQUIRED, ERROR_CODES.NOT_FOUND);
@@ -26,7 +26,7 @@ export const cognito: Resolvers<Context> = {
       const tenant = await ctx?.dataSources.db.tenant({ where: { _id: { _eq: tenantId } } });
       assert(tenant, ERROR_MESSAGES.TENANT_REQUIRED, ERROR_CODES.NOT_FOUND);
 
-      return ctx?.dataSources?.cognito?.fetchCognitoUserMultiFactorAuthUrl(ctx?.headers?.AccessToken);
+      return ctx?.dataSources?.cognito?.fetchCognitoUserMultiFactorAuthUrl(ctx?.headers?.accesstoken);
     },
   },
   Mutation: {
@@ -39,18 +39,18 @@ export const cognito: Resolvers<Context> = {
     },
 
     validateMfaCode (_, args, ctx) {
-      return ctx?.dataSources?.cognito?.validateCognitoUserMFA(args?.verificationCode, ctx?.headers?.AccessToken);
+      return ctx?.dataSources?.cognito?.validateCognitoUserMFA(args?.verificationCode, ctx?.headers?.accesstoken);
     },
 
     setUserMfaPreference (_, args, ctx) {
-      return ctx.dataSources.cognito.setUserMfaPreference(ctx.headers.AccessToken, args.isMFAEnabled);
+      return ctx.dataSources.cognito.setUserMfaPreference(ctx.headers.accesstoken, args.mfa);
     },
     
     async updateMfaAuthPreference (_, args, ctx) {
-      await ctx?.dataSources?.cognito?.setCognitoUserMFAPreference(args.email, args.isMFAEnabled);
+      await ctx?.dataSources?.cognito?.setCognitoUserMFAPreference(args.email, args.mfa);
       return ctx.dataSources.db.updateUser({
         where: { email: { _eq: args.email } },
-        input: { isMFAEnabled: args.isMFAEnabled },
+        input: { mfa: args.mfa },
       });
     },
   }

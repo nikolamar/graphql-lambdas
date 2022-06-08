@@ -1,3 +1,3 @@
-mutation setUserMfaPreference ($isMFAEnabled: Boolean!) {
-  setUserMfaPreference (isMFAEnabled: $isMFAEnabled)
+mutation setUserMfaPreference ($mfa: Boolean!) {
+  setUserMfaPreference (mfa: $mfa)
 }

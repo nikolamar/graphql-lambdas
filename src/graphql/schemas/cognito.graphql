@@ -8,8 +8,8 @@ type Mutation {
   userPasswordAuth (clientId: String! username: String! password: String!): Challenge!
   challengeNewPassword (clientId: String! session: String! username: String! newPassword: String!): Tokens!
   validateMfaCode (verificationCode: String!): Boolean!
-  updateMfaAuthPreference (email: String! isMFAEnabled: Boolean!): User
-  setUserMfaPreference (isMFAEnabled: Boolean!): Boolean!
+  updateMfaAuthPreference (email: String! mfa: Boolean!): User
+  setUserMfaPreference (mfa: Boolean!): Boolean!
 }
 
 type Challenge {

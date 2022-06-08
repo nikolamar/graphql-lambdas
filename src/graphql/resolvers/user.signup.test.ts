@@ -2,21 +2,32 @@ import fs from "fs";
 import path from "path";
 import { authenticator } from "otplib";
 import { CLIENT_ID } from "/opt/configs/cognito";
-import { randomIntFromInterval } from "/opt/utils/numbers";
 import { getMongodbConnectionWithClient } from "/opt/utils/db";
 import { ApolloTestServer, mockRequestOptions } from "../utils/server-test";
+import type { Challenge, Tenant, User } from "../generated";
+
+const mfaStatusQuery = fs.readFileSync(path.resolve(__dirname, "../queries/mfa-status.graphql"), "utf8");
+const mfaStatusUrlQuery = fs.readFileSync(path.resolve(__dirname, "../queries/mfa-auth-url.graphql"), "utf8");
+const createTenantMutation = fs.readFileSync(path.resolve(__dirname, "../mutations/create-tenant.graphql"), "utf8");
+const createUserMutation = fs.readFileSync(path.resolve(__dirname, "../mutations/create-user.graphql"), "utf8");
+const userPasswordAuthMutation = fs.readFileSync(path.resolve(__dirname, "../mutations/user-password-auth.graphql"), "utf8");
+const challengeNewPasswordMutation = fs.readFileSync(path.resolve(__dirname, "../mutations/challenge-new-password.graphql"), "utf8");
+const validateMfaCodeMutation = fs.readFileSync(path.resolve(__dirname, "../mutations/validate-mfa-code.graphql"), "utf8");
+const setUserMfaPreferenceMutation = fs.readFileSync(path.resolve(__dirname, "../mutations/set-user-mfa-preference.graphql"), "utf8");
+const deleteUserMutation = fs.readFileSync(path.resolve(__dirname, "../mutations/delete-user.graphql"), "utf8");
+const deleteTenantMutation = fs.readFileSync(path.resolve(__dirname, "../mutations/delete-tenant.graphql"), "utf8");
 
 describe("sign-up", () => {
-  let user;
-  let tenant;
-  let challenge;
-  let idToken;
-  let accessToken;
-  let verificationCode;
+  let user: User;
+  let tenant: Tenant;
+  let challenge: Challenge;
+  let idToken: string;
+  let accessToken: string;
+  let verificationCode: string;
 
-  let server;
+  let server: ApolloTestServer;
 
-  const testEmail = `admin+${randomIntFromInterval(1, 1000)}@test.com`;
+  const adminEmail = "admin.test+0@test.com";
 
   beforeAll(async () => {
     const [connection, client] = await getMongodbConnectionWithClient();
@@ -28,11 +39,10 @@ describe("sign-up", () => {
   });
 
   test("create tenant", async () => {
-    const mutation = fs.readFileSync(path.resolve(__dirname, "../mutations/create-tenant.graphql"), "utf8");
-    const response = await server.test(mutation, {
+    const response = await server.test(createTenantMutation, {
       variables: { 
         input: {
-          name: "test",
+          name: "Admin Tenant 0",
           status: "active",
           color: "#ffffff",
           accentColor: "#ffffff"
@@ -44,11 +54,10 @@ describe("sign-up", () => {
   });
   
   test("create user", async () => {
-    const mutation = fs.readFileSync(path.resolve(__dirname, "../mutations/create-user.graphql"), "utf8");
-    const response = await server.test(mutation, {
+    const response = await server.test(createUserMutation, {
       variables: {
         input: {
-          email: testEmail,
+          email: adminEmail,
           password: "Password01!",
           role: "admin",
           tenantId: tenant._id,
@@ -61,11 +70,10 @@ describe("sign-up", () => {
   });
 
   test("user password auth challenge response", async () => {
-    const mutation = fs.readFileSync(path.resolve(__dirname, "../mutations/user-password-auth.graphql"), "utf8");
-    const response = await server.test(mutation, {
+    const response = await server.test(userPasswordAuthMutation, {
       variables: {
         clientId: CLIENT_ID,
-        username: testEmail,
+        username: adminEmail,
         password: "Password01!",
       }
     });
@@ -74,12 +82,11 @@ describe("sign-up", () => {
   });
 
   test("challenge new password", async () => {
-    const mutation = fs.readFileSync(path.resolve(__dirname, "../mutations/challenge-new-password.graphql"), "utf8");
-    const response = await server.test(mutation, {
+    const response = await server.test(challengeNewPasswordMutation, {
       variables: {
         clientId: CLIENT_ID,
         session: challenge.session,
-        username: testEmail,
+        username: adminEmail,
         newPassword: "NewPassword01!",
       }
     });
@@ -90,11 +97,10 @@ describe("sign-up", () => {
   });
 
   test("user password auth tokens response", async () => {
-    const mutation = fs.readFileSync(path.resolve(__dirname, "../mutations/user-password-auth.graphql"), "utf8");
-    const response = await server.test(mutation, {
+    const response = await server.test(userPasswordAuthMutation, {
       variables: {
         clientId: CLIENT_ID,
-        username: testEmail,
+        username: adminEmail,
         password: "NewPassword01!",
       }
     });
@@ -106,25 +112,22 @@ describe("sign-up", () => {
 
   test("mfa status false", async () => {
     mockRequestOptions.headers = {
-      IdToken: idToken,
-      AccessToken: accessToken
+      idtoken: idToken,
+      accesstoken: accessToken
     };
-    const query = fs.readFileSync(path.resolve(__dirname, "../queries/mfa-status.graphql"), "utf8");
-    const response = await server.test(query, { variables: {} });
+    const response = await server.test(mfaStatusQuery, { variables: {} });
     expect(response.data.mfaStatus).toEqual(false);
   });
 
   test("mfa auth url verification code", async () => {
-    const query = fs.readFileSync(path.resolve(__dirname, "../queries/mfa-auth-url.graphql"), "utf8");
-    const response = await server.test(query, { variables: {} });
+    const response = await server.test(mfaStatusUrlQuery, { variables: {} });
     const secret = response.data.mfaAuthUrl.split("secret=")[1];
     verificationCode = authenticator.generate(secret);
     expect(verificationCode).not.toBeUndefined();
   });
 
   test("validate mfa code", async () => {
-    const mutation = fs.readFileSync(path.resolve(__dirname, "../mutations/validate-mfa-code.graphql"), "utf8");
-    const response = await server.test(mutation, {
+    const response = await server.test(validateMfaCodeMutation, {
       variables: {
         verificationCode,
       }
@@ -133,10 +136,9 @@ describe("sign-up", () => {
   });
 
   test("enable mfa", async () => {
-    const mutation = fs.readFileSync(path.resolve(__dirname, "../mutations/set-user-mfa-preference.graphql"), "utf8");
-    const response = await server.test(mutation, {
+    const response = await server.test(setUserMfaPreferenceMutation, {
       variables: {
-        isMFAEnabled: true,
+        mfa: true,
       }
     });
     expect(response.data.setUserMfaPreference).toEqual(true);
@@ -144,17 +146,15 @@ describe("sign-up", () => {
   });
 
   test("mfa status true", async () => {
-    const query = fs.readFileSync(path.resolve(__dirname, "../queries/mfa-status.graphql"), "utf8");
-    const response = await server.test(query, { variables: {} });
+    const response = await server.test(mfaStatusQuery, { variables: {} });
     expect(response.data.mfaStatus).toEqual(true);
   });
 
   test("user password auth challenge software token mfa", async () => {
-    const mutation = fs.readFileSync(path.resolve(__dirname, "../mutations/user-password-auth.graphql"), "utf8");
-    const response = await server.test(mutation, {
+    const response = await server.test(userPasswordAuthMutation, {
       variables: {
         clientId: CLIENT_ID,
-        username: testEmail,
+        username: adminEmail,
         password: "NewPassword01!",
       }
     });
@@ -163,8 +163,7 @@ describe("sign-up", () => {
   });
 
   test("delete user", async () => {
-    const mutation = fs.readFileSync(path.resolve(__dirname, "../mutations/delete-user.graphql"), "utf8");
-    const response = await server.test(mutation, {
+    const response = await server.test(deleteUserMutation, {
       variables: {
         where: {
           _id: { _eq: user._id }
@@ -175,8 +174,7 @@ describe("sign-up", () => {
   });
 
   test("delete tenant", async () => {
-    const mutation = fs.readFileSync(path.resolve(__dirname, "../mutations/delete-tenant.graphql"), "utf8");
-    const response = await server.test(mutation, {
+    const response = await server.test(deleteTenantMutation, {
       variables: {
         where: {
           _id: { _eq: tenant._id }

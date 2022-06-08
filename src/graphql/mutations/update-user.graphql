@@ -1,5 +1,5 @@
-mutation updateUser ($where: UserFilter!, $input: UpdateUserInput!) {
-  updateUser (where: $where, input: $input) {
+mutation updateUser ($where: UserFilter!, $input: UpdateUserInput! $skipCognito: Boolean) {
+  updateUser (where: $where, input: $input skipCognito: $skipCognito) {
     _id
     email
   }

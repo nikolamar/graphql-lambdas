@@ -5,10 +5,10 @@ type Query {
 }
 
 type Mutation {
-  createUser (input: CreateUserInput!): User!
-  updateUser (where: UserFilter! input: UpdateUserInput!): User!
-  deleteUser (where: UserFilter!): Int!
-  deleteManyUsers (where: UserFilter!): Int!
+  createUser (input: CreateUserInput! skipCognito: Boolean): User!
+  updateUser (where: UserFilter! input: UpdateUserInput! skipCognito: Boolean): User!
+  deleteUser (where: UserFilter! skipCognito: Boolean): Int!
+  deleteManyUsers (where: UserFilter! skipCognito: Boolean): Int!
 }
 
 type Users {
@@ -33,7 +33,7 @@ type User implements Node {
   role: String
   tenantId: String
   active: String
-  isMFAEnabled: Boolean
+  mfa: Boolean
   emailVerified: Boolean
   termsAndConditionsMetaData: TermsAndConditionsMetaData
   tenant: Tenant
@@ -50,7 +50,7 @@ input UserFilter {
   tenantId: StringMatchOperators
   tenantName: StringMatchOperators
   active: StringMatchOperators
-  isMFAEnabled: BooleanMatchOperators
+  mfa: BooleanMatchOperators
   emailVerified: BooleanMatchOperators
   lastLogin: StringMatchOperators
   createdAt: DateMatchOperators
@@ -79,7 +79,7 @@ input UpdateUserInput {
   tenantName: String
   lastLogin: String
   active: String
-  isMFAEnabled: Boolean
+  mfa: Boolean
   emailVerified: Boolean
   termsAndConditionsMetaData: TermsAndConditionsMetaDataInput
 }
