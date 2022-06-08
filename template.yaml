@@ -104,7 +104,7 @@ Resources:
       EmailVerificationMessage: verification code  {####}
       SmsVerificationMessage: Your verification code {####}
       AdminCreateUserConfig:
-        InviteMessageTemplate: 
+        InviteMessageTemplate:
           EmailMessage: Your username is {username} and temporary password is {####}
           EmailSubject: Your temporary password
       # AutoVerifiedAttributes:
@@ -120,12 +120,8 @@ Resources:
         - phone_number
       Schema:
         - AttributeDataType: String
-          Name: phone_number
-          Mutable: false
-          Required: false
-        - AttributeDataType: String
           Name: email
-          Mutable: false
+          Mutable: true
           Required: true
         - AttributeDataType: String
           Name: tenant
@@ -161,7 +157,7 @@ Resources:
   #                 - '*'
   #         PolicyName: CognitoSendSMS
   #     RoleName: CognitoSMSRole
-  
+
   CognitoUserPoolClient:
     Type: AWS::Cognito::UserPoolClient
     Properties:
@@ -475,7 +471,7 @@ Resources:
       Action: lambda:InvokeFunction
       FunctionName: !Ref DefaultFunction
       Principal: apigateway.amazonaws.com
-      
+
   GraphqlPermission:
     Type: AWS::Lambda::Permission
     DependsOn:
