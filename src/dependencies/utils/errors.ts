@@ -25,6 +25,7 @@ export const ERROR_MESSAGES = {
   CLAIM_REQUIRED_TENANT: "Claim requires tenant",
   EMAIL_ALREADY_EXISTS: "Email already exists",
   COGNITO_EMAIL_ALREADY_EXISTS: "Cognito email already exists",
+  TENANT_NAME_ALREADY_EXISTS: "Tenant name already exist",
   UNAUTHORIZED_TO_DELETE_USER: "Unauthorized to delete user",
   UNAUTHORIZED_ACTION: "You are not authorized to preform this action",
 };
