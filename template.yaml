@@ -194,6 +194,13 @@ Resources:
         - custom:roles
         - custom:tenant
 
+  CognitoUserPoolDomain:
+    Type: AWS::Cognito::UserPoolDomain
+    Properties:
+      Domain: !Sub ${ProjectName}-${Stage}
+      UserPoolId:
+        Ref: CognitoUserPool
+
   GoogleUserPoolIdentityProvider:
     Type: AWS::Cognito::UserPoolIdentityProvider
     Properties:
