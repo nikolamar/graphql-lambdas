@@ -52,6 +52,7 @@ Parameters:
   HostedZoneId:
     Type: String
     Description: Domain hosted zone id
+
   SubDomainName:
     Type: String
     Description: Sub domain for APIs
@@ -163,6 +164,21 @@ Resources:
     Properties:
       UserPoolId: !Ref CognitoUserPool
       ClientName: !Sub ${ProjectName}-client-${Stage}
+      CallbackURLs:
+        - https://example.com/cb
+      LogoutURLs:
+        - https://example.com/signout
+      AllowedOAuthFlows:
+        - implicit
+      AllowedOAuthScopes:
+        - phone
+        - email
+        - openid
+        - aws.cognito.signin.user.admin
+        - profile
+      SupportedIdentityProviders:
+        - Google
+        - COGNITO
       GenerateSecret: false
       ExplicitAuthFlows:
         - ALLOW_CUSTOM_AUTH
@@ -177,6 +193,36 @@ Resources:
         - email
         - custom:roles
         - custom:tenant
+
+  GoogleUserPoolIdentityProvider:
+    Type: AWS::Cognito::UserPoolIdentityProvider
+    Properties:
+      UserPoolId: !Ref CognitoUserPool
+      ProviderName: "Google"
+      ProviderDetails:
+        client_id: "client id key"
+        client_secret: "client secret key"
+        authorize_scopes: "profile email openid"
+      ProviderType: "Google"
+      AttributeMapping:
+        email: "email"
+        picture: "picture"
+        email_verified: "email_verified"
+        given_name: "given_name"
+        family_name: "family_name"
+
+  # FacebookUserPoolIdentityProvider:
+  #   Type: AWS::Cognito::UserPoolIdentityProvider
+  #   Properties:
+  #     UserPoolId: !Ref CognitoUserPool
+  #     ProviderName: "Facebook"
+  #     ProviderDetails:
+  #       client_id: "YourFacebookAppId"
+  #       client_secret: "YourFacebookAppSecret"
+  #       authorize_scopes: "public_profile,email"
+  #     ProviderType: "Facebook"
+  #     AttributeMapping:
+  #       email: "email"
 
   ###################
   #       HTTP      #
@@ -531,3 +577,8 @@ Outputs:
     Description: SSL Api Certificate
     Value:
       Ref: SSLAPICert
+
+  GoogleUserPoolIdentityProviderId:
+    Description: Federate sign in with Google
+    Value:
+      Ref: GoogleUserPoolIdentityProvider
