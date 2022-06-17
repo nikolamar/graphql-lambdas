@@ -31,6 +31,8 @@ Globals:
         CLIENT_ID: !Ref CognitoUserPoolClient
         NODE_ENV: !Ref Stage
         VERSION: !Ref Version
+        AWS_ACCESS_KEY_ID: !Ref AWSAccessKeyId
+        AWS_SECRET_ACCESS_KEY: !Ref AWSSecretAccessKey
 
 ###################
 #   PARAMETERS    #
@@ -52,7 +54,7 @@ Parameters:
   HostedZoneId:
     Type: String
     Description: Domain hosted zone id
-
+    
   SubDomainName:
     Type: String
     Description: Sub domain for APIs
