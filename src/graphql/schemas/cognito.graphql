@@ -27,6 +27,7 @@ type Tokens {
 }
 
 type Cognito {
+  region: String!
   poolId: String!
   clientId: String!
 }

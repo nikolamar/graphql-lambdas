@@ -34,6 +34,7 @@ export type Cognito = {
   __typename?: 'Cognito';
   clientId: Scalars['String'];
   poolId: Scalars['String'];
+  region: Scalars['String'];
 };
 
 export type CreateTenantInput = {
@@ -528,6 +529,7 @@ export type ChallengeResolvers<ContextType = any, ParentType extends ResolversPa
 export type CognitoResolvers<ContextType = any, ParentType extends ResolversParentTypes['Cognito'] = ResolversParentTypes['Cognito']> = {
   clientId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   poolId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  region?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
