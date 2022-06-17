@@ -15,8 +15,8 @@ Description: >
 Globals:
   Function:
     Runtime: nodejs14.x
-    Timeout: 20
-    MemorySize: 256
+    Timeout: 5
+    MemorySize: 1024
     Architectures:
       - x86_64
     Environment:
@@ -165,10 +165,13 @@ Resources:
       UserPoolId: !Ref CognitoUserPool
       ClientName: !Sub ${ProjectName}-client-${Stage}
       CallbackURLs:
-        - https://example.com/cb
+        - https://localhost:4000/
+        - !Sub ${SubDomainName}.${DomainName}/
       LogoutURLs:
-        - https://example.com/signout
+        - https://localhost:4000/auth/sign-in
+        - !Sub ${SubDomainName}.${DomainName}/auth/sign-in
       AllowedOAuthFlows:
+        - code
         - implicit
       AllowedOAuthScopes:
         - phone
@@ -207,8 +210,8 @@ Resources:
       UserPoolId: !Ref CognitoUserPool
       ProviderName: "Google"
       ProviderDetails:
-        client_id: "client id key"
-        client_secret: "client secret key"
+        client_id: "client id"
+        client_secret: "client secret"
         authorize_scopes: "profile email openid"
       ProviderType: "Google"
       AttributeMapping:
