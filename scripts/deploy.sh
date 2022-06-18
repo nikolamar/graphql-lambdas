@@ -76,8 +76,6 @@ sam deploy \
     ParameterKey=DBUser,ParameterValue=${DB_USER} \
     ParameterKey=DBPassword,ParameterValue=${DB_PASSWORD} \
     ParameterKey=Version,ParameterValue=${VERSION} \
-    ParameterKey=AWSAccessKeyId,ParameterValue=${AWS_ACCESS_KEY_ID} \
-    ParameterKey=AWSSecretAccessKey,ParameterValue=${AWS_SECRET_ACCESS_KEY} \
     "> >(tee "${PROJECT_ROOT}/deploy.out") 2>&1
 if [ $? -ne 0 ] ; then
   if grep -q "Error: No changes to deploy\. Stack [^ ]\+ is up to date$" "${PROJECT_ROOT}/deploy.out" ; then

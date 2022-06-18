@@ -7,7 +7,7 @@
     "delete:build": "rm -rf dist",
     "start": "npm-run-all -s delete:build graphql:gen build:esbuild copy:schemas update:modules copy:modules start:parallel",
     "start:parallel": "npm-run-all -p sam:local watch",
-    "sam:local": "sam local start-api --warm-containers EAGER --skip-pull-image --template template.yaml --host 0.0.0.0 --env-vars env.json --port 3000",
+    "sam:local": "sam local start-api --warm-containers LAZY --skip-pull-image --template template.yaml --host 0.0.0.0 --env-vars env.json --port 3000",
     "watch": "npm-watch",
     "build:tsc": "tsc --outDir dist",
     "build:esbuild": "scripts/build.js",
