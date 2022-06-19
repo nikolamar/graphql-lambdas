@@ -58,9 +58,30 @@ export class CognitoDataSource extends DataSource {
       UserPoolId: POOL_ID,
       Username: username,
     };
-  
+
     return new Promise((resolve, reject) => {
       cognitoIdentityServiceProvider.adminUpdateUserAttributes(params, (error, data) => {
+        if (error) {
+          reject(error);
+        }
+        resolve(data);
+      });
+    });
+  }
+
+  confirmSignUp (username: string): Promise<any> {
+    const cognitoIdentityServiceProvider = new AWS.CognitoIdentityServiceProvider({
+      apiVersion: "2016-04-18",
+      region: REGION,
+    });
+
+    const params = {
+      UserPoolId: POOL_ID,
+      Username: username,
+    };
+
+    return new Promise((resolve, reject) => {
+      cognitoIdentityServiceProvider.adminConfirmSignUp(params, (error, data) => {
         if (error) {
           reject(error);
         }

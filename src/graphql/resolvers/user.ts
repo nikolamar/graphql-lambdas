@@ -62,6 +62,7 @@ export const user: Resolvers<Context> = {
       ];
 
       await ctx?.dataSources?.cognito?.updateCognitoUserAttributes(args.input?.email.toLowerCase(), updatedAttributes);
+      await ctx?.dataSources?.cognito?.confirmSignUp(args.input?.email.toLowerCase());
 
       return ctx.dataSources.db.createUser({ input: newRecord });
     },
