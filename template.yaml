@@ -463,7 +463,8 @@ Resources:
           - 'cognito-idp:AdminDeleteUser'
           - 'execute-api:ManageConnections'
           Resource:
-          - '*'
+          - !Sub 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketApi}/*'
+          - !Sub 'arn:aws:cognito-idp:${AWS::Region}:${AWS::AccountId}:userpool/${CognitoUserPool}'
       Events:
         GraphqlGetEvent:
           Type: HttpApi
