@@ -32,6 +32,40 @@ export const user: Resolvers<Context> = {
     },
   },
   Mutation: {
+    async signUp (_, args, ctx) {
+      let tenant = await ctx.dataSources.db.tenant({ where: { name: { _eq: "default" } } });
+      if (!tenant) {
+        tenant = await ctx.dataSources.db.createTenant({
+          input: {
+            name: "default", status: "active", color: "#00ACC1", accentColor: "#FFFFFF",
+          }
+        });
+      }
+
+      assert(tenant, ERROR_MESSAGES.TENANT_REQUIRED, ERROR_CODES.NOT_FOUND);
+
+      const newRecord = {
+        ...args?.input,
+        email: args.input?.email.toLowerCase(),
+        tenantId: tenant._id.toString(),
+      };
+
+      const updatedAttributes = [
+        {
+          Name: "custom:tenant",
+          Value: tenant._id.toString(),
+        },
+        {
+          Name: "custom:roles",
+          Value: args.input.role,
+        }
+      ];
+
+      await ctx?.dataSources?.cognito?.updateCognitoUserAttributes(args.input?.email.toLowerCase(), updatedAttributes);
+
+      return ctx.dataSources.db.createUser({ input: newRecord });
+    },
+
     async createUser (_, args, ctx) {
       const user = await ctx.dataSources.db.user({ where: { email: { _eq: args?.input?.email.toLowerCase() } } });
       assert(!user, ERROR_MESSAGES.EMAIL_ALREADY_EXISTS, ERROR_CODES.CONFLICT);

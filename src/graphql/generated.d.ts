@@ -51,7 +51,6 @@ export type CreateTenantInput = {
 
 export type CreateUserInput = {
   email: Scalars['String'];
-  password?: InputMaybe<Scalars['String']>;
   role: Scalars['String'];
   tenantId?: InputMaybe<Scalars['ObjectId']>;
   termsAndConditionsMetaData?: InputMaybe<TermsAndConditionsMetaDataInput>;
@@ -79,6 +78,7 @@ export type Mutation = {
   deleteUser: Scalars['Int'];
   sendMessage: Scalars['String'];
   setUserMfaPreference: Scalars['Boolean'];
+  signUp: User;
   updateMfaAuthPreference?: Maybe<User>;
   updateTenant: Tenant;
   updateUser: User;
@@ -136,6 +136,11 @@ export type MutationSendMessageArgs = {
 
 export type MutationSetUserMfaPreferenceArgs = {
   mfa: Scalars['Boolean'];
+};
+
+
+export type MutationSignUpArgs = {
+  input: SignUpInput;
 };
 
 
@@ -239,6 +244,11 @@ export type QueryUsersArgs = {
   order?: InputMaybe<Order>;
   sortBy?: InputMaybe<Scalars['String']>;
   where?: InputMaybe<UserFilter>;
+};
+
+export type SignUpInput = {
+  email: Scalars['String'];
+  role: Scalars['String'];
 };
 
 export type StringMatchOperators = {
@@ -465,6 +475,7 @@ export type ResolversTypes = {
   Order: Order;
   PageInfo: ResolverTypeWrapper<PageInfo>;
   Query: ResolverTypeWrapper<{}>;
+  SignUpInput: SignUpInput;
   String: ResolverTypeWrapper<Scalars['String']>;
   StringMatchOperators: StringMatchOperators;
   Tenant: ResolverTypeWrapper<Tenant>;
@@ -500,6 +511,7 @@ export type ResolversParentTypes = {
   ObjectIdMatchOperators: ObjectIdMatchOperators;
   PageInfo: PageInfo;
   Query: {};
+  SignUpInput: SignUpInput;
   String: Scalars['String'];
   StringMatchOperators: StringMatchOperators;
   Tenant: Tenant;
@@ -547,6 +559,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   deleteUser?: Resolver<ResolversTypes['Int'], ParentType, ContextType, RequireFields<MutationDeleteUserArgs, 'where'>>;
   sendMessage?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationSendMessageArgs, 'connectionId' | 'message'>>;
   setUserMfaPreference?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationSetUserMfaPreferenceArgs, 'mfa'>>;
+  signUp?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationSignUpArgs, 'input'>>;
   updateMfaAuthPreference?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationUpdateMfaAuthPreferenceArgs, 'email' | 'mfa'>>;
   updateTenant?: Resolver<ResolversTypes['Tenant'], ParentType, ContextType, RequireFields<MutationUpdateTenantArgs, 'input' | 'where'>>;
   updateUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationUpdateUserArgs, 'input' | 'where'>>;
