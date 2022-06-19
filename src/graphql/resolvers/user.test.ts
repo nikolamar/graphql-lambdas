@@ -1,38 +1,58 @@
+import { Auth } from "aws-amplify";
 import fs from "fs";
 import path from "path";
-import { CLIENT_ID } from "/opt/configs/cognito";
+import { REGION, POOL_ID, CLIENT_ID } from "/opt/configs/cognito";
 import { getMongodbConnectionWithClient } from "/opt/utils/db";
-import { ApolloTestServer, mockRequestOptions } from "../utils/server-test";
-import type { Challenge, Tenant, User } from "../generated";
+import { ApolloTestServer } from "../utils/server-test";
+import type { Tenant, User } from "../generated";
 
 const usersQuery = fs.readFileSync(path.resolve(__dirname, "../queries/users.graphql"), "utf8");
-const mfaStatusQuery = fs.readFileSync(path.resolve(__dirname, "../queries/mfa-status.graphql"), "utf8");
-const createTenantMutation = fs.readFileSync(path.resolve(__dirname, "../mutations/create-tenant.graphql"), "utf8");
 const createUserMutation = fs.readFileSync(path.resolve(__dirname, "../mutations/create-user.graphql"), "utf8");
-const userPasswordAuthMutation = fs.readFileSync(path.resolve(__dirname, "../mutations/user-password-auth.graphql"), "utf8");
-const challengeNewPasswordMutation = fs.readFileSync(path.resolve(__dirname, "../mutations/challenge-new-password.graphql"), "utf8");
+const createTenantMutation = fs.readFileSync(path.resolve(__dirname, "../mutations/create-tenant.graphql"), "utf8");
+
 const deleteUserMutation = fs.readFileSync(path.resolve(__dirname, "../mutations/delete-user.graphql"), "utf8");
 const deleteTenantMutation = fs.readFileSync(path.resolve(__dirname, "../mutations/delete-tenant.graphql"), "utf8");
+const signUp = fs.readFileSync(path.resolve(__dirname, "../mutations/sign-up.graphql"), "utf8");
 
 describe("user resolver", () => {
   let adminUser: User;
   let tenant: Tenant;
-  let challenge: Challenge;
-  let idToken: string;
-  let accessToken: string;
-  const usersList: User[] = [];
-
   let server: ApolloTestServer;
 
+  const usersList: User[] = [];
   const adminEmail = "admin.test+1@test.com";
 
   beforeAll(async () => {
     const [connection, client] = await getMongodbConnectionWithClient();
     server = new ApolloTestServer(connection, client);
+    Auth.configure({
+      region: REGION,
+      userPoolId: POOL_ID,
+      userPoolWebClientId: CLIENT_ID,
+    });
   });
   
   afterAll(() => {
     return server.dbConnection.then((mongo) => mongo.close());
+  });
+  
+  test("sign up", async () => {
+    await Auth.signUp({
+      username: adminEmail,
+      password: "Password01!",
+    });
+
+    const response = await server.test(signUp, {
+      variables: {
+        input: {
+          role: "admin",
+          email: adminEmail,
+        }
+      }
+    });
+    expect(response.errors).toBeUndefined();
+    adminUser = response.data.signUp;
+    expect(adminUser).not.toBeUndefined();
   });
 
   test("create tenant", async () => {
@@ -54,72 +74,6 @@ describe("user resolver", () => {
     tenant = response.data.createTenant;
   });
   
-  test("create admin user", async () => {
-    const response = await server.test(createUserMutation, {
-      variables: {
-        input: {
-          email: adminEmail,
-          password: "Password01!",
-          role: "admin",
-          tenantId: tenant._id,
-        }
-      }
-    });
-    expect(response.errors).toBeUndefined();
-    adminUser = response.data.createUser;
-    expect(adminUser).not.toBeUndefined();
-  });
-
-  test("admin user password auth challenge response", async () => {
-    const response = await server.test(userPasswordAuthMutation, {
-      variables: {
-        clientId: CLIENT_ID,
-        username: adminEmail,
-        password: "Password01!",
-      }
-    });
-    challenge = response.data.userPasswordAuth;
-    expect(response.data.userPasswordAuth.challengeName).toEqual("NEW_PASSWORD_REQUIRED");
-  });
-
-  test("admin user challenge new password", async () => {
-    const response = await server.test(challengeNewPasswordMutation, {
-      variables: {
-        clientId: CLIENT_ID,
-        session: challenge.session,
-        username: adminEmail,
-        newPassword: "NewPassword01!",
-      }
-    });
-    idToken = response.data.challengeNewPassword.idToken;
-    accessToken = response.data.challengeNewPassword.accessToken;
-    expect(idToken).not.toBeUndefined();
-    expect(accessToken).not.toBeUndefined();
-  });
-
-  test("admin user password auth tokens response", async () => {
-    const response = await server.test(userPasswordAuthMutation, {
-      variables: {
-        clientId: CLIENT_ID,
-        username: adminEmail,
-        password: "NewPassword01!",
-      }
-    });
-    idToken = response.data.userPasswordAuth.idToken;
-    accessToken = response.data.userPasswordAuth.accessToken;
-    expect(idToken).not.toBeUndefined();
-    expect(accessToken).not.toBeUndefined();
-  });
-
-  test("admin user mfa status false", async () => {
-    mockRequestOptions.headers = {
-      idtoken: idToken,
-      accesstoken: accessToken
-    };
-    const response = await server.test(mfaStatusQuery, { variables: {} });
-    expect(response.data.mfaStatus).toEqual(false);
-  });
-
   test("create many users", async () => {
     // count and admin user that is already created
     for (let index = 1; index < 14; index++) {
@@ -128,7 +82,6 @@ describe("user resolver", () => {
         variables: {
           input: {
             email: userEmail,
-            password: "Password01!",
             role: "user",
             tenantId: tenant._id,
           },

@@ -7,6 +7,8 @@ PROJECT_ROOT=$(dirname $CICD_DIR)
 export PROJECT_NAME=${PROJECT_NAME:-app-designer}
 export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
 export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+export GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID
+export GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET
 
 # These vars are needed to inject into the SAM template
 export STAGE=$STAGE
@@ -26,6 +28,16 @@ fi
 if [ -z "$AWS_SECRET_ACCESS_KEY" ] ; then
   read -rep  "Enter a value for AWS_SECRET_ACCESS_KEY: " AWS_SECRET_ACCESS_KEY
   export AWS_SECRET_ACCESS_KEY
+fi
+
+if [ -z "$GOOGLE_CLIENT_ID" ] ; then
+  read -rep "Enter a value for GOOGLE_CLIENT_ID: " GOOGLE_CLIENT_ID
+  export GOOGLE_CLIENT_ID
+fi
+
+if [ -z "$GOOGLE_CLIENT_SECRET" ] ; then
+  read -rep  "Enter a value for GOOGLE_CLIENT_SECRET: " GOOGLE_CLIENT_SECRET
+  export GOOGLE_CLIENT_SECRET
 fi
 
 if [ -z "$STAGE" ] ; then
@@ -75,6 +87,8 @@ sam deploy \
     ParameterKey=HostedZoneId,ParameterValue=${HOSTED_ZONE_ID} \
     ParameterKey=DBUser,ParameterValue=${DB_USER} \
     ParameterKey=DBPassword,ParameterValue=${DB_PASSWORD} \
+    ParameterKey=GoogleClientId,ParameterValue=${GOOGLE_CLIENT_ID} \
+    ParameterKey=GoogleClientSecret,ParameterValue=${GOOGLE_CLIENT_SECRET} \
     ParameterKey=Version,ParameterValue=${VERSION} \
     "> >(tee "${PROJECT_ROOT}/deploy.out") 2>&1
 if [ $? -ne 0 ] ; then

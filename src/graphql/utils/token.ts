@@ -4,6 +4,7 @@ import * as jsonwebtoken from "jsonwebtoken";
 import { promisify } from "util";
 import { REGION, POOL_ID } from "/opt/configs/cognito";
 import { assert, ERROR_CODES, ERROR_MESSAGES } from "/opt/utils/errors";
+import { USER_ROLES } from "../configs/roles";
 
 export type TokenUse = "access" | "id";
 
@@ -115,3 +116,12 @@ export const verifyToken = async (token: string, tokenUse: TokenUse = "access"):
     };
   }
 };
+
+export async function verifyAuthorization (record, idtoken) {
+  const claim = await getClaim(idtoken);
+  const myRole = claim["custom:roles"];
+  const myTenantId = claim["custom:tenant"];
+
+  assert(claim["custom:tenant"], ERROR_MESSAGES.CLAIM_REQUIRED_TENANT, ERROR_CODES.UNAUTHORIZED);
+  assert(USER_ROLES[myRole] >= USER_ROLES[record.role] && record.tenantId === myTenantId, ERROR_MESSAGES.UNAUTHORIZED_ACTION, ERROR_CODES.UNAUTHORIZED);
+}

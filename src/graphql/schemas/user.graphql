@@ -5,6 +5,7 @@ type Query {
 }
 
 type Mutation {
+  signUp (input: SignUpInput!): User!
   createUser (input: CreateUserInput! skipCognito: Boolean): User!
   updateUser (where: UserFilter! input: UpdateUserInput! skipCognito: Boolean): User!
   deleteUser (where: UserFilter! skipCognito: Boolean): Int!
@@ -63,11 +64,15 @@ input TermsAndConditionsMetaDataInput  {
   version: Int
 }
 
+input SignUpInput {
+  email: String!
+  role: String!
+}
+
 input CreateUserInput {
   email: String!
   role: String!
-  tenantId: ObjectId!
-  password: String
+  tenantId: ObjectId
   termsAndConditionsMetaData: TermsAndConditionsMetaDataInput
 }
 

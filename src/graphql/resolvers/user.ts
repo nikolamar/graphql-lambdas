@@ -1,7 +1,6 @@
 import { assert, ERROR_CODES, ERROR_MESSAGES } from "/opt/utils/errors";
 import { createEdgesWithPageInfo } from "../utils/cursor";
 import { getClaim } from "../utils/token";
-import { USER_ROLES } from "../configs/roles";
 import type { Resolvers } from "../generated";
 import type { Context } from "../types";
 
@@ -32,11 +31,60 @@ export const user: Resolvers<Context> = {
     },
   },
   Mutation: {
+    async signUp (_, args, ctx) {
+      let tenant = await ctx.dataSources.db.tenant({ where: { name: { _eq: "default" } } });
+      if (!tenant) {
+        tenant = await ctx.dataSources.db.createTenant({
+          input: {
+            name: "default", status: "active", color: "#00ACC1", accentColor: "#FFFFFF",
+          }
+        });
+      }
+
+      assert(tenant, ERROR_MESSAGES.TENANT_REQUIRED, ERROR_CODES.NOT_FOUND);
+
+      const newRecord = {
+        ...args?.input,
+        email: args.input?.email.toLowerCase(),
+        tenantId: tenant._id.toString(),
+      };
+
+      const updatedAttributes = [
+        {
+          Name: "custom:tenant",
+          Value: tenant._id.toString(),
+        },
+        {
+          Name: "custom:roles",
+          Value: args.input.role,
+        }
+      ];
+
+      await ctx?.dataSources?.cognito?.updateCognitoUserAttributes(args.input?.email.toLowerCase(), updatedAttributes);
+      await ctx?.dataSources?.cognito?.confirmSignUp(args.input?.email.toLowerCase());
+
+      return ctx.dataSources.db.createUser({ input: newRecord });
+    },
+
     async createUser (_, args, ctx) {
       const user = await ctx.dataSources.db.user({ where: { email: { _eq: args?.input?.email.toLowerCase() } } });
       assert(!user, ERROR_MESSAGES.EMAIL_ALREADY_EXISTS, ERROR_CODES.CONFLICT);
-      
-      const tenant = await ctx.dataSources.db.tenant({ where: { _id: { _eq: args?.input?.tenantId } } });
+
+      let tenant;
+
+      if (args?.input?.tenantId) {
+        tenant = await ctx.dataSources.db.tenant({ where: { _id: { _eq: args?.input?.tenantId } } });
+      } else {
+        tenant = await ctx.dataSources.db.tenant({ where: { name: { _eq: "default" } } });
+        if (!tenant) {
+          tenant = await ctx.dataSources.db.createTenant({
+            input: {
+              name: "default", status: "active", color: "#00ACC1", accentColor: "#FFFFFF",
+            }
+          });
+        }
+      }
+
       assert(tenant, ERROR_MESSAGES.TENANT_REQUIRED, ERROR_CODES.NOT_FOUND);
 
       const newRecord = {
@@ -48,7 +96,7 @@ export const user: Resolvers<Context> = {
       if (args?.skipCognito) {
         return ctx.dataSources.db.createUser({ input: newRecord });
       }
-      
+
       const cognitoUser: any = await ctx?.dataSources?.cognito?.createCognitoUser(newRecord);
       assert(cognitoUser, ERROR_MESSAGES.COGNITO_EMAIL_ALREADY_EXISTS, ERROR_CODES.CONFLICT);
 
@@ -59,12 +107,7 @@ export const user: Resolvers<Context> = {
       const record = await ctx.dataSources.db.user(args);
       assert(record, ERROR_MESSAGES.USER_REQUIRED, ERROR_CODES.NOT_FOUND);
 
-      const claim = await getClaim(ctx.headers?.idtoken);      
-      const myRole = claim["custom:roles"];
-      const myTenantId = claim["custom:tenant"];
-
-      assert(claim["custom:tenant"], ERROR_MESSAGES.CLAIM_REQUIRED_TENANT, ERROR_CODES.UNAUTHORIZED);
-      assert(USER_ROLES[myRole] >= USER_ROLES[record.role] && record.tenantId === myTenantId, ERROR_MESSAGES.UNAUTHORIZED_ACTION, ERROR_CODES.UNAUTHORIZED);
+      // await verifyAuthorization(record, ctx.headers?.idtoken);
 
       if (args?.skipCognito) {
         return ctx.dataSources.db.updateUser(args);
@@ -72,21 +115,21 @@ export const user: Resolvers<Context> = {
 
       const updatedUser = await ctx.dataSources.db.updateUser(args);
       const updatedAttributes = [];
-      
+
       if (updatedUser?.tenantId) {
         updatedAttributes.push({
           Name: "custom:tenant",
           Value: updatedUser.tenantId,
         });
       }
-      
+
       if (updatedUser?.role) {
         updatedAttributes.push({
           Name: "custom:roles",
           Value: updatedUser.role,
         });
       }
-      
+
       if (updatedAttributes.length) {
         await ctx?.dataSources?.cognito?.updateCognitoUserAttributes(updatedUser.email, updatedAttributes);
       }
@@ -94,7 +137,7 @@ export const user: Resolvers<Context> = {
       if (typeof args?.input?.mfa === "boolean") {
         await ctx?.dataSources?.cognito?.setCognitoUserMFAPreference(updatedUser.email, updatedUser?.mfa);
       }
-      
+
       return updatedUser;
     },
 
@@ -102,13 +145,8 @@ export const user: Resolvers<Context> = {
       const record = await ctx.dataSources.db.user(args);
       assert(record, ERROR_MESSAGES.USER_REQUIRED, ERROR_CODES.NOT_FOUND);
 
-      const claim = await getClaim(ctx.headers?.idtoken);      
-      const myRole = claim["custom:roles"];
-      const myTenantId = claim["custom:tenant"];
-
-      assert(claim["custom:tenant"], ERROR_MESSAGES.CLAIM_REQUIRED_TENANT, ERROR_CODES.UNAUTHORIZED);
-      assert(USER_ROLES[myRole] >= USER_ROLES[record.role] && record.tenantId === myTenantId, ERROR_MESSAGES.UNAUTHORIZED_ACTION, ERROR_CODES.UNAUTHORIZED);
-
+      // await verifyAuthorization(record, ctx.headers?.idtoken);
+      
       if (args?.skipCognito) {
         return ctx.dataSources.db.deleteUser(args);
       }

@@ -1,3 +1,0 @@
-mutation validateMfaCode ($verificationCode: String!) {
-  validateMfaCode (verificationCode: $verificationCode)
-}

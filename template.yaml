@@ -15,8 +15,8 @@ Description: >
 Globals:
   Function:
     Runtime: nodejs14.x
-    Timeout: 20
-    MemorySize: 256
+    Timeout: 5
+    MemorySize: 1024
     Architectures:
       - x86_64
     Environment:
@@ -52,6 +52,7 @@ Parameters:
   HostedZoneId:
     Type: String
     Description: Domain hosted zone id
+
   SubDomainName:
     Type: String
     Description: Sub domain for APIs
@@ -63,6 +64,14 @@ Parameters:
   DBUser:
     Type: String
     Description: DB user
+
+  GoogleClientId:
+    Type: String
+    Description: Google client id
+
+  GoogleClientSecret:
+    Type: String
+    Description: Google client secret
 
   DBPassword:
     Type: String
@@ -163,6 +172,24 @@ Resources:
     Properties:
       UserPoolId: !Ref CognitoUserPool
       ClientName: !Sub ${ProjectName}-client-${Stage}
+      CallbackURLs:
+        - http://localhost:4000/
+        # - !Sub https://${SubDomainName}.${DomainName}/
+      LogoutURLs:
+        - http://localhost:4000/auth/sign-in
+        # - !Sub https://${SubDomainName}.${DomainName}/auth/sign-in
+      AllowedOAuthFlows:
+        - code
+        - implicit
+      AllowedOAuthScopes:
+        - phone
+        - email
+        - openid
+        - aws.cognito.signin.user.admin
+        - profile
+      SupportedIdentityProviders:
+        - Google
+        - COGNITO
       GenerateSecret: false
       ExplicitAuthFlows:
         - ALLOW_CUSTOM_AUTH
@@ -177,6 +204,43 @@ Resources:
         - email
         - custom:roles
         - custom:tenant
+
+  CognitoUserPoolDomain:
+    Type: AWS::Cognito::UserPoolDomain
+    Properties:
+      Domain: !Sub ${ProjectName}-${Stage}
+      UserPoolId:
+        Ref: CognitoUserPool
+
+  GoogleUserPoolIdentityProvider:
+    Type: AWS::Cognito::UserPoolIdentityProvider
+    Properties:
+      UserPoolId: !Ref CognitoUserPool
+      ProviderName: "Google"
+      ProviderDetails:
+        client_id: !Ref GoogleClientId
+        client_secret: !Ref GoogleClientSecret
+        authorize_scopes: "profile email openid"
+      ProviderType: "Google"
+      AttributeMapping:
+        email: "email"
+        picture: "picture"
+        email_verified: "email_verified"
+        given_name: "given_name"
+        family_name: "family_name"
+
+  # FacebookUserPoolIdentityProvider:
+  #   Type: AWS::Cognito::UserPoolIdentityProvider
+  #   Properties:
+  #     UserPoolId: !Ref CognitoUserPool
+  #     ProviderName: "Facebook"
+  #     ProviderDetails:
+  #       client_id: "YourFacebookAppId"
+  #       client_secret: "YourFacebookAppSecret"
+  #       authorize_scopes: "public_profile,email"
+  #     ProviderType: "Facebook"
+  #     AttributeMapping:
+  #       email: "email"
 
   ###################
   #       HTTP      #
@@ -401,9 +465,14 @@ Resources:
       - Statement:
         - Effect: Allow
           Action:
+          - 'cognito-idp:AdminConfirmSignUp'
+          - 'cognito-idp:AdminUpdateUserAttributes'
+          - 'cognito-idp:AdminCreateUser'
+          - 'cognito-idp:AdminDeleteUser'
           - 'execute-api:ManageConnections'
           Resource:
           - !Sub 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketApi}/*'
+          - !Sub 'arn:aws:cognito-idp:${AWS::Region}:${AWS::AccountId}:userpool/${CognitoUserPool}'
       Events:
         GraphqlGetEvent:
           Type: HttpApi
@@ -531,3 +600,8 @@ Outputs:
     Description: SSL Api Certificate
     Value:
       Ref: SSLAPICert
+
+  GoogleUserPoolIdentityProviderId:
+    Description: Federate sign in with Google
+    Value:
+      Ref: GoogleUserPoolIdentityProvider

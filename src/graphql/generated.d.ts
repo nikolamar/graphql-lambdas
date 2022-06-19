@@ -21,19 +21,11 @@ export type BooleanMatchOperators = {
   _regex?: InputMaybe<Scalars['Boolean']>;
 };
 
-export type Challenge = {
-  __typename?: 'Challenge';
-  accessToken?: Maybe<Scalars['String']>;
-  challengeName?: Maybe<Scalars['String']>;
-  idToken?: Maybe<Scalars['String']>;
-  refreshToken?: Maybe<Scalars['String']>;
-  session?: Maybe<Scalars['String']>;
-};
-
 export type Cognito = {
   __typename?: 'Cognito';
   clientId: Scalars['String'];
   poolId: Scalars['String'];
+  region: Scalars['String'];
 };
 
 export type CreateTenantInput = {
@@ -50,9 +42,8 @@ export type CreateTenantInput = {
 
 export type CreateUserInput = {
   email: Scalars['String'];
-  password?: InputMaybe<Scalars['String']>;
   role: Scalars['String'];
-  tenantId: Scalars['ObjectId'];
+  tenantId?: InputMaybe<Scalars['ObjectId']>;
   termsAndConditionsMetaData?: InputMaybe<TermsAndConditionsMetaDataInput>;
 };
 
@@ -69,7 +60,6 @@ export type IntMatchOperators = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  challengeNewPassword: Tokens;
   createTenant: Tenant;
   createUser: User;
   deleteManyTenants: Scalars['Int'];
@@ -77,20 +67,9 @@ export type Mutation = {
   deleteTenant: Scalars['Int'];
   deleteUser: Scalars['Int'];
   sendMessage: Scalars['String'];
-  setUserMfaPreference: Scalars['Boolean'];
-  updateMfaAuthPreference?: Maybe<User>;
+  signUp: User;
   updateTenant: Tenant;
   updateUser: User;
-  userPasswordAuth: Challenge;
-  validateMfaCode: Scalars['Boolean'];
-};
-
-
-export type MutationChallengeNewPasswordArgs = {
-  clientId: Scalars['String'];
-  newPassword: Scalars['String'];
-  session: Scalars['String'];
-  username: Scalars['String'];
 };
 
 
@@ -133,14 +112,8 @@ export type MutationSendMessageArgs = {
 };
 
 
-export type MutationSetUserMfaPreferenceArgs = {
-  mfa: Scalars['Boolean'];
-};
-
-
-export type MutationUpdateMfaAuthPreferenceArgs = {
-  email: Scalars['String'];
-  mfa: Scalars['Boolean'];
+export type MutationSignUpArgs = {
+  input: SignUpInput;
 };
 
 
@@ -154,18 +127,6 @@ export type MutationUpdateUserArgs = {
   input: UpdateUserInput;
   skipCognito?: InputMaybe<Scalars['Boolean']>;
   where: UserFilter;
-};
-
-
-export type MutationUserPasswordAuthArgs = {
-  clientId: Scalars['String'];
-  password: Scalars['String'];
-  username: Scalars['String'];
-};
-
-
-export type MutationValidateMfaCodeArgs = {
-  verificationCode: Scalars['String'];
 };
 
 export type Node = {
@@ -200,7 +161,6 @@ export type Query = {
   env?: Maybe<Scalars['String']>;
   me?: Maybe<User>;
   mfaAuthUrl: Scalars['String'];
-  mfaStatus: Scalars['Boolean'];
   ping: Scalars['String'];
   stage?: Maybe<Scalars['String']>;
   tenant?: Maybe<Tenant>;
@@ -238,6 +198,11 @@ export type QueryUsersArgs = {
   order?: InputMaybe<Order>;
   sortBy?: InputMaybe<Scalars['String']>;
   where?: InputMaybe<UserFilter>;
+};
+
+export type SignUpInput = {
+  email: Scalars['String'];
+  role: Scalars['String'];
 };
 
 export type StringMatchOperators = {
@@ -299,13 +264,6 @@ export type TermsAndConditionsMetaData = {
 export type TermsAndConditionsMetaDataInput = {
   accepted?: InputMaybe<Scalars['Boolean']>;
   version?: InputMaybe<Scalars['Int']>;
-};
-
-export type Tokens = {
-  __typename?: 'Tokens';
-  accessToken: Scalars['String'];
-  idToken: Scalars['String'];
-  refreshToken: Scalars['String'];
 };
 
 export type UpdateTenantInput = {
@@ -449,7 +407,6 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   BooleanMatchOperators: BooleanMatchOperators;
-  Challenge: ResolverTypeWrapper<Challenge>;
   Cognito: ResolverTypeWrapper<Cognito>;
   CreateTenantInput: CreateTenantInput;
   CreateUserInput: CreateUserInput;
@@ -464,6 +421,7 @@ export type ResolversTypes = {
   Order: Order;
   PageInfo: ResolverTypeWrapper<PageInfo>;
   Query: ResolverTypeWrapper<{}>;
+  SignUpInput: SignUpInput;
   String: ResolverTypeWrapper<Scalars['String']>;
   StringMatchOperators: StringMatchOperators;
   Tenant: ResolverTypeWrapper<Tenant>;
@@ -472,7 +430,6 @@ export type ResolversTypes = {
   Tenants: ResolverTypeWrapper<Tenants>;
   TermsAndConditionsMetaData: ResolverTypeWrapper<TermsAndConditionsMetaData>;
   TermsAndConditionsMetaDataInput: TermsAndConditionsMetaDataInput;
-  Tokens: ResolverTypeWrapper<Tokens>;
   UpdateTenantInput: UpdateTenantInput;
   UpdateUserInput: UpdateUserInput;
   User: ResolverTypeWrapper<User>;
@@ -485,7 +442,6 @@ export type ResolversTypes = {
 export type ResolversParentTypes = {
   Boolean: Scalars['Boolean'];
   BooleanMatchOperators: BooleanMatchOperators;
-  Challenge: Challenge;
   Cognito: Cognito;
   CreateTenantInput: CreateTenantInput;
   CreateUserInput: CreateUserInput;
@@ -499,6 +455,7 @@ export type ResolversParentTypes = {
   ObjectIdMatchOperators: ObjectIdMatchOperators;
   PageInfo: PageInfo;
   Query: {};
+  SignUpInput: SignUpInput;
   String: Scalars['String'];
   StringMatchOperators: StringMatchOperators;
   Tenant: Tenant;
@@ -507,7 +464,6 @@ export type ResolversParentTypes = {
   Tenants: Tenants;
   TermsAndConditionsMetaData: TermsAndConditionsMetaData;
   TermsAndConditionsMetaDataInput: TermsAndConditionsMetaDataInput;
-  Tokens: Tokens;
   UpdateTenantInput: UpdateTenantInput;
   UpdateUserInput: UpdateUserInput;
   User: User;
@@ -516,18 +472,10 @@ export type ResolversParentTypes = {
   Users: Users;
 };
 
-export type ChallengeResolvers<ContextType = any, ParentType extends ResolversParentTypes['Challenge'] = ResolversParentTypes['Challenge']> = {
-  accessToken?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  challengeName?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  idToken?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  refreshToken?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  session?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
 export type CognitoResolvers<ContextType = any, ParentType extends ResolversParentTypes['Cognito'] = ResolversParentTypes['Cognito']> = {
   clientId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   poolId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  region?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -536,7 +484,6 @@ export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversT
 }
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  challengeNewPassword?: Resolver<ResolversTypes['Tokens'], ParentType, ContextType, RequireFields<MutationChallengeNewPasswordArgs, 'clientId' | 'newPassword' | 'session' | 'username'>>;
   createTenant?: Resolver<ResolversTypes['Tenant'], ParentType, ContextType, RequireFields<MutationCreateTenantArgs, 'input'>>;
   createUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'input'>>;
   deleteManyTenants?: Resolver<ResolversTypes['Int'], ParentType, ContextType, RequireFields<MutationDeleteManyTenantsArgs, 'where'>>;
@@ -544,12 +491,9 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   deleteTenant?: Resolver<ResolversTypes['Int'], ParentType, ContextType, RequireFields<MutationDeleteTenantArgs, 'where'>>;
   deleteUser?: Resolver<ResolversTypes['Int'], ParentType, ContextType, RequireFields<MutationDeleteUserArgs, 'where'>>;
   sendMessage?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationSendMessageArgs, 'connectionId' | 'message'>>;
-  setUserMfaPreference?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationSetUserMfaPreferenceArgs, 'mfa'>>;
-  updateMfaAuthPreference?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationUpdateMfaAuthPreferenceArgs, 'email' | 'mfa'>>;
+  signUp?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationSignUpArgs, 'input'>>;
   updateTenant?: Resolver<ResolversTypes['Tenant'], ParentType, ContextType, RequireFields<MutationUpdateTenantArgs, 'input' | 'where'>>;
   updateUser?: Resolver<ResolversTypes['User'], ParentType, ContextType, RequireFields<MutationUpdateUserArgs, 'input' | 'where'>>;
-  userPasswordAuth?: Resolver<ResolversTypes['Challenge'], ParentType, ContextType, RequireFields<MutationUserPasswordAuthArgs, 'clientId' | 'password' | 'username'>>;
-  validateMfaCode?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationValidateMfaCodeArgs, 'verificationCode'>>;
 };
 
 export type NodeResolvers<ContextType = any, ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node']> = {
@@ -578,7 +522,6 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   env?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   me?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   mfaAuthUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  mfaStatus?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   ping?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   stage?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   tenant?: Resolver<Maybe<ResolversTypes['Tenant']>, ParentType, ContextType, RequireFields<QueryTenantArgs, 'where'>>;
@@ -622,13 +565,6 @@ export type TermsAndConditionsMetaDataResolvers<ContextType = any, ParentType ex
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
-export type TokensResolvers<ContextType = any, ParentType extends ResolversParentTypes['Tokens'] = ResolversParentTypes['Tokens']> = {
-  accessToken?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  idToken?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  refreshToken?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-};
-
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
   _id?: Resolver<ResolversTypes['ObjectId'], ParentType, ContextType>;
   active?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -659,7 +595,6 @@ export type UsersResolvers<ContextType = any, ParentType extends ResolversParent
 };
 
 export type Resolvers<ContextType = any> = {
-  Challenge?: ChallengeResolvers<ContextType>;
   Cognito?: CognitoResolvers<ContextType>;
   DateTime?: GraphQLScalarType;
   Mutation?: MutationResolvers<ContextType>;
@@ -671,7 +606,6 @@ export type Resolvers<ContextType = any> = {
   TenantEdge?: TenantEdgeResolvers<ContextType>;
   Tenants?: TenantsResolvers<ContextType>;
   TermsAndConditionsMetaData?: TermsAndConditionsMetaDataResolvers<ContextType>;
-  Tokens?: TokensResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
   UserEdge?: UserEdgeResolvers<ContextType>;
   Users?: UsersResolvers<ContextType>;
