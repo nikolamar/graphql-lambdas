@@ -45,6 +45,7 @@
     "@typescript-eslint/parser": "^5.27.1",
     "apollo-server-lambda": "^3.6.7",
     "apollo-server-testing": "^2.25.3",
+    "aws-amplify": "^4.3.26",
     "axios": "^0.26.1",
     "dayjs": "^1.11.1",
     "esbuild": "^0.14.23",

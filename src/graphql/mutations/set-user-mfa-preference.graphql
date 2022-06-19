@@ -1,3 +1,0 @@
-mutation setUserMfaPreference ($mfa: Boolean!) {
-  setUserMfaPreference (mfa: $mfa)
-}

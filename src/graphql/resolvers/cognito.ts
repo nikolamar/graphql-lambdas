@@ -14,10 +14,6 @@ export const cognito: Resolvers<Context> = {
       };
     },
 
-    mfaStatus (_, __, ctx) {
-      return ctx?.dataSources?.cognito?.checkCognitoUserMFAStatus(ctx?.headers?.accesstoken);
-    },
-
     async mfaAuthUrl (_, __, ctx) {
       const claim = await getClaim(ctx?.headers?.idtoken);
 
@@ -30,29 +26,4 @@ export const cognito: Resolvers<Context> = {
       return ctx?.dataSources?.cognito?.fetchCognitoUserMultiFactorAuthUrl(ctx?.headers?.accesstoken);
     },
   },
-  Mutation: {
-    userPasswordAuth (_, args, ctx) {
-      return ctx.dataSources.cognito.userPasswordAuth(args.clientId, args.username, args.password);
-    },
-
-    challengeNewPassword (_, args, ctx) {
-      return ctx.dataSources.cognito.challengeNewPassword(args.clientId, args.session, args.username, args.newPassword);
-    },
-
-    validateMfaCode (_, args, ctx) {
-      return ctx?.dataSources?.cognito?.validateCognitoUserMFA(args?.verificationCode, ctx?.headers?.accesstoken);
-    },
-
-    setUserMfaPreference (_, args, ctx) {
-      return ctx.dataSources.cognito.setUserMfaPreference(ctx.headers.accesstoken, args.mfa);
-    },
-
-    async updateMfaAuthPreference (_, args, ctx) {
-      await ctx?.dataSources?.cognito?.setCognitoUserMFAPreference(args.email, args.mfa);
-      return ctx.dataSources.db.updateUser({
-        where: { email: { _eq: args.email } },
-        input: { mfa: args.mfa },
-      });
-    },
-  }
 };

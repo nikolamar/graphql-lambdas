@@ -1,7 +1,6 @@
 import { assert, ERROR_CODES, ERROR_MESSAGES } from "/opt/utils/errors";
 import { createEdgesWithPageInfo } from "../utils/cursor";
 import { getClaim } from "../utils/token";
-import { USER_ROLES } from "../configs/roles";
 import type { Resolvers } from "../generated";
 import type { Context } from "../types";
 
@@ -108,12 +107,7 @@ export const user: Resolvers<Context> = {
       const record = await ctx.dataSources.db.user(args);
       assert(record, ERROR_MESSAGES.USER_REQUIRED, ERROR_CODES.NOT_FOUND);
 
-      const claim = await getClaim(ctx.headers?.idtoken);
-      const myRole = claim["custom:roles"];
-      const myTenantId = claim["custom:tenant"];
-
-      assert(claim["custom:tenant"], ERROR_MESSAGES.CLAIM_REQUIRED_TENANT, ERROR_CODES.UNAUTHORIZED);
-      assert(USER_ROLES[myRole] >= USER_ROLES[record.role] && record.tenantId === myTenantId, ERROR_MESSAGES.UNAUTHORIZED_ACTION, ERROR_CODES.UNAUTHORIZED);
+      // await verifyAuthorization(record, ctx.headers?.idtoken);
 
       if (args?.skipCognito) {
         return ctx.dataSources.db.updateUser(args);
@@ -151,13 +145,8 @@ export const user: Resolvers<Context> = {
       const record = await ctx.dataSources.db.user(args);
       assert(record, ERROR_MESSAGES.USER_REQUIRED, ERROR_CODES.NOT_FOUND);
 
-      const claim = await getClaim(ctx.headers?.idtoken);
-      const myRole = claim["custom:roles"];
-      const myTenantId = claim["custom:tenant"];
-
-      assert(claim["custom:tenant"], ERROR_MESSAGES.CLAIM_REQUIRED_TENANT, ERROR_CODES.UNAUTHORIZED);
-      assert(USER_ROLES[myRole] >= USER_ROLES[record.role] && record.tenantId === myTenantId, ERROR_MESSAGES.UNAUTHORIZED_ACTION, ERROR_CODES.UNAUTHORIZED);
-
+      // await verifyAuthorization(record, ctx.headers?.idtoken);
+      
       if (args?.skipCognito) {
         return ctx.dataSources.db.deleteUser(args);
       }
