@@ -174,10 +174,10 @@ Resources:
       ClientName: !Sub ${ProjectName}-client-${Stage}
       CallbackURLs:
         - http://localhost:4000
-        - !Sub https://${SubDomainName}.${DomainName}
+        - !Sub https://${ProjectName}.${Stage}.${DomainName}
       LogoutURLs:
         - http://localhost:4000/auth/sign-in
-        - !Sub https://${SubDomainName}.${DomainName}/auth/sign-in
+        - !Sub https://${ProjectName}.${Stage}.${DomainName}/auth/sign-in
       AllowedOAuthFlows:
         - code
         - implicit
