@@ -173,8 +173,8 @@ Resources:
       UserPoolId: !Ref CognitoUserPool
       ClientName: !Sub ${ProjectName}-client-${Stage}
       CallbackURLs:
-        - http://localhost:4000/
-        - !Sub https://${SubDomainName}.${DomainName}/
+        - http://localhost:4000
+        - !Sub https://${SubDomainName}.${DomainName}
       LogoutURLs:
         - http://localhost:4000/auth/sign-in
         - !Sub https://${SubDomainName}.${DomainName}/auth/sign-in
