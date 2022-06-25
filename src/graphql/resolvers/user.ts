@@ -43,12 +43,6 @@ export const user: Resolvers<Context> = {
 
       assert(tenant, ERROR_MESSAGES.TENANT_REQUIRED, ERROR_CODES.NOT_FOUND);
 
-      const newRecord = {
-        ...args?.input,
-        email: args.input?.email.toLowerCase(),
-        tenantId: tenant._id.toString(),
-      };
-
       const updatedAttributes = [
         {
           Name: "custom:tenant",
@@ -63,7 +57,13 @@ export const user: Resolvers<Context> = {
       await ctx?.dataSources?.cognito?.updateCognitoUserAttributes(args.input?.email.toLowerCase(), updatedAttributes);
       await ctx?.dataSources?.cognito?.confirmSignUp(args.input?.email.toLowerCase());
 
-      return ctx.dataSources.db.createUser({ input: newRecord });
+      return ctx.dataSources.db.createUser({
+        input: {
+          ...args?.input,
+          email: args.input?.email.toLowerCase(),
+          tenantId: tenant._id.toString(),
+        }
+      });
     },
 
     async createUser (_, args, ctx) {
