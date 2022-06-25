@@ -264,6 +264,8 @@ Resources:
         StageVar: Value
       FailOnWarnings: true
       CorsConfiguration:
+        AllowCredentials: True
+        MaxAge: 600
         AllowOrigins:
           - "*"
         AllowHeaders:
@@ -272,6 +274,15 @@ Resources:
           - GET
           - POST
         MaxAge: 600
+        Auth:
+          Authorizers:
+            CognitoAuthorizer:
+              IdentitySource: $request.header.Authorization
+              JwtConfiguration:
+                issuer: !Sub https://cognito-idp.${AWS::Region}.amazonaws.com/${CognitoUserPool}
+                audience:
+                  - !Ref CognitoUserPool
+          DefaultAuthorizer: CognitoAuthorizer
       Domain:
         DomainName: !Sub ${SubDomainName}.${DomainName}
         CertificateArn: !Ref SSLAPICert
@@ -490,6 +501,8 @@ Resources:
             ApiId: !Ref HttpApi
             Method: POST
             Path: /graphql
+            Auth:
+              Authorizer: CognitoAuthorizer
             TimeoutInMillis: 5000
             PayloadFormatVersion: "2.0"
             RouteSettings:
