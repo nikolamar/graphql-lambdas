@@ -275,6 +275,7 @@ Resources:
         MaxAge: 600
         AllowOrigins:
           - http://localhost:4000
+          - !Sub https://${ProjectName}.${DomainName}
           - !Sub https://${ProjectName}.${Stage}.${DomainName}
         AllowHeaders:
           - "*"
