@@ -77,11 +77,6 @@ Parameters:
     Type: String
     Description: DB pasword
 
-  Origin:
-    Type: String
-    Description: CORS origin
-    Default: !Sub https://${ProjectName}.${Stage}.${DomainName}
-
   Version:
     Type: String
     Description: Version
@@ -279,7 +274,8 @@ Resources:
         AllowCredentials: True
         MaxAge: 600
         AllowOrigins:
-          - !Ref Origin
+          - http://localhost:4000
+          - !Sub https://${ProjectName}.${Stage}.${DomainName}
         AllowHeaders:
           - "*"
         AllowMethods:
