@@ -77,6 +77,11 @@ Parameters:
     Type: String
     Description: DB pasword
 
+  Origin:
+    Type: String
+    Description: CORS origin
+    Default: !Sub https://${ProjectName}.${Stage}.${DomainName}
+
   Version:
     Type: String
     Description: Version
@@ -209,8 +214,7 @@ Resources:
     Type: AWS::Cognito::UserPoolDomain
     Properties:
       Domain: !Sub ${ProjectName}-${Stage}
-      UserPoolId:
-        Ref: CognitoUserPool
+      UserPoolId: !Ref CognitoUserPool
 
   GoogleUserPoolIdentityProvider:
     Type: AWS::Cognito::UserPoolIdentityProvider
@@ -249,6 +253,14 @@ Resources:
   HttpApi:
     Type: AWS::Serverless::HttpApi
     Properties:
+      Auth:
+        Authorizers:
+          CognitoAuthorizer:
+            IdentitySource: $request.header.accesstoken
+            JwtConfiguration:
+              issuer: !Sub https://cognito-idp.${AWS::Region}.amazonaws.com/${CognitoUserPool}
+              audience:
+                - !Ref CognitoUserPoolClient
       StageName: !Ref Stage
       AccessLogSettings:
         DestinationArn: !GetAtt AccessLogs.Arn
@@ -267,22 +279,13 @@ Resources:
         AllowCredentials: True
         MaxAge: 600
         AllowOrigins:
-          - "*"
+          - !Ref Origin
         AllowHeaders:
           - "*"
         AllowMethods:
           - GET
           - POST
         MaxAge: 600
-        Auth:
-          Authorizers:
-            CognitoAuthorizer:
-              IdentitySource: $request.header.Authorization
-              JwtConfiguration:
-                issuer: !Sub https://cognito-idp.${AWS::Region}.amazonaws.com/${CognitoUserPool}
-                audience:
-                  - !Ref CognitoUserPool
-          DefaultAuthorizer: CognitoAuthorizer
       Domain:
         DomainName: !Sub ${SubDomainName}.${DomainName}
         CertificateArn: !Ref SSLAPICert
