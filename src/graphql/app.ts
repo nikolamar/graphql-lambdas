@@ -8,17 +8,20 @@ import { DatabaseDataSource } from "./sources/database";
 import { schemaWithResolvers } from "./schema";
 import { CognitoDataSource } from "./sources/cognito";
 import { isNodeEnvOneOf } from "/opt/configs/environment";
+import { logger } from "./plugins/logger";
 
 const schemaWithMiddleware = applyMiddleware(
   schemaWithResolvers,
 );
 
 let plugins = [
+  logger,
   ApolloServerPluginLandingPageDisabled(),
 ];
 
 if (isNodeEnvOneOf("local", "dev")) {
   plugins = [
+    logger,
     ApolloServerPluginLandingPageGraphQLPlayground(),
   ];
 }

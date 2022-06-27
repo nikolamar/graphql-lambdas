@@ -15,9 +15,7 @@ export const user: Resolvers<Context> = {
   },
   Query: {
     async me (_, __, ctx) {
-      const claim = await getClaim(ctx.headers?.idtoken);
-      assert(claim, ERROR_MESSAGES.ID_TOKEN_REQUIRED, ERROR_CODES.UNAUTHORIZED);
-
+      const claim = await getClaim(ctx.headers?.accesstoken);
       return ctx.dataSources.db.user({ where: { sub: { _eq: claim.sub }}});
     },
 
@@ -43,12 +41,6 @@ export const user: Resolvers<Context> = {
 
       assert(tenant, ERROR_MESSAGES.TENANT_REQUIRED, ERROR_CODES.NOT_FOUND);
 
-      const newRecord = {
-        ...args?.input,
-        email: args.input?.email.toLowerCase(),
-        tenantId: tenant._id.toString(),
-      };
-
       const updatedAttributes = [
         {
           Name: "custom:tenant",
@@ -63,7 +55,13 @@ export const user: Resolvers<Context> = {
       await ctx?.dataSources?.cognito?.updateCognitoUserAttributes(args.input?.email.toLowerCase(), updatedAttributes);
       await ctx?.dataSources?.cognito?.confirmSignUp(args.input?.email.toLowerCase());
 
-      return ctx.dataSources.db.createUser({ input: newRecord });
+      return ctx.dataSources.db.createUser({
+        input: {
+          ...args?.input,
+          email: args.input?.email.toLowerCase(),
+          tenantId: tenant._id.toString(),
+        }
+      });
     },
 
     async createUser (_, args, ctx) {
@@ -107,8 +105,6 @@ export const user: Resolvers<Context> = {
       const record = await ctx.dataSources.db.user(args);
       assert(record, ERROR_MESSAGES.USER_REQUIRED, ERROR_CODES.NOT_FOUND);
 
-      // await verifyAuthorization(record, ctx.headers?.idtoken);
-
       if (args?.skipCognito) {
         return ctx.dataSources.db.updateUser(args);
       }
@@ -144,8 +140,6 @@ export const user: Resolvers<Context> = {
     async deleteUser (_, args, ctx) {
       const record = await ctx.dataSources.db.user(args);
       assert(record, ERROR_MESSAGES.USER_REQUIRED, ERROR_CODES.NOT_FOUND);
-
-      // await verifyAuthorization(record, ctx.headers?.idtoken);
       
       if (args?.skipCognito) {
         return ctx.dataSources.db.deleteUser(args);
