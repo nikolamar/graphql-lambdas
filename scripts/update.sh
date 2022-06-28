@@ -19,7 +19,7 @@ echo "Going back to the project root"
 cd ${PROJECT_ROOT}
 
 echo "Installing node dependencies in the project root"
-npm install --omit=dev
+npm install
 if [ $? -ne 0 ] ; then
     echo "Failed installing dependencies in the project root. Aborting"
     exit 1
