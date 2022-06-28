@@ -1,6 +1,5 @@
 import { assert, ERROR_CODES, ERROR_MESSAGES } from "/opt/utils/errors";
 import { createEdgesWithPageInfo } from "../utils/cursor";
-import { getClaim } from "../utils/token";
 import type { Resolvers } from "../generated";
 import type { Context } from "../types";
 
@@ -15,7 +14,7 @@ export const user: Resolvers<Context> = {
   },
   Query: {
     async me (_, __, ctx) {
-      const claim = await getClaim(ctx.headers?.accesstoken);
+      const claim = JSON.parse(decodeURIComponent(atob(ctx.headers?.accesstoken)));
       return ctx.dataSources.db.user({ where: { sub: { _eq: claim.sub }}});
     },
 
