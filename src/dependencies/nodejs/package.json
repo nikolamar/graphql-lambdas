@@ -10,7 +10,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@aws-sdk/client-cognito-identity-provider": "^3.72.0",
     "@graphql-tools/graphql-file-loader": "^7.3.7",
     "@graphql-tools/load": "^7.5.5",
     "@graphql-tools/load-files": "^6.5.3",

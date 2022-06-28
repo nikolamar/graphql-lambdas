@@ -1,6 +1,5 @@
 import AWS from "aws-sdk";
 import { DataSource } from "apollo-datasource";
-import { CognitoIdentityProvider } from "@aws-sdk/client-cognito-identity-provider";
 import { rndchars, rndletters, rndnums } from "/opt/utils/nanoid";
 import { REGION, POOL_ID } from "/opt/configs/cognito";
 
@@ -240,66 +239,5 @@ export class CognitoDataSource extends DataSource {
         },
       );
     });
-  }
-
-  async userPasswordAuth (clientId: string, username: string, password: string) {
-    const cognitoIdentityProvider = new CognitoIdentityProvider({
-      region: REGION,
-    });
-
-    const response = await cognitoIdentityProvider.initiateAuth({
-      ClientId: clientId,
-      AuthFlow: "USER_PASSWORD_AUTH",
-      AuthParameters: {
-        USERNAME: username,
-        PASSWORD: password,
-      }
-    });
-
-    return {
-      session: response.Session,
-      challengeName: response.ChallengeName,
-      idToken: response.AuthenticationResult?.IdToken,
-      accessToken: response.AuthenticationResult?.AccessToken,
-      refreshToken: response.AuthenticationResult?.RefreshToken,
-    };
-  }
-
-  async challengeNewPassword (clientId: string, session: string, username: string, newPassword: string) {
-    const cognitoIdentityProvider = new CognitoIdentityProvider({
-      region: REGION,
-    });
-
-    const response = await cognitoIdentityProvider.respondToAuthChallenge({
-      ChallengeName: "NEW_PASSWORD_REQUIRED",
-      ChallengeResponses: {
-        USERNAME: username,
-        NEW_PASSWORD: newPassword,
-      },
-      ClientId: clientId,
-      Session: session,
-    });
-
-    return {
-      idToken: response.AuthenticationResult.IdToken,
-      accessToken: response.AuthenticationResult.AccessToken,
-      refreshToken: response.AuthenticationResult.RefreshToken,
-    };
-  }
-
-  async setUserMfaPreference (accessToken: string, mfa: boolean) {
-    const cognitoIdentityProvider = new CognitoIdentityProvider({
-      region: REGION,
-    });
-
-    await cognitoIdentityProvider.setUserMFAPreference({
-      AccessToken: accessToken,
-      SoftwareTokenMfaSettings: {
-        Enabled: mfa,
-        PreferredMfa: mfa,
-      }
-    });
-
-    return mfa;
   }
 }
