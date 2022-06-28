@@ -9,7 +9,7 @@ echo $PROJECT_ROOT
 
 echo "Updating modules"
 cd "${PROJECT_ROOT}/src/dependencies/nodejs"
-npm install
+npm install --production
 if [ $? -ne 0 ] ; then
     echo "Failed installing dependencies in layer lambda. Aborting"
     exit 1
