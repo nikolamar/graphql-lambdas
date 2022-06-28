@@ -20,6 +20,7 @@ cd ${PROJECT_ROOT}
 
 echo "Installing node dependencies in the project root"
 npm install
+node-prune src/dependencies/nodejs/node_modules
 if [ $? -ne 0 ] ; then
     echo "Failed installing dependencies in the project root. Aborting"
     exit 1
