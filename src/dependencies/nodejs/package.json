@@ -24,10 +24,8 @@
     "dayjs": "^1.11.1",
     "graphql": "^15.0.0",
     "graphql-middleware": "^6.1.19",
-    "lodash.clonedeep": "^4.5.0",
     "mongodb": "^4.4.1",
     "nanoid": "^3.3.1",
-    "omit-deep-lodash": "^1.1.7",
-    "pino": "^8.1.0"
+    "omit-deep-lodash": "^1.1.7"
   }
 }

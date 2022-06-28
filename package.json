@@ -52,7 +52,6 @@
     "graphql": "^15.0.0",
     "graphql-middleware": "^6.1.22",
     "jest": "^27.5.1",
-    "lodash.clonedeep": "^4.5.0",
     "mockdate": "^3.0.5",
     "mongodb": "^4.7.0",
     "node-mocks-http": "^1.11.0",
