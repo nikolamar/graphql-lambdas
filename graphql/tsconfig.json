@@ -19,21 +19,5 @@
       "apollo-server-lambda": ["../dependencies/nodejs/node_modules/apollo-server-lambda"]
     }
   },
-  "include": [
-    "src/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    ".aws-sam",
-    ".husky",
-    ".vscode",
-    "cicd",
-    "src/configs",
-    "coverage",
-    "devlab_scripts",
-    "docs",
-    "events",
-    "patches",
-    "build"
-  ]
+  "exclude": ["node_modules"]
 }

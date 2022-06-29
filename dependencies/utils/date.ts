@@ -7,7 +7,7 @@ export type Range = string | number | Date | Dayjs;
 
 export type Sort = { date: string };
 
-export function getDateRange (start: Range, stop: Range): Range[] {
+export function getDateRange(start: Range, stop: Range): Range[] {
   const dateArray = [];
   let currentDate = dayjs(start);
   const stopDate = dayjs(stop);
@@ -18,7 +18,7 @@ export function getDateRange (start: Range, stop: Range): Range[] {
   return dateArray;
 }
 
-export function utc (date?: Date | string, format?: string): string {
+export function utc(date?: Date | string, format?: string): string {
   if (!date) return dayjs().utc().format();
   if (format && date) return dayjs.utc(date).format(format);
 
@@ -47,7 +47,6 @@ export const getDatesBetweenDates = (start: string, end: string): string[] => {
   }
 
   return dates.concat(dayjs.utc(endDate).format());
-
 };
 
 export const getStartAndEndDateWithin24HourRange = () => {

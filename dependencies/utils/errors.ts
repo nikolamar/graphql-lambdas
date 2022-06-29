@@ -34,7 +34,7 @@ export class DomainError extends Error {
   name;
   code;
 
-  constructor (message, code = ERROR_CODES.UNKNOWN) {
+  constructor(message, code = ERROR_CODES.UNKNOWN) {
     super(message);
     // Ensure the name of this error is the same as the class name
     this.name = this.constructor.name;
@@ -47,34 +47,34 @@ export class DomainError extends Error {
 }
 
 export class NotFoundError extends DomainError {
-  constructor (message) {
+  constructor(message) {
     super(message, ERROR_CODES.NOT_FOUND);
   }
 }
 
 export class InvalidInputError extends DomainError {
-  constructor (message) {
+  constructor(message) {
     super(message, ERROR_CODES.INVALID_INPUT);
   }
 }
 
 export class UnauthorizedError extends DomainError {
-  constructor (message) {
+  constructor(message) {
     super(message, ERROR_CODES.UNAUTHORIZED);
   }
 }
 export class UnauthenticatedError extends DomainError {
-  constructor (message) {
+  constructor(message) {
     super(message, ERROR_CODES.UNAUTHENTICATED);
   }
 }
 
-export function assert (predicate, message, code) {
+export function assert(predicate, message, code) {
   if (predicate) return;
   throw new DomainError(message, code);
 }
 
-export function throwError (message, code) {
+export function throwError(message, code) {
   throw new DomainError(message, code);
 }
 

@@ -8,12 +8,15 @@ describe("random.utils.ts", () => {
       [0, 3],
     ];
 
-    it.each(testCases)("should generate a random int between %i and %i", (min: number, max: number) => {
-      for (let _ = 0; _ < 3; _++) {
-        const rand = randomIntFromInterval(min, max);
-        expect(rand).toBeGreaterThanOrEqual(min);
-        expect(rand).toBeLessThanOrEqual(max);
+    it.each(testCases)(
+      "should generate a random int between %i and %i",
+      (min: number, max: number) => {
+        for (let _ = 0; _ < 3; _++) {
+          const rand = randomIntFromInterval(min, max);
+          expect(rand).toBeGreaterThanOrEqual(min);
+          expect(rand).toBeLessThanOrEqual(max);
+        }
       }
-    });
+    );
   });
 });

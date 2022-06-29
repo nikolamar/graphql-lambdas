@@ -1,6 +1,6 @@
 import { assert, ERROR_MESSAGES, ERROR_CODES } from "./errors";
 
-export function response (statusCode, body) {
+export function response(statusCode, body) {
   const bodyResponse = typeof body === "string" ? body : JSON.stringify(body);
   return { statusCode, body: bodyResponse };
 }

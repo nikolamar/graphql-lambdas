@@ -30,7 +30,7 @@ export class LambdaResolver {
 
   constructor(private readonly event) {}
 
-  match (callback) {
+  match(callback) {
     if (typeof callback === "function") {
       const match = callback(this.event);
       this._match = match?.toUpperCase();
@@ -39,12 +39,12 @@ export class LambdaResolver {
   }
 
   /**
-     * If resolver is undefined, in that case it means that
-     * we are switching method with resolver, we are using
-     * just one parameter and that is resolver function.
-     * We are setting method to asterisk (any method)
-     */
-  add (method, resolver = null) {
+   * If resolver is undefined, in that case it means that
+   * we are switching method with resolver, we are using
+   * just one parameter and that is resolver function.
+   * We are setting method to asterisk (any method)
+   */
+  add(method, resolver = null) {
     if (!resolver) {
       resolver = method;
       method = "*";
@@ -53,7 +53,7 @@ export class LambdaResolver {
     return this;
   }
 
-  resolve () {
+  resolve() {
     try {
       const resolver = this._resolvers?.[this._match]?.(this.event);
       if (!resolver) {

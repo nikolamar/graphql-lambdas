@@ -7,7 +7,7 @@ Description: >
   App Designer Backend
 
   Services for the App Designer
-
+  
 ###################
 #     GLOBALS     #
 ###################
@@ -17,8 +17,6 @@ Globals:
     Runtime: nodejs16.x
     Timeout: 5
     MemorySize: 1024
-    Architectures:
-      - x86_64
     Environment:
       Variables:
         STAGE: !Ref Stage
@@ -86,6 +84,13 @@ Parameters:
 ###################
 
 Resources:
+
+  ###################
+  #       LOGS      #
+  ###################
+
+  AccessLogs:
+    Type: AWS::Logs::LogGroup
 
   ###################
   #     Cognito     #
@@ -263,6 +268,8 @@ Resources:
       DefaultRouteSettings:
         ThrottlingBurstLimit: 200
       RouteSettings:
+        "GET /hello":
+          ThrottlingBurstLimit: 200
         "GET /graphql":
           ThrottlingBurstLimit: 200
         "POST /graphql":
@@ -306,6 +313,102 @@ Resources:
           Value: !Sub ${SubDomainName}.${DomainName}
 
   ###################
+  # HTTP FUNCTIONS  #
+  ###################
+
+  HelloWorldFunction:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: "es2020"
+        Sourcemap: true
+        EntryPoints: 
+        - app.ts
+    Properties:
+      CodeUri: hello-world/
+      Handler: app.lambdaHandler
+      Layers:
+        - !Ref DependenciesLayers
+      Runtime: nodejs16.x
+      Architectures:
+        - x86_64
+      Events:
+        HelloWorld:
+          Type: HttpApi
+          Properties:
+            Path: /hello
+            Method: get
+
+  GraphqlFunction:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: false
+        Target: "es2020"
+        Sourcemap: false
+        External:
+          - "/opt/utils/*"
+          - "/opt/configs/*"
+          - "aws-sdk"
+          - "dataloader"
+          - "@graphql-tools/*"
+          - "dayjs"
+          - "dayjs/*"
+          - "mongodb"
+          - "apollo-datasource"
+          - "apollo-datasource-rest"
+          - "graphql-middleware"
+          - "apollo-server-core"
+          - "apollo-server-lambda"
+        EntryPoints:
+        - app.ts
+    Properties:
+      FunctionName: !Sub ${ProjectName}-graphql-${Stage}
+      Description: !Sub ${ProjectName} - graphql function
+      CodeUri: graphql/
+      Handler: app.handler
+      Layers:
+        - !Ref DependenciesLayers
+      Policies:
+      - Statement:
+        - Effect: Allow
+          Action:
+          - 'cognito-idp:AdminConfirmSignUp'
+          - 'cognito-idp:AdminUpdateUserAttributes'
+          - 'cognito-idp:AdminCreateUser'
+          - 'cognito-idp:AdminDeleteUser'
+          - 'execute-api:ManageConnections'
+          Resource:
+          - !Sub 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketApi}/*'
+          - !Sub 'arn:aws:cognito-idp:${AWS::Region}:${AWS::AccountId}:userpool/${CognitoUserPool}'
+      Events:
+        GraphqlGetEvent:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Method: GET
+            Path: /graphql
+            TimeoutInMillis: 5000
+            PayloadFormatVersion: "2.0"
+            RouteSettings:
+              ThrottlingBurstLimit: 10
+        GraphqlPostEvent:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Method: POST
+            Path: /graphql
+            Auth:
+              Authorizer: CognitoAuthorizer
+            TimeoutInMillis: 5000
+            PayloadFormatVersion: "2.0"
+            RouteSettings:
+              ThrottlingBurstLimit: 600
+
+  ###################
   #    WEBSOCKET    #
   ###################
 
@@ -340,13 +443,6 @@ Resources:
       Description: prod stage
       DeploymentId: !Ref WebSocketDeployment
       ApiId: !Ref WebSocketApi
-
-  ###################
-  #       LOGS      #
-  ###################
-
-  AccessLogs:
-    Type: AWS::Logs::LogGroup
 
   ###################
   #    WS ROUTES    #
@@ -459,7 +555,7 @@ Resources:
     Properties:
       FunctionName: !Sub ${ProjectName}-disconnect-${Stage}
       Description: !Sub ${ProjectName} - websocket disconnect function
-      CodeUri: disconnect/src/
+      CodeUri: disconnect/
       Handler: app.handler
       Layers:
         - !Ref DependenciesLayers
@@ -480,7 +576,7 @@ Resources:
     Properties:
       FunctionName: !Sub ${ProjectName}-default-${Stage}
       Description: !Sub ${ProjectName} - websocket default function
-      CodeUri: default/src/
+      CodeUri: default/
       Handler: app.handler
       Layers:
         - !Ref DependenciesLayers
@@ -491,77 +587,6 @@ Resources:
           - 'execute-api:ManageConnections'
           Resource:
           - !Sub 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketApi}/*'
-
-  ###################
-  # HTTP FUNCTIONS  #
-  ###################
-
-  GraphqlFunction:
-    Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: esbuild
-      BuildProperties:
-        Minify: false
-        Target: "es2020"
-        Sourcemap: false
-        External:
-          - "/opt/utils/*"
-          - "/opt/configs/*"
-          - "aws-sdk"
-          - "dataloader"
-          - "@graphql-tools/*"
-          - "dayjs"
-          - "dayjs/*"
-          - "mongodb"
-          - "apollo-datasource"
-          - "apollo-datasource-rest"
-          - "graphql-middleware"
-          - "apollo-server-core"
-          - "apollo-server-lambda"
-        EntryPoints:
-        - app.ts
-    Properties:
-      FunctionName: !Sub ${ProjectName}-graphql-${Stage}
-      Description: !Sub ${ProjectName} - graphql function
-      CodeUri: graphql/src/
-      Handler: app.handler
-      Layers:
-        - !Ref DependenciesLayers
-      Policies:
-      - Statement:
-        - Effect: Allow
-          Action:
-          - 'cognito-idp:AdminConfirmSignUp'
-          - 'cognito-idp:AdminUpdateUserAttributes'
-          - 'cognito-idp:AdminCreateUser'
-          - 'cognito-idp:AdminDeleteUser'
-          - 'execute-api:ManageConnections'
-          Resource:
-          - !Sub 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketApi}/*'
-          - !Sub 'arn:aws:cognito-idp:${AWS::Region}:${AWS::AccountId}:userpool/${CognitoUserPool}'
-      Events:
-        GraphqlGetEvent:
-          Type: HttpApi
-          Properties:
-            ApiId: !Ref HttpApi
-            Method: GET
-            Path: /graphql
-            TimeoutInMillis: 5000
-            PayloadFormatVersion: "2.0"
-            RouteSettings:
-              ThrottlingBurstLimit: 10
-        GraphqlPostEvent:
-          Type: HttpApi
-          Properties:
-            ApiId: !Ref HttpApi
-            Method: POST
-            Path: /graphql
-            Auth:
-              Authorizer: CognitoAuthorizer
-            TimeoutInMillis: 5000
-            PayloadFormatVersion: "2.0"
-            RouteSettings:
-              ThrottlingBurstLimit: 600
 
   ###################
   #   DEPENDENCIES  #

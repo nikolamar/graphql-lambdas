@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "lib": ["es2020"],
+    "module": "commonjs",
+    "target": "es2020",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@graphql-tools/*": ["nodejs/node_modules/@graphql-tools/*"],
+      "dayjs": ["nodejs/node_modules/dayjs"],
+      "dayjs/*": ["nodejs/node_modules/dayjs/*"],
+      "nanoid": ["nodejs/node_modules/nanoid"],
+      "mongodb": ["nodejs/node_modules/mongodb"],
+      "apollo-datasource": ["nodejs/node_modules/apollo-datasource"],
+      "apollo-datasource-rest": ["nodejs/node_modules/apollo-datasource-rest"],
+      "graphql-middleware": ["nodejs/node_modules/graphql-middleware"],
+      "apollo-server-core": ["nodejs/node_modules/apollo-server-core"],
+      "apollo-server-lambda": ["nodejs/node_modules/apollo-server-lambda"]
+    }
+  },
+  "exclude": ["node_modules"]
+}
