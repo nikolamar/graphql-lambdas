@@ -1,9 +1,6 @@
-current_dir = $(shell pwd)
-
-build_utils:
-	echo "Build utils"
-	npx esbuild $(current_dir)/utils/**/*.ts --outdir=../.aws-sam/build/Dependencies/utils
-
-build_configs:
-	echo "Build configs"
-	npx esbuild $(current_dir)/configs/**/*.ts --outdir=../.aws-sam/build/Dependencies/configs
+build_layer_lambda:
+	echo "Build layer lambda"
+	zsh -c 'npx esbuild ./utils/**/*.ts --outdir=../.aws-sam/build/Dependencies/utils'
+	zsh -c 'npx esbuild ./configs/**/*.ts --outdir=../.aws-sam/build/Dependencies/configs'
+	cd nodejs && npm ci
+	cp -r nodejs ../.aws-sam/build/Dependencies/nodejs

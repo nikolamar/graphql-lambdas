@@ -570,8 +570,7 @@ Resources:
   DependenciesLayers:
     Type: AWS::Serverless::LayerVersion
     Metadata:
-      BuildMethod: nodejs16.x
-      BuildArchitecture: arm64
+      BuildMethod: makefile
     Properties:
       LayerName: !Sub ${ProjectName}-dependencies-${Stage}
       Description: !Sub ${ProjectName} - dependencies for all functions
