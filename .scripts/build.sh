@@ -1,12 +1,11 @@
 #!/bin/bash
 
-echo "Installing dependencies"
-npm run update:modules
+echo "Building the project with sam-cli and new beta features"
 
-echo "Building the project"
-npm run delete:build
-npm run graphql:gen
-npm run build:esbuild
-npm run format:dist
-npm run copy:schemas
-npm run copy:modules
+cd connect      && npm install && cd ..
+cd default      && npm install && cd ..
+cd dependencies && npm install && cd ..
+cd disconnect   && npm install && cd ..
+cd graphql      && npm install && cd ..
+
+sam build --beta-features
