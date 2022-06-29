@@ -324,13 +324,13 @@ Resources:
         Minify: true
         Target: "es2020"
         Sourcemap: true
-        EntryPoints: 
+        EntryPoints:
         - app.ts
     Properties:
       CodeUri: hello-world/
       Handler: app.lambdaHandler
       Layers:
-        - !Ref DependenciesLayers
+        - !Ref DependenciesLayer
       Runtime: nodejs16.x
       Architectures:
         - x86_64
@@ -371,7 +371,7 @@ Resources:
       CodeUri: graphql/
       Handler: app.handler
       Layers:
-        - !Ref DependenciesLayers
+        - !Ref DependenciesLayer
       Policies:
       - Statement:
         - Effect: Allow
@@ -537,7 +537,7 @@ Resources:
       CodeUri: connect/
       Handler: app.handler
       Layers:
-        - !Ref DependenciesLayers
+        - !Ref DependenciesLayer
 
   DisconnectFunction:
     Type: AWS::Serverless::Function
@@ -558,7 +558,7 @@ Resources:
       CodeUri: disconnect/
       Handler: app.handler
       Layers:
-        - !Ref DependenciesLayers
+        - !Ref DependenciesLayer
 
   DefaultFunction:
     Type: AWS::Serverless::Function
@@ -579,7 +579,7 @@ Resources:
       CodeUri: default/
       Handler: app.handler
       Layers:
-        - !Ref DependenciesLayers
+        - !Ref DependenciesLayer
       Policies:
       - Statement:
         - Effect: Allow
@@ -592,7 +592,7 @@ Resources:
   #   DEPENDENCIES  #
   ###################
 
-  DependenciesLayers:
+  DependenciesLayer:
     Type: AWS::Serverless::LayerVersion
     Metadata:
       BuildMethod: makefile
