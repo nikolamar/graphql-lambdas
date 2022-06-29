@@ -7,33 +7,29 @@
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "/opt/*": ["src/dependencies/*"],
-      "@graphql-tools/*": ["src/dependencies/nodejs/node_modules/@graphql-tools/*"],
-      "dayjs": ["src/dependencies/nodejs/node_modules/dayjs"],
-      "dayjs/*": ["src/dependencies/nodejs/node_modules/dayjs/*"],
-      "mongodb": ["src/dependencies/nodejs/node_modules/mongodb"],
-      "apollo-datasource": ["src/dependencies/nodejs/node_modules/apollo-datasource"],
-      "apollo-datasource-rest": ["src/dependencies/nodejs/node_modules/apollo-datasource-rest"],
-      "graphql-middleware": ["src/dependencies/nodejs/node_modules/graphql-middleware"],
-      "apollo-server-core": ["src/dependencies/nodejs/node_modules/apollo-server-core"],
-      "apollo-server-lambda": ["src/dependencies/nodejs/node_modules/apollo-server-lambda"]
+      "/opt/*": ["dependencies/*"],
+      "@graphql-tools/*": ["dependencies/nodejs/node_modules/@graphql-tools/*"],
+      "dayjs": ["dependencies/nodejs/node_modules/dayjs"],
+      "dayjs/*": ["dependencies/nodejs/node_modules/dayjs/*"],
+      "mongodb": ["dependencies/nodejs/node_modules/mongodb"],
+      "apollo-datasource": ["dependencies/nodejs/node_modules/apollo-datasource"],
+      "apollo-datasource-rest": ["dependencies/nodejs/node_modules/apollo-datasource-rest"],
+      "graphql-middleware": ["dependencies/nodejs/node_modules/graphql-middleware"],
+      "apollo-server-core": ["dependencies/nodejs/node_modules/apollo-server-core"],
+      "apollo-server-lambda": ["dependencies/nodejs/node_modules/apollo-server-lambda"]
     }
   },
   "include": [
-    "src/**/*.ts"
+    "**/*.ts"
   ],
   "exclude": [
     "node_modules",
     ".aws-sam",
-    ".husky",
+    ".github",
+    ".scripts",
     ".vscode",
-    "cicd",
     "configs",
     "coverage",
-    "devlab_scripts",
-    "docs",
     "events",
-    "patches",
-    "build"
   ]
 }

@@ -424,7 +424,7 @@ Resources:
 
   ConnectFunction:
     Type: AWS::Serverless::Function
-    Metadata: # Manage esbuild properties
+    Metadata:
       BuildMethod: esbuild
       BuildProperties:
         Minify: true
@@ -433,7 +433,7 @@ Resources:
         External:
           - "/opt/utils/*"
           - "/opt/configs/*"
-        EntryPoints: 
+        EntryPoints:
         - app.ts
     Properties:
       FunctionName: !Sub ${ProjectName}-connect-${Stage}
@@ -445,7 +445,7 @@ Resources:
 
   DisconnectFunction:
     Type: AWS::Serverless::Function
-    Metadata: # Manage esbuild properties
+    Metadata:
       BuildMethod: esbuild
       BuildProperties:
         Minify: true
@@ -454,7 +454,7 @@ Resources:
         External:
           - "/opt/utils/*"
           - "/opt/configs/*"
-        EntryPoints: 
+        EntryPoints:
         - app.ts
     Properties:
       FunctionName: !Sub ${ProjectName}-disconnect-${Stage}
@@ -466,7 +466,7 @@ Resources:
 
   DefaultFunction:
     Type: AWS::Serverless::Function
-    Metadata: # Manage esbuild properties
+    Metadata:
       BuildMethod: esbuild
       BuildProperties:
         Minify: true
@@ -475,7 +475,7 @@ Resources:
         External:
           - "/opt/utils/*"
           - "/opt/configs/*"
-        EntryPoints: 
+        EntryPoints:
         - app.ts
     Properties:
       FunctionName: !Sub ${ProjectName}-default-${Stage}
@@ -498,7 +498,7 @@ Resources:
 
   GraphqlFunction:
     Type: AWS::Serverless::Function
-    Metadata: # Manage esbuild properties
+    Metadata:
       BuildMethod: esbuild
       BuildProperties:
         Minify: true
@@ -518,7 +518,7 @@ Resources:
           - "graphql-middleware"
           - "apollo-server-core"
           - "apollo-server-lambda"
-        EntryPoints: 
+        EntryPoints:
         - app.ts
     Properties:
       FunctionName: !Sub ${ProjectName}-graphql-${Stage}
