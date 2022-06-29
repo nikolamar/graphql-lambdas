@@ -20,16 +20,20 @@
     }
   },
   "include": [
-    "**/*.ts"
+    "src/**/*.ts"
   ],
   "exclude": [
     "node_modules",
     ".aws-sam",
-    ".github",
-    ".scripts",
+    ".husky",
     ".vscode",
-    "configs",
+    "cicd",
+    "src/configs",
     "coverage",
+    "devlab_scripts",
+    "docs",
     "events",
+    "patches",
+    "build"
   ]
 }
