@@ -35,8 +35,4 @@ if [ -z "$CLIENT_ID" ] ; then
   export CLIENT_ID
 fi
 
-echo "Installing dependencies"
-npm run update:modules
-
 echo "Running all the tests"
-./node_modules/.bin/jest --runInBand
