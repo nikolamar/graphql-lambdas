@@ -10,7 +10,6 @@
       "/opt/*": ["../dependencies/*"],
     }
   },
-  "include": [
-    "**/*.ts"
-  ],
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "**/*.test.ts"]
 }
