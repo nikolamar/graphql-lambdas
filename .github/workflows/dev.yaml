@@ -43,7 +43,7 @@ jobs:
         shell: bash
 
       - name: Tar build files
-        run: tar -cvf dist.tar ./dist
+        run: tar -cvf dist.tar ./.aws-sam/build
 
       - name: Upload the build output
         uses: actions/upload-artifact@v3

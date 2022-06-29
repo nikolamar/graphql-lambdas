@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+    "lib": ["es2020"],
+    "module": "commonjs",
+    "target": "es2020",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "/opt/*": ["../dependencies/*"],
+      "@graphql-tools/*": ["../dependencies/nodejs/node_modules/@graphql-tools/*"],
+      "dayjs": ["../dependencies/nodejs/node_modules/dayjs"],
+      "dayjs/*": ["../dependencies/nodejs/node_modules/dayjs/*"],
+      "mongodb": ["../dependencies/nodejs/node_modules/mongodb"],
+      "apollo-datasource": ["../dependencies/nodejs/node_modules/apollo-datasource"],
+      "apollo-datasource-rest": ["../dependencies/nodejs/node_modules/apollo-datasource-rest"],
+      "graphql-middleware": ["../dependencies/nodejs/node_modules/graphql-middleware"],
+      "apollo-server-core": ["../dependencies/nodejs/node_modules/apollo-server-core"],
+      "apollo-server-lambda": ["../dependencies/nodejs/node_modules/apollo-server-lambda"]
+    }
+  },
+  "include": [
+    "**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    ".aws-sam",
+    ".husky",
+    ".vscode",
+    "cicd",
+    "configs",
+    "coverage",
+    "devlab_scripts",
+    "docs",
+    "events",
+    "patches",
+    "build"
+  ]
+}

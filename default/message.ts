@@ -1,4 +1,4 @@
-import { getMongodbClient } from "../dependencies/utils/db";
+import { getMongodbClient } from "/opt/utils/db";
 import { sendMessage } from "/opt/utils/websocket";
 import { parseBody, response } from "/opt/utils/response";
 import { assert, ERROR_MESSAGES, ERROR_CODES } from "/opt/utils/errors";

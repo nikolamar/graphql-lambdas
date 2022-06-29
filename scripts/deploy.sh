@@ -72,7 +72,7 @@ fi
 
 echo "Deploying the project"
 sam deploy \
-  --template-file "${PROJECT_ROOT}/template.yaml" \
+  --template-file "${PROJECT_ROOT}/.aws-sam/build/template.yaml" \
   --stack-name ${PROJECT_NAME}-${STAGE} \
   --region ${REGION} \
   --s3-bucket ${PROJECT_NAME}-cli-${STAGE} \
