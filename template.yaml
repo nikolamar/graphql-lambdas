@@ -333,7 +333,7 @@ Resources:
     Properties:
       FunctionName: !Sub ${ProjectName}-hello-world-${Stage}
       Description: !Sub ${ProjectName} - hello world function
-      CodeUri: hello-world/
+      CodeUri: lambdas/hello-world/
       Handler: app.handler
       Events:
         HelloWorldGetEvent:
@@ -375,7 +375,7 @@ Resources:
     Properties:
       FunctionName: !Sub ${ProjectName}-graphql-${Stage}
       Description: !Sub ${ProjectName} - graphql function
-      CodeUri: graphql/
+      CodeUri: lambdas/graphql/
       Handler: app.handler
       Layers:
         - !Ref DependenciesLayer
@@ -542,7 +542,7 @@ Resources:
     Properties:
       FunctionName: !Sub ${ProjectName}-connect-${Stage}
       Description: !Sub ${ProjectName} - websocket connect function
-      CodeUri: connect/
+      CodeUri: lambdas/connect/
       Handler: app.handler
       Layers:
         - !Ref DependenciesLayer
@@ -564,7 +564,7 @@ Resources:
     Properties:
       FunctionName: !Sub ${ProjectName}-disconnect-${Stage}
       Description: !Sub ${ProjectName} - websocket disconnect function
-      CodeUri: disconnect/
+      CodeUri: lambdas/disconnect/
       Handler: app.handler
       Layers:
         - !Ref DependenciesLayer
@@ -586,7 +586,7 @@ Resources:
     Properties:
       FunctionName: !Sub ${ProjectName}-default-${Stage}
       Description: !Sub ${ProjectName} - websocket default function
-      CodeUri: default/
+      CodeUri: lambdas/default/
       Handler: app.handler
       Layers:
         - !Ref DependenciesLayer
@@ -609,7 +609,7 @@ Resources:
     Properties:
       LayerName: !Sub ${ProjectName}-dependencies-${Stage}
       Description: !Sub ${ProjectName} - dependencies for all functions
-      ContentUri: dependencies/
+      ContentUri: lambdas/dependencies/
       CompatibleRuntimes:
         - nodejs16.x
       LicenseInfo: MIT
