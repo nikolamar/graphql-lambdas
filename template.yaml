@@ -117,11 +117,13 @@ Resources:
       EmailVerificationSubject: Confirm your email
       EmailVerificationMessage: verification code  {####}
       SmsVerificationMessage: Your verification code {####}
+      DefaultEmailOption: CONFIRM_WITH_CODE
       AdminCreateUserConfig:
         InviteMessageTemplate:
           EmailMessage: Your username is {username} and temporary password is {####}
           EmailSubject: Your temporary password
       # AutoVerifiedAttributes:
+      #   - email
       #   - phone_number
       # SmsConfiguration:
       #   ExternalId: 'xxx-xxx-xxx'
