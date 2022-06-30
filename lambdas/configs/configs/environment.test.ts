@@ -1,4 +1,4 @@
-import { isNodeEnvOneOf, Namespace } from "./environment";
+import { isNodeEnvOneOf } from "./environment";
 
 const ORIGINAL_NODE_ENV = process.env.NODE_ENV;
 
@@ -22,7 +22,7 @@ describe("environment config test", () => {
 
     it.each(testCases)(
       'should check if process.env.NODE_ENV="prod" is (not) in %o',
-      (namespaces: Namespace[], expectedOutput: boolean) => {
+      (namespaces: any, expectedOutput: any) => {
         expect(isNodeEnvOneOf(...namespaces)).toEqual(expectedOutput);
       }
     );

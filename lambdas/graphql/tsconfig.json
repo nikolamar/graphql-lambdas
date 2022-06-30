@@ -7,7 +7,8 @@
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "/opt/*": ["../dependencies/*"],
+      "/opt/utils/*": ["../utils/utils/*"],
+      "/opt/configs/*": ["../configs/configs/*"],
       "@graphql-tools/*": ["../dependencies/nodejs/node_modules/@graphql-tools/*"],
       "dayjs": ["../dependencies/nodejs/node_modules/dayjs"],
       "dayjs/*": ["../dependencies/nodejs/node_modules/dayjs/*"],
