@@ -18,8 +18,7 @@ const mockRequest = (options: RequestOptions = {}): any =>
     ...options,
   });
 
-const mockResponse = (options: ResponseOptions = {}) =>
-  httpMocks.createResponse(options);
+const mockResponse = (options: ResponseOptions = {}) => httpMocks.createResponse(options);
 
 export const mockRequestOptions: any = {};
 
@@ -66,20 +65,14 @@ export class ApolloTestServer {
     return apolloServer;
   }
 
-  test: TestQuery = async <
-    T extends object = Record<string, unknown>,
-    V extends object = Record<string, unknown>
-  >(
+  test: TestQuery = async <T extends object = Record<string, unknown>, V extends object = Record<string, unknown>>(
     operation: StringOrAst,
-    { variables }: Options<V> = {}
+    { variables }: Options<V> = {},
   ) => {
     const req = mockRequest(mockRequestOptions);
     const res = mockResponse(mockResponseOptions);
 
-    const graphQLOptions = await this._apolloServer.createGraphQLServerOptions(
-      req,
-      res
-    );
+    const graphQLOptions = await this._apolloServer.createGraphQLServerOptions(req, res);
 
     const { graphqlResponse } = await runHttpQuery([req, res], {
       method: "POST",

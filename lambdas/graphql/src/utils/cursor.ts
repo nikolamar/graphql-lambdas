@@ -16,13 +16,11 @@ type ReturnEdges = {
 
 export function createEdgesWithPageInfo(
   { data, totalCount, firstRecordId },
-  { first = Infinity, sortBy = "_id" }
+  { first = Infinity, sortBy = "_id" },
 ): ReturnEdges {
   const edges = data?.map((node) => ({
     node,
-    cursor: Buffer.from(
-      node?.[sortBy] ? node?.[sortBy].toString() : ""
-    ).toString("base64"), // making opaque
+    cursor: Buffer.from(node?.[sortBy] ? node?.[sortBy].toString() : "").toString("base64"), // making opaque
   }));
 
   let hasNextPage;

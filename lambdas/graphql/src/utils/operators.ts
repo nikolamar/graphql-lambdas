@@ -39,8 +39,7 @@ export const createMatchFromOperators = (where) => {
   }
 
   // prepare query params
-  if (match?.[ID] && typeof match?.[ID] === "string")
-    match[ID] = new ObjectId(match?.[ID]);
+  if (match?.[ID] && typeof match?.[ID] === "string") match[ID] = new ObjectId(match?.[ID]);
 
   return match;
 };

@@ -14,10 +14,7 @@ const expectedLteGteCondition = {
 describe("operators utils tests", () => {
   test("_or condition works", () => {
     const actualOrCondition = createMatchFromOperators({
-      _or: [
-        { email: { _eq: "test@evernym.com" } },
-        { name: { _regex: "start" } },
-      ],
+      _or: [{ email: { _eq: "test@evernym.com" } }, { name: { _regex: "start" } }],
     });
     expect(actualOrCondition).toEqual(expectedOrCondition);
   });

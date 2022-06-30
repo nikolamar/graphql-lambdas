@@ -13,9 +13,7 @@ export const cognito: Resolvers<Context> = {
     },
 
     mfaAuthUrl(_, __, ctx) {
-      return ctx?.dataSources?.cognito?.fetchCognitoUserMultiFactorAuthUrl(
-        ctx?.headers?.accesstoken
-      );
+      return ctx?.dataSources?.cognito?.fetchCognitoUserMultiFactorAuthUrl(ctx?.headers?.accesstoken);
     },
   },
 };

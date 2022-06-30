@@ -5,11 +5,10 @@ import { REGION, POOL_ID } from "/opt/configs/cognito";
 
 export class CognitoDataSource extends DataSource {
   getCognitoUser(username) {
-    const cognitoIdentityServiceProvider =
-      new AWS.CognitoIdentityServiceProvider({
-        apiVersion: "2016-04-18",
-        region: REGION,
-      });
+    const cognitoIdentityServiceProvider = new AWS.CognitoIdentityServiceProvider({
+      apiVersion: "2016-04-18",
+      region: REGION,
+    });
 
     const params = {
       UserPoolId: POOL_ID,
@@ -27,11 +26,10 @@ export class CognitoDataSource extends DataSource {
   }
 
   deleteCognitoUser(email): Promise<any> {
-    const cognitoIdentityServiceProvider =
-      new AWS.CognitoIdentityServiceProvider({
-        apiVersion: "2016-04-18",
-        region: REGION,
-      });
+    const cognitoIdentityServiceProvider = new AWS.CognitoIdentityServiceProvider({
+      apiVersion: "2016-04-18",
+      region: REGION,
+    });
 
     const params = {
       UserPoolId: POOL_ID,
@@ -49,11 +47,10 @@ export class CognitoDataSource extends DataSource {
   }
 
   updateCognitoUserAttributes(username: string, userAttributes): Promise<any> {
-    const cognitoIdentityServiceProvider =
-      new AWS.CognitoIdentityServiceProvider({
-        apiVersion: "2016-04-18",
-        region: REGION,
-      });
+    const cognitoIdentityServiceProvider = new AWS.CognitoIdentityServiceProvider({
+      apiVersion: "2016-04-18",
+      region: REGION,
+    });
 
     const params = {
       UserAttributes: userAttributes,
@@ -62,24 +59,20 @@ export class CognitoDataSource extends DataSource {
     };
 
     return new Promise((resolve, reject) => {
-      cognitoIdentityServiceProvider.adminUpdateUserAttributes(
-        params,
-        (error, data) => {
-          if (error) {
-            reject(error);
-          }
-          resolve(data);
+      cognitoIdentityServiceProvider.adminUpdateUserAttributes(params, (error, data) => {
+        if (error) {
+          reject(error);
         }
-      );
+        resolve(data);
+      });
     });
   }
 
   confirmSignUp(username: string): Promise<any> {
-    const cognitoIdentityServiceProvider =
-      new AWS.CognitoIdentityServiceProvider({
-        apiVersion: "2016-04-18",
-        region: REGION,
-      });
+    const cognitoIdentityServiceProvider = new AWS.CognitoIdentityServiceProvider({
+      apiVersion: "2016-04-18",
+      region: REGION,
+    });
 
     const params = {
       UserPoolId: POOL_ID,
@@ -87,24 +80,20 @@ export class CognitoDataSource extends DataSource {
     };
 
     return new Promise((resolve, reject) => {
-      cognitoIdentityServiceProvider.adminConfirmSignUp(
-        params,
-        (error, data) => {
-          if (error) {
-            reject(error);
-          }
-          resolve(data);
+      cognitoIdentityServiceProvider.adminConfirmSignUp(params, (error, data) => {
+        if (error) {
+          reject(error);
         }
-      );
+        resolve(data);
+      });
     });
   }
 
   checkCognitoUserMFAStatus(accessToken: string): Promise<boolean> {
-    const cognitoIdentityServiceProvider =
-      new AWS.CognitoIdentityServiceProvider({
-        apiVersion: "2016-04-18",
-        region: REGION,
-      });
+    const cognitoIdentityServiceProvider = new AWS.CognitoIdentityServiceProvider({
+      apiVersion: "2016-04-18",
+      region: REGION,
+    });
 
     const params = {
       AccessToken: accessToken,
@@ -115,8 +104,7 @@ export class CognitoDataSource extends DataSource {
         if (error) {
           reject(error);
         }
-        const isEnabled =
-          data?.UserMFASettingList?.includes("SOFTWARE_TOKEN_MFA");
+        const isEnabled = data?.UserMFASettingList?.includes("SOFTWARE_TOKEN_MFA");
 
         resolve(!!isEnabled);
       });
@@ -124,30 +112,24 @@ export class CognitoDataSource extends DataSource {
   }
 
   fetchCognitoUserMultiFactorAuthUrl(accessToken: string): Promise<string> {
-    const cognitoIdentityServiceProvider =
-      new AWS.CognitoIdentityServiceProvider({
-        apiVersion: "2016-04-18",
-        region: REGION,
-      });
+    const cognitoIdentityServiceProvider = new AWS.CognitoIdentityServiceProvider({
+      apiVersion: "2016-04-18",
+      region: REGION,
+    });
 
     const params = {
       AccessToken: accessToken,
     };
 
     return new Promise((resolve, reject) => {
-      cognitoIdentityServiceProvider.associateSoftwareToken(
-        params,
-        (error, result) => {
-          if (error) {
-            reject(error);
-          }
-          const mfaTitle = "App_Designer";
-          const url = `otpauth://totp/${decodeURI(mfaTitle)}?secret=${
-            result.SecretCode
-          }`;
-          resolve(url);
+      cognitoIdentityServiceProvider.associateSoftwareToken(params, (error, result) => {
+        if (error) {
+          reject(error);
         }
-      );
+        const mfaTitle = "App_Designer";
+        const url = `otpauth://totp/${decodeURI(mfaTitle)}?secret=${result.SecretCode}`;
+        resolve(url);
+      });
     });
   }
 
@@ -157,11 +139,10 @@ export class CognitoDataSource extends DataSource {
       return;
     }
 
-    const cognitoIdentityServiceProvider =
-      new AWS.CognitoIdentityServiceProvider({
-        apiVersion: "2016-04-18",
-        region: REGION,
-      });
+    const cognitoIdentityServiceProvider = new AWS.CognitoIdentityServiceProvider({
+      apiVersion: "2016-04-18",
+      region: REGION,
+    });
 
     const params = {
       UserPoolId: POOL_ID,
@@ -173,27 +154,20 @@ export class CognitoDataSource extends DataSource {
     };
 
     return new Promise((resolve, reject) => {
-      cognitoIdentityServiceProvider.adminSetUserMFAPreference(
-        params,
-        (error, data) => {
-          if (error) {
-            reject(error);
-          }
-          resolve(data);
+      cognitoIdentityServiceProvider.adminSetUserMFAPreference(params, (error, data) => {
+        if (error) {
+          reject(error);
         }
-      );
+        resolve(data);
+      });
     });
   }
 
-  validateCognitoUserMFA(
-    userCode: string,
-    accessToken: string
-  ): Promise<boolean> {
-    const cognitoIdentityServiceProvider =
-      new AWS.CognitoIdentityServiceProvider({
-        apiVersion: "2016-04-18",
-        region: REGION,
-      });
+  validateCognitoUserMFA(userCode: string, accessToken: string): Promise<boolean> {
+    const cognitoIdentityServiceProvider = new AWS.CognitoIdentityServiceProvider({
+      apiVersion: "2016-04-18",
+      region: REGION,
+    });
 
     const params = {
       AccessToken: accessToken,
@@ -206,16 +180,15 @@ export class CognitoDataSource extends DataSource {
           reject(error);
         }
         resolve(true);
-      })
+      }),
     );
   }
 
   createCognitoUser(input) {
-    const cognitoIdentityServiceProvider =
-      new AWS.CognitoIdentityServiceProvider({
-        apiVersion: "2016-04-18",
-        region: REGION,
-      });
+    const cognitoIdentityServiceProvider = new AWS.CognitoIdentityServiceProvider({
+      apiVersion: "2016-04-18",
+      region: REGION,
+    });
 
     const tempPassword = rndletters() + rndnums() + rndchars();
     const params = {
@@ -223,9 +196,7 @@ export class CognitoDataSource extends DataSource {
       Username: input.email,
       DesiredDeliveryMediums: ["EMAIL"],
       ForceAliasCreation: false,
-      TemporaryPassword:
-        input.password ??
-        tempPassword.charAt(0).toUpperCase() + tempPassword.slice(1),
+      TemporaryPassword: input.password ?? tempPassword.charAt(0).toUpperCase() + tempPassword.slice(1),
       UserAttributes: [
         {
           Name: "email",
@@ -247,28 +218,23 @@ export class CognitoDataSource extends DataSource {
     };
 
     return new Promise((resolve, reject) => {
-      cognitoIdentityServiceProvider.adminCreateUser(
-        params,
-        async (err, data) => {
-          const sub = data?.User?.Attributes?.filter(
-            (attr) => attr.Name === "sub"
-          )[0]?.Value;
-          if (err) {
-            return reject(err);
-          }
-          if (input.password) {
-            delete input.password;
-          }
-          resolve({
-            ...input,
-            termsAndConditionsMetaData: {
-              accepted: false,
-              version: 1, // Hardcoded version for now
-            },
-            sub,
-          });
+      cognitoIdentityServiceProvider.adminCreateUser(params, async (err, data) => {
+        const sub = data?.User?.Attributes?.filter((attr) => attr.Name === "sub")[0]?.Value;
+        if (err) {
+          return reject(err);
         }
-      );
+        if (input.password) {
+          delete input.password;
+        }
+        resolve({
+          ...input,
+          termsAndConditionsMetaData: {
+            accepted: false,
+            version: 1, // Hardcoded version for now
+          },
+          sub,
+        });
+      });
     });
   }
 }

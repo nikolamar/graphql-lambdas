@@ -70,14 +70,7 @@ export class CollectionPlugin implements DatabasePluginInterface {
       .toArray();
   }
 
-  async readMany({
-    where = {} as any,
-    order = ASC,
-    first = 0,
-    offset = 0,
-    after = "",
-    sortBy = "_id",
-  }) {
+  async readMany({ where = {} as any, order = ASC, first = 0, offset = 0, after = "", sortBy = "_id" }) {
     // aggregation pipeline
     const pipeline = [];
 
@@ -117,9 +110,7 @@ export class CollectionPlugin implements DatabasePluginInterface {
       const sortCond = order === ASC ? "$gt" : "$lt";
 
       // const value = objectIdFields[sortBy] ? new ObjectId(afterBase64) : afterBase64;
-      const value = ObjectId.isValid(afterBase64)
-        ? new ObjectId(afterBase64)
-        : afterBase64;
+      const value = ObjectId.isValid(afterBase64) ? new ObjectId(afterBase64) : afterBase64;
 
       const cond = {
         [sortCond]: [`$$item.${sortBy}`, value],
@@ -157,10 +148,7 @@ export class CollectionPlugin implements DatabasePluginInterface {
     pipeline.push(paginationStage);
 
     // execute query
-    const dbResponse = await db
-      .collection(this._collection)
-      .aggregate(pipeline)
-      .next();
+    const dbResponse = await db.collection(this._collection).aggregate(pipeline).next();
 
     return {
       data: dbResponse?.data || [],
@@ -187,7 +175,7 @@ export class CollectionPlugin implements DatabasePluginInterface {
       },
       {
         returnDocument: "after",
-      }
+      },
     );
 
     return dbResponse?.value as any;

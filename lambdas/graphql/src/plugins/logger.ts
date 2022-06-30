@@ -7,7 +7,7 @@ export const logger = {
             operationName: ctx.request.operationName,
             query: ctx.request.query,
             variables: ctx.request.variables,
-          })
+          }),
         );
       },
       async willSendResponse(ctx) {

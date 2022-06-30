@@ -6,11 +6,4 @@ import { ping } from "./resolvers/ping";
 import { tenant } from "./resolvers/tenant";
 import { user } from "./resolvers/user";
 
-export const resolvers = mergeResolvers([
-  cognito,
-  env,
-  message,
-  ping,
-  tenant,
-  user,
-]);
+export const resolvers = mergeResolvers([cognito, env, message, ping, tenant, user]);

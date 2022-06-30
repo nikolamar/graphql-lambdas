@@ -7,12 +7,9 @@ export type StringOrAst = string | DocumentNode;
 
 export type Options<T extends object> = { variables?: T };
 
-export type TestQuery = <
-  T extends object = Record<string, unknown>,
-  V extends object = Record<string, unknown>
->(
+export type TestQuery = <T extends object = Record<string, unknown>, V extends object = Record<string, unknown>>(
   operation: StringOrAst,
-  options?: Options<V>
+  options?: Options<V>,
 ) => Promise<ExecutionResult<T>>;
 
 export interface DataSourceConfig<TContext = any> {

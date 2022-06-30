@@ -58,128 +58,72 @@ export class DatabaseDataSource extends DataSource {
   }
 
   user(args: QueryUserArgs) {
-    const collection = new CollectionPlugin(
-      this._dbClient,
-      this._streamsEnabled,
-      USERS_COLLECTION
-    );
+    const collection = new CollectionPlugin(this._dbClient, this._streamsEnabled, USERS_COLLECTION);
     return collection.read(args);
   }
 
   users(args: QueryUsersArgs) {
-    const collection = new CollectionPlugin(
-      this._dbClient,
-      this._streamsEnabled,
-      USERS_COLLECTION
-    );
+    const collection = new CollectionPlugin(this._dbClient, this._streamsEnabled, USERS_COLLECTION);
     return collection.readMany(args);
   }
 
   usersByMany(args: { list: string[]; key?: string }) {
-    const collection = new CollectionPlugin(
-      this._dbClient,
-      this._streamsEnabled,
-      USERS_COLLECTION
-    );
+    const collection = new CollectionPlugin(this._dbClient, this._streamsEnabled, USERS_COLLECTION);
     return collection.readByMany(args);
   }
 
   createUser(args: MutationCreateUserArgs) {
-    const collection = new CollectionPlugin(
-      this._dbClient,
-      this._streamsEnabled,
-      USERS_COLLECTION
-    );
+    const collection = new CollectionPlugin(this._dbClient, this._streamsEnabled, USERS_COLLECTION);
     return collection.create(args);
   }
 
   updateUser(args: MutationUpdateUserArgs) {
-    const collection = new CollectionPlugin(
-      this._dbClient,
-      this._streamsEnabled,
-      USERS_COLLECTION
-    );
+    const collection = new CollectionPlugin(this._dbClient, this._streamsEnabled, USERS_COLLECTION);
     return collection.update(args);
   }
 
   deleteUser(args: MutationDeleteUserArgs) {
-    const collection = new CollectionPlugin(
-      this._dbClient,
-      this._streamsEnabled,
-      USERS_COLLECTION
-    );
+    const collection = new CollectionPlugin(this._dbClient, this._streamsEnabled, USERS_COLLECTION);
     return collection.delete(args);
   }
 
   deleteManyUsers(args: MutationDeleteManyUsersArgs) {
-    const collection = new CollectionPlugin(
-      this._dbClient,
-      this._streamsEnabled,
-      USERS_COLLECTION
-    );
+    const collection = new CollectionPlugin(this._dbClient, this._streamsEnabled, USERS_COLLECTION);
     return collection.deleteMany(args);
   }
 
   tenant(args: QueryTenantArgs) {
-    const collection = new CollectionPlugin(
-      this._dbClient,
-      this._streamsEnabled,
-      TENANTS_COLLECTION
-    );
+    const collection = new CollectionPlugin(this._dbClient, this._streamsEnabled, TENANTS_COLLECTION);
     return collection.read(args);
   }
 
   tenants(args: QueryTenantsArgs) {
-    const collection = new CollectionPlugin(
-      this._dbClient,
-      this._streamsEnabled,
-      TENANTS_COLLECTION
-    );
+    const collection = new CollectionPlugin(this._dbClient, this._streamsEnabled, TENANTS_COLLECTION);
     return collection.readMany(args);
   }
 
   tenantsByMany(args: { list: string[]; key?: string }) {
-    const collection = new CollectionPlugin(
-      this._dbClient,
-      this._streamsEnabled,
-      TENANTS_COLLECTION
-    );
+    const collection = new CollectionPlugin(this._dbClient, this._streamsEnabled, TENANTS_COLLECTION);
     return collection.readByMany(args);
   }
 
   createTenant(args: MutationCreateTenantArgs) {
-    const collection = new CollectionPlugin(
-      this._dbClient,
-      this._streamsEnabled,
-      TENANTS_COLLECTION
-    );
+    const collection = new CollectionPlugin(this._dbClient, this._streamsEnabled, TENANTS_COLLECTION);
     return collection.create(args);
   }
 
   updateTenant(args: MutationUpdateTenantArgs) {
-    const collection = new CollectionPlugin(
-      this._dbClient,
-      this._streamsEnabled,
-      TENANTS_COLLECTION
-    );
+    const collection = new CollectionPlugin(this._dbClient, this._streamsEnabled, TENANTS_COLLECTION);
     return collection.update(args);
   }
 
   deleteTenant(args: MutationDeleteTenantArgs) {
-    const collection = new CollectionPlugin(
-      this._dbClient,
-      this._streamsEnabled,
-      TENANTS_COLLECTION
-    );
+    const collection = new CollectionPlugin(this._dbClient, this._streamsEnabled, TENANTS_COLLECTION);
     return collection.delete(args);
   }
 
   deleteManyTenants(args: MutationDeleteManyTenantsArgs) {
-    const collection = new CollectionPlugin(
-      this._dbClient,
-      this._streamsEnabled,
-      TENANTS_COLLECTION
-    );
+    const collection = new CollectionPlugin(this._dbClient, this._streamsEnabled, TENANTS_COLLECTION);
     return collection.deleteMany(args);
   }
 }

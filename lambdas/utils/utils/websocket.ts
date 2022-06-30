@@ -2,7 +2,7 @@ import AWS from "aws-sdk";
 
 const endpoint = `${process.env.WEBSOCKETE_API_ID}.execute-api.${process.env.REGION}.amazonaws.com/${process.env.STAGE}`;
 
-export const sendMessage = async function (connectionId, route, data) {
+export const sendMessage = async function (connectionId: string, route: string, data: any) {
   const params = {
     ConnectionId: connectionId,
     Data: Buffer.from(JSON.stringify({ route, ...data })),
