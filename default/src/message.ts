@@ -3,8 +3,9 @@ import { sendMessage } from "/opt/utils/websocket";
 import { parseBody, response } from "/opt/utils/response";
 import { assert, ERROR_MESSAGES, ERROR_CODES } from "/opt/utils/errors";
 import { CHANNELS_COLLECTION } from "/opt/configs/collections";
+import type { APIGatewayProxyEvent } from "aws-lambda";
 
-export async function message(event) {
+export async function message(event: APIGatewayProxyEvent) {
   const myConnectionId = event?.requestContext?.connectionId;
   const { route, message, channel, connections } = parseBody(event);
 

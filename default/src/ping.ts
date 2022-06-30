@@ -1,7 +1,8 @@
 import { sendMessage } from "/opt/utils/websocket";
 import { parseBody, response } from "/opt/utils/response";
+import type { APIGatewayProxyEvent } from "aws-lambda";
 
-export async function ping(event) {
+export async function ping(event: APIGatewayProxyEvent) {
   const myConnectionId = event?.requestContext?.connectionId;
   const { route } = parseBody(event);
 

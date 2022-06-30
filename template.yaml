@@ -329,7 +329,7 @@ Resources:
         Target: "es2020"
         Sourcemap: false
         EntryPoints:
-        - app.ts
+        - src/app.ts
     Properties:
       FunctionName: !Sub ${ProjectName}-hello-world-${Stage}
       Description: !Sub ${ProjectName} - hello world function
@@ -371,7 +371,7 @@ Resources:
           - "apollo-server-core"
           - "apollo-server-lambda"
         EntryPoints:
-        - app.ts
+        - src/app.ts
     Properties:
       FunctionName: !Sub ${ProjectName}-graphql-${Stage}
       Description: !Sub ${ProjectName} - graphql function
@@ -538,7 +538,7 @@ Resources:
           - "/opt/utils/*"
           - "/opt/configs/*"
         EntryPoints:
-        - app.ts
+        - src/app.ts
     Properties:
       FunctionName: !Sub ${ProjectName}-connect-${Stage}
       Description: !Sub ${ProjectName} - websocket connect function
@@ -560,7 +560,7 @@ Resources:
           - "/opt/utils/*"
           - "/opt/configs/*"
         EntryPoints:
-        - app.ts
+        - src/app.ts
     Properties:
       FunctionName: !Sub ${ProjectName}-disconnect-${Stage}
       Description: !Sub ${ProjectName} - websocket disconnect function
@@ -582,7 +582,7 @@ Resources:
           - "/opt/utils/*"
           - "/opt/configs/*"
         EntryPoints:
-        - app.ts
+        - src/app.ts
     Properties:
       FunctionName: !Sub ${ProjectName}-default-${Stage}
       Description: !Sub ${ProjectName} - websocket default function
