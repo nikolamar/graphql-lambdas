@@ -1,8 +1,21 @@
 import { getMongodbClient } from "/opt/utils/db";
 import { response } from "/opt/utils/response";
 import { CHANNELS_COLLECTION } from "/opt/configs/collections";
+import type { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
 
-export async function handler(event) {
+/**
+ *
+ * Event doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html#api-gateway-simple-proxy-for-lambda-input-format
+ * @param {Object} event - API Gateway Lambda Proxy Input Format
+ *
+ * Return doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html
+ * @returns {Object} object - API Gateway Lambda Proxy Output Format
+ *
+ */
+
+export const handler = async (
+  event: APIGatewayProxyEvent
+): Promise<APIGatewayProxyResult> => {
   const myConnectionId = event?.requestContext?.connectionId;
 
   try {
@@ -28,4 +41,4 @@ export async function handler(event) {
   }
 
   return response(200, "connected");
-}
+};

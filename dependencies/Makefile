@@ -1,7 +1,6 @@
 build-DependenciesLayer:
 	echo "Build layer lambda"
-	zsh -c 'npx esbuild ./utils/**/*.ts --outdir=$(ARTIFACTS_DIR)/utils'
-	zsh -c 'npx esbuild ./configs/**/*.ts --outdir=$(ARTIFACTS_DIR)/configs'
-	cd nodejs && npm install --omit=dev
-	npx node-prune nodejs/node_modules
+	zsh -c 'npx esbuild ./utils/**/*.ts --target=es2020 --format=cjs --outdir=$(ARTIFACTS_DIR)/utils'
+	zsh -c 'npx esbuild ./configs/**/*.ts --target=es2020 --format=cjs --outdir=$(ARTIFACTS_DIR)/configs'
+	cd nodejs && npm ci
 	cp -r nodejs $(ARTIFACTS_DIR)/nodejs
