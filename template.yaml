@@ -378,7 +378,9 @@ Resources:
       CodeUri: lambdas/graphql/
       Handler: app.handler
       Layers:
-        - !Ref DependenciesLayer
+        - !Ref NodejsLayer
+        - !Ref ConfigsLayer
+        - !Ref UtilsLayer
       Policies:
       - Statement:
         - Effect: Allow
@@ -545,7 +547,9 @@ Resources:
       CodeUri: lambdas/connect/
       Handler: app.handler
       Layers:
-        - !Ref DependenciesLayer
+        - !Ref NodejsLayer
+        - !Ref ConfigsLayer
+        - !Ref UtilsLayer
 
   DisconnectFunction:
     Type: AWS::Serverless::Function
@@ -567,7 +571,9 @@ Resources:
       CodeUri: lambdas/disconnect/
       Handler: app.handler
       Layers:
-        - !Ref DependenciesLayer
+        - !Ref NodejsLayer
+        - !Ref ConfigsLayer
+        - !Ref UtilsLayer
 
   DefaultFunction:
     Type: AWS::Serverless::Function
@@ -589,7 +595,9 @@ Resources:
       CodeUri: lambdas/default/
       Handler: app.handler
       Layers:
-        - !Ref DependenciesLayer
+        - !Ref NodejsLayer
+        - !Ref ConfigsLayer
+        - !Ref UtilsLayer
       Policies:
       - Statement:
         - Effect: Allow
@@ -602,14 +610,40 @@ Resources:
   #   DEPENDENCIES  #
   ###################
 
-  DependenciesLayer:
+  NodejsLayer:
     Type: AWS::Serverless::LayerVersion
     Metadata:
       BuildMethod: makefile
     Properties:
-      LayerName: !Sub ${ProjectName}-dependencies-${Stage}
-      Description: !Sub ${ProjectName} - dependencies for all functions
-      ContentUri: lambdas/dependencies/
+      LayerName: !Sub ${ProjectName}-nodejs-layer-${Stage}
+      Description: !Sub ${ProjectName} - nodejs layer modules
+      ContentUri: lambdas/nodejs/
+      CompatibleRuntimes:
+        - nodejs16.x
+      LicenseInfo: MIT
+      RetentionPolicy: Retain
+
+  ConfigsLayer:
+    Type: AWS::Serverless::LayerVersion
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      LayerName: !Sub ${ProjectName}-configs-layer-${Stage}
+      Description: !Sub ${ProjectName} - configs layer
+      ContentUri: lambdas/configs/
+      CompatibleRuntimes:
+        - nodejs16.x
+      LicenseInfo: MIT
+      RetentionPolicy: Retain
+
+  UtilsLayer:
+    Type: AWS::Serverless::LayerVersion
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      LayerName: !Sub ${ProjectName}-utils-layer-${Stage}
+      Description: !Sub ${ProjectName} - utils layer
+      ContentUri: lambdas/utils/
       CompatibleRuntimes:
         - nodejs16.x
       LicenseInfo: MIT
