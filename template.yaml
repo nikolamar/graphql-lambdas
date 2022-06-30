@@ -268,6 +268,8 @@ Resources:
       DefaultRouteSettings:
         ThrottlingBurstLimit: 200
       RouteSettings:
+        "GET /hello":
+          ThrottlingBurstLimit: 200
         "GET /graphql":
           ThrottlingBurstLimit: 200
         "POST /graphql":
@@ -313,6 +315,31 @@ Resources:
   ###################
   # HTTP FUNCTIONS  #
   ###################
+
+  HelloWorldFunction:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: false
+        Target: "es2020"
+        Sourcemap: false
+        EntryPoints: 
+        - app.ts
+    Properties:
+      CodeUri: hello-world/
+      Handler: app.lambdaHandler
+      Layers:
+        - !Ref DependenciesLayers
+      Runtime: nodejs16.x
+      Architectures:
+        - x86_64
+      Events:
+        HelloWorld:
+          Type: HttpApi
+          Properties:
+            Method: GET
+            Path: /hello
 
   GraphqlFunction:
     Type: AWS::Serverless::Function
