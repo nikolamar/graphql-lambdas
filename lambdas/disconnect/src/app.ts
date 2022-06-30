@@ -13,9 +13,7 @@ import type { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
  *
  */
 
-export const handler = async (
-  event: APIGatewayProxyEvent
-): Promise<APIGatewayProxyResult> => {
+export const handler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const myConnectionId = event?.requestContext?.connectionId;
 
   try {
@@ -26,10 +24,7 @@ export const handler = async (
     });
 
     if (channel) {
-      await collection.updateOne(
-        { name: "public" },
-        { $pull: { connections: myConnectionId } }
-      );
+      await collection.updateOne({ name: "public" }, { $pull: { connections: myConnectionId } });
     }
   } catch (e) {
     console.log(e);

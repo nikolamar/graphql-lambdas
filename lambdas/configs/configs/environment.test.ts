@@ -24,7 +24,7 @@ describe("environment config test", () => {
       'should check if process.env.NODE_ENV="prod" is (not) in %o',
       (namespaces: any, expectedOutput: any) => {
         expect(isNodeEnvOneOf(...namespaces)).toEqual(expectedOutput);
-      }
+      },
     );
   });
 });

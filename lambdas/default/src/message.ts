@@ -31,10 +31,7 @@ export async function message(event: APIGatewayProxyEvent) {
       const dbChannel = await collection.findOne({ name: channel });
 
       if (dbChannel) {
-        await collection.updateOne(
-          { name: channel },
-          { $pull: { connections: { $in: failedConnections } } }
-        );
+        await collection.updateOne({ name: channel }, { $pull: { connections: { $in: failedConnections } } });
       }
     } catch (e) {
       console.log(e);
