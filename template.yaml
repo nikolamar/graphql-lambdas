@@ -398,8 +398,6 @@ Resources:
             ApiId: !Ref HttpApi
             Method: GET
             Path: /graphql
-            Auth:
-              Authorizer: NONE
             TimeoutInMillis: 5000
             PayloadFormatVersion: "2.0"
             RouteSettings:
