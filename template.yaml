@@ -110,8 +110,6 @@ Resources:
           TemporaryPasswordValidityDays: 30
       UsernameConfiguration:
         CaseSensitive: true
-      AttributesRequireVerificationBeforeUpdate:
-        - email
       AccountRecoverySetting:
         RecoveryMechanisms:
           - Name: verified_email
@@ -330,19 +328,21 @@ Resources:
         EntryPoints:
         - app.ts
     Properties:
+      FunctionName: !Sub ${ProjectName}-hello-world-${Stage}
+      Description: !Sub ${ProjectName} - hello world function
       CodeUri: hello-world/
-      Handler: app.lambdaHandler
-      Layers:
-        - !Ref DependenciesLayer
-      Runtime: nodejs16.x
-      Architectures:
-        - x86_64
+      Handler: app.handler
       Events:
-        HelloWorld:
+        HelloWorldGetEvent:
           Type: HttpApi
           Properties:
+            ApiId: !Ref HttpApi
             Method: GET
             Path: /hello
+            TimeoutInMillis: 5000
+            PayloadFormatVersion: "2.0"
+            RouteSettings:
+              ThrottlingBurstLimit: 10
 
   GraphqlFunction:
     Type: AWS::Serverless::Function
@@ -641,6 +641,15 @@ Resources:
     Properties:
       Action: lambda:InvokeFunction
       FunctionName: !Ref DefaultFunction
+      Principal: apigateway.amazonaws.com
+
+  HelloWorldPermission:
+    Type: AWS::Lambda::Permission
+    DependsOn:
+      - HttpApi
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref HelloWorldFunction
       Principal: apigateway.amazonaws.com
 
   GraphqlPermission:
