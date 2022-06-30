@@ -110,6 +110,9 @@ Resources:
           TemporaryPasswordValidityDays: 30
       UsernameConfiguration:
         CaseSensitive: true
+      UserAttributeUpdateSettings:
+        AttributesRequireVerificationBeforeUpdate:
+          - email
       AccountRecoverySetting:
         RecoveryMechanisms:
           - Name: verified_email
@@ -121,8 +124,8 @@ Resources:
         InviteMessageTemplate:
           EmailMessage: Your username is {username} and temporary password is {####}
           EmailSubject: Your temporary password
-      # AutoVerifiedAttributes:
-      #   - email
+      AutoVerifiedAttributes:
+        - email
       #   - phone_number
       # SmsConfiguration:
       #   ExternalId: 'xxx-xxx-xxx'
