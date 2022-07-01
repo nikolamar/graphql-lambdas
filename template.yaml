@@ -14,11 +14,9 @@ Description: >
 
 Globals:
   Function:
-    Runtime: nodejs14.x
+    Runtime: nodejs16.x
     Timeout: 5
     MemorySize: 1024
-    Architectures:
-      - x86_64
     Environment:
       Variables:
         STAGE: !Ref Stage
@@ -88,6 +86,13 @@ Parameters:
 Resources:
 
   ###################
+  #       LOGS      #
+  ###################
+
+  AccessLogs:
+    Type: AWS::Logs::LogGroup
+
+  ###################
   #     Cognito     #
   ###################
 
@@ -105,18 +110,22 @@ Resources:
           TemporaryPasswordValidityDays: 30
       UsernameConfiguration:
         CaseSensitive: true
+      UserAttributeUpdateSettings:
+        AttributesRequireVerificationBeforeUpdate:
+          - email
       AccountRecoverySetting:
         RecoveryMechanisms:
           - Name: verified_email
             Priority: 1
       EmailVerificationSubject: Confirm your email
-      EmailVerificationMessage: verification code  {####}
+      EmailVerificationMessage: verification code {####}
       SmsVerificationMessage: Your verification code {####}
       AdminCreateUserConfig:
         InviteMessageTemplate:
           EmailMessage: Your username is {username} and temporary password is {####}
           EmailSubject: Your temporary password
-      # AutoVerifiedAttributes:
+      AutoVerifiedAttributes:
+        - email
       #   - phone_number
       # SmsConfiguration:
       #   ExternalId: 'xxx-xxx-xxx'
@@ -263,6 +272,8 @@ Resources:
       DefaultRouteSettings:
         ThrottlingBurstLimit: 200
       RouteSettings:
+        "GET /hello":
+          ThrottlingBurstLimit: 200
         "GET /graphql":
           ThrottlingBurstLimit: 200
         "POST /graphql":
@@ -306,6 +317,107 @@ Resources:
           Value: !Sub ${SubDomainName}.${DomainName}
 
   ###################
+  # HTTP FUNCTIONS  #
+  ###################
+
+  HelloWorldFunction:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: false
+        Target: "es2020"
+        Sourcemap: false
+        EntryPoints:
+        - src/app.ts
+    Properties:
+      FunctionName: !Sub ${ProjectName}-hello-world-${Stage}
+      Description: !Sub ${ProjectName} - hello world function
+      CodeUri: lambdas/hello-world/
+      Handler: app.handler
+      Events:
+        HelloWorldGetEvent:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Method: GET
+            Path: /hello
+            TimeoutInMillis: 5000
+            PayloadFormatVersion: "2.0"
+            RouteSettings:
+              ThrottlingBurstLimit: 10
+
+  GraphqlFunction:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        UseNpmCi: True
+        Minify: false
+        Target: "es2020"
+        Sourcemap: false
+        External:
+          - "/opt/utils/*"
+          - "/opt/configs/*"
+          - "aws-sdk"
+          - "dataloader"
+          - "@graphql-tools/*"
+          - "dayjs"
+          - "dayjs/*"
+          - "mongodb"
+          - "apollo-datasource"
+          - "apollo-datasource-rest"
+          - "graphql-middleware"
+          - "apollo-server-core"
+          - "apollo-server-lambda"
+        EntryPoints:
+        - src/app.ts
+    Properties:
+      FunctionName: !Sub ${ProjectName}-graphql-${Stage}
+      Description: !Sub ${ProjectName} - graphql function
+      CodeUri: lambdas/graphql/
+      Handler: app.handler
+      Layers:
+        - !Ref NodejsLayer
+        - !Ref ConfigsLayer
+        - !Ref UtilsLayer
+      Policies:
+      - Statement:
+        - Effect: Allow
+          Action:
+          - 'cognito-idp:AdminConfirmSignUp'
+          - 'cognito-idp:AdminUpdateUserAttributes'
+          - 'cognito-idp:AdminCreateUser'
+          - 'cognito-idp:AdminDeleteUser'
+          - 'execute-api:ManageConnections'
+          Resource:
+          - !Sub 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketApi}/*'
+          - !Sub 'arn:aws:cognito-idp:${AWS::Region}:${AWS::AccountId}:userpool/${CognitoUserPool}'
+      Events:
+        GraphqlGetEvent:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Method: GET
+            Path: /graphql
+            TimeoutInMillis: 5000
+            PayloadFormatVersion: "2.0"
+            RouteSettings:
+              ThrottlingBurstLimit: 10
+        GraphqlPostEvent:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Method: POST
+            Path: /graphql
+            Auth:
+              Authorizer: CognitoAuthorizer
+            TimeoutInMillis: 5000
+            PayloadFormatVersion: "2.0"
+            RouteSettings:
+              ThrottlingBurstLimit: 600
+
+  ###################
   #    WEBSOCKET    #
   ###################
 
@@ -340,13 +452,6 @@ Resources:
       Description: prod stage
       DeploymentId: !Ref WebSocketDeployment
       ApiId: !Ref WebSocketApi
-
-  ###################
-  #       LOGS      #
-  ###################
-
-  AccessLogs:
-    Type: AWS::Logs::LogGroup
 
   ###################
   #    WS ROUTES    #
@@ -424,33 +529,75 @@ Resources:
 
   ConnectFunction:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        UseNpmCi: True
+        Minify: false
+        Target: "es2020"
+        Sourcemap: false
+        External:
+          - "/opt/utils/*"
+          - "/opt/configs/*"
+        EntryPoints:
+        - src/app.ts
     Properties:
       FunctionName: !Sub ${ProjectName}-connect-${Stage}
       Description: !Sub ${ProjectName} - websocket connect function
-      CodeUri: dist/connect/
+      CodeUri: lambdas/connect/
       Handler: app.handler
       Layers:
-        - !Ref DependenciesLayers
+        - !Ref NodejsLayer
+        - !Ref ConfigsLayer
+        - !Ref UtilsLayer
 
   DisconnectFunction:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        UseNpmCi: True
+        Minify: false
+        Target: "es2020"
+        Sourcemap: false
+        External:
+          - "/opt/utils/*"
+          - "/opt/configs/*"
+        EntryPoints:
+        - src/app.ts
     Properties:
       FunctionName: !Sub ${ProjectName}-disconnect-${Stage}
       Description: !Sub ${ProjectName} - websocket disconnect function
-      CodeUri: dist/disconnect/
+      CodeUri: lambdas/disconnect/
       Handler: app.handler
       Layers:
-        - !Ref DependenciesLayers
+        - !Ref NodejsLayer
+        - !Ref ConfigsLayer
+        - !Ref UtilsLayer
 
   DefaultFunction:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        UseNpmCi: True
+        Minify: false
+        Target: "es2020"
+        Sourcemap: false
+        External:
+          - "/opt/utils/*"
+          - "/opt/configs/*"
+        EntryPoints:
+        - src/app.ts
     Properties:
       FunctionName: !Sub ${ProjectName}-default-${Stage}
       Description: !Sub ${ProjectName} - websocket default function
-      CodeUri: dist/default/
+      CodeUri: lambdas/default/
       Handler: app.handler
       Layers:
-        - !Ref DependenciesLayers
+        - !Ref NodejsLayer
+        - !Ref ConfigsLayer
+        - !Ref UtilsLayer
       Policies:
       - Statement:
         - Effect: Allow
@@ -460,66 +607,45 @@ Resources:
           - !Sub 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketApi}/*'
 
   ###################
-  # HTTP FUNCTIONS  #
+  #      Layers     #
   ###################
 
-  GraphqlFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName: !Sub ${ProjectName}-graphql-${Stage}
-      Description: !Sub ${ProjectName} - graphql function
-      CodeUri: dist/graphql/
-      Handler: app.handler
-      Layers:
-        - !Ref DependenciesLayers
-      Policies:
-      - Statement:
-        - Effect: Allow
-          Action:
-          - 'cognito-idp:AdminConfirmSignUp'
-          - 'cognito-idp:AdminUpdateUserAttributes'
-          - 'cognito-idp:AdminCreateUser'
-          - 'cognito-idp:AdminDeleteUser'
-          - 'execute-api:ManageConnections'
-          Resource:
-          - !Sub 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketApi}/*'
-          - !Sub 'arn:aws:cognito-idp:${AWS::Region}:${AWS::AccountId}:userpool/${CognitoUserPool}'
-      Events:
-        GraphqlGetEvent:
-          Type: HttpApi
-          Properties:
-            ApiId: !Ref HttpApi
-            Method: GET
-            Path: /graphql
-            TimeoutInMillis: 5000
-            PayloadFormatVersion: "2.0"
-            RouteSettings:
-              ThrottlingBurstLimit: 10
-        GraphqlPostEvent:
-          Type: HttpApi
-          Properties:
-            ApiId: !Ref HttpApi
-            Method: POST
-            Path: /graphql
-            Auth:
-              Authorizer: CognitoAuthorizer
-            TimeoutInMillis: 5000
-            PayloadFormatVersion: "2.0"
-            RouteSettings:
-              ThrottlingBurstLimit: 600
-
-  ###################
-  #   DEPENDENCIES  #
-  ###################
-
-  DependenciesLayers:
+  NodejsLayer:
     Type: AWS::Serverless::LayerVersion
+    Metadata:
+      BuildMethod: makefile
     Properties:
-      LayerName: !Sub ${ProjectName}-dependencies-${Stage}
-      Description: !Sub ${ProjectName} - dependencies for all functions
-      ContentUri: dist/dependencies/
+      LayerName: !Sub ${ProjectName}-nodejs-layer-${Stage}
+      Description: !Sub ${ProjectName} - nodejs layer modules
+      ContentUri: lambdas/nodejs/
       CompatibleRuntimes:
-        - nodejs14.x
+        - nodejs16.x
+      LicenseInfo: MIT
+      RetentionPolicy: Retain
+
+  ConfigsLayer:
+    Type: AWS::Serverless::LayerVersion
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      LayerName: !Sub ${ProjectName}-configs-layer-${Stage}
+      Description: !Sub ${ProjectName} - configs layer
+      ContentUri: lambdas/configs/
+      CompatibleRuntimes:
+        - nodejs16.x
+      LicenseInfo: MIT
+      RetentionPolicy: Retain
+
+  UtilsLayer:
+    Type: AWS::Serverless::LayerVersion
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      LayerName: !Sub ${ProjectName}-utils-layer-${Stage}
+      Description: !Sub ${ProjectName} - utils layer
+      ContentUri: lambdas/utils/
+      CompatibleRuntimes:
+        - nodejs16.x
       LicenseInfo: MIT
       RetentionPolicy: Retain
 
@@ -552,6 +678,15 @@ Resources:
     Properties:
       Action: lambda:InvokeFunction
       FunctionName: !Ref DefaultFunction
+      Principal: apigateway.amazonaws.com
+
+  HelloWorldPermission:
+    Type: AWS::Lambda::Permission
+    DependsOn:
+      - HttpApi
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref HelloWorldFunction
       Principal: apigateway.amazonaws.com
 
   GraphqlPermission:
