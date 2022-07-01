@@ -1,3 +1,9 @@
 build-UtilsLayer:
 	echo "Build utils layer"
-	zsh -c 'npx esbuild ./utils/**/*.ts --target=es2020 --format=cjs --outdir=$(ARTIFACTS_DIR)/utils'
+	zsh -c 'npx esbuild ./utils/**/*.ts \
+		--target=node16 \
+		--platform=node \
+		--minify=false \
+		--format=cjs \
+		--outdir=$(ARTIFACTS_DIR)/utils \
+'
