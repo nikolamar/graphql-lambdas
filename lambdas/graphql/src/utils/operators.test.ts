@@ -1,4 +1,4 @@
-import { createMatchFromOperators } from "../operators";
+import { createMatchFromOperators } from "./operators";
 
 const expectedOrCondition = {
   $or: [{ email: "test@evernym.com" }, { name: new RegExp("start", "i") }],

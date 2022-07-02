@@ -6,31 +6,19 @@ import { getMongodbConnectionWithClient } from "/opt/utils/db";
 import { ApolloTestServer } from "../utils/server-test";
 import type { Tenant, User } from "../generated";
 
-const usersQuery = fs.readFileSync(
-  path.resolve(__dirname, "../queries/users.graphql"),
-  "utf8"
-);
-const createUserMutation = fs.readFileSync(
-  path.resolve(__dirname, "../../test/mutations/create-user.graphql"),
-  "utf8"
-);
+const usersQuery = fs.readFileSync(path.resolve(__dirname, "../queries/users.graphql"), "utf8");
+const createUserMutation = fs.readFileSync(path.resolve(__dirname, "../../test/mutations/create-user.graphql"), "utf8");
 const createTenantMutation = fs.readFileSync(
   path.resolve(__dirname, "../../test/mutations/create-tenant.graphql"),
-  "utf8"
+  "utf8",
 );
 
-const deleteUserMutation = fs.readFileSync(
-  path.resolve(__dirname, "../../test/mutations/delete-user.graphql"),
-  "utf8"
-);
+const deleteUserMutation = fs.readFileSync(path.resolve(__dirname, "../../test/mutations/delete-user.graphql"), "utf8");
 const deleteTenantMutation = fs.readFileSync(
   path.resolve(__dirname, "../../test/mutations/delete-tenant.graphql"),
-  "utf8"
+  "utf8",
 );
-const signUp = fs.readFileSync(
-  path.resolve(__dirname, "../../test/mutations/sign-up.graphql"),
-  "utf8"
-);
+const signUp = fs.readFileSync(path.resolve(__dirname, "../../test/mutations/sign-up.graphql"), "utf8");
 
 describe("user resolver", () => {
   let adminUser: User;
@@ -111,9 +99,7 @@ describe("user resolver", () => {
       expect(userResponse.data.createUser.email).toEqual(userEmail);
       expect(userResponse.data.createUser.role).toEqual("user");
       expect(userResponse.data.createUser.tenantId).toEqual(tenant._id);
-      expect(userResponse.data.createUser.tenant.name).toEqual(
-        "Admin Tenant 1"
-      );
+      expect(userResponse.data.createUser.tenant.name).toEqual("Admin Tenant 1");
       usersList.push(userResponse.data.createUser);
     }
   });
@@ -141,12 +127,8 @@ describe("user resolver", () => {
     const allUsers = await server.test(usersQuery, {
       variables: { first: 50, order: "desc", sortBy: "email" },
     });
-    expect(users2.data.users.edges[0].node).toEqual(
-      allUsers.data.users.edges[5].node
-    );
-    expect(users3.data.users.edges[0].node).toEqual(
-      allUsers.data.users.edges[10].node
-    );
+    expect(users2.data.users.edges[0].node).toEqual(allUsers.data.users.edges[5].node);
+    expect(users3.data.users.edges[0].node).toEqual(allUsers.data.users.edges[10].node);
     expect(users1.data.users.pageInfo.hasNextPage).toEqual(true);
     expect(users1.data.users.pageInfo.hasPreviousPage).toEqual(false);
     expect(users2.data.users.pageInfo.hasNextPage).toEqual(true);
