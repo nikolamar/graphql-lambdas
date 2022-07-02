@@ -11,24 +11,24 @@ const usersQuery = fs.readFileSync(
   "utf8"
 );
 const createUserMutation = fs.readFileSync(
-  path.resolve(__dirname, "../mutations/create-user.graphql"),
+  path.resolve(__dirname, "../../test/mutations/create-user.graphql"),
   "utf8"
 );
 const createTenantMutation = fs.readFileSync(
-  path.resolve(__dirname, "../mutations/create-tenant.graphql"),
+  path.resolve(__dirname, "../../test/mutations/create-tenant.graphql"),
   "utf8"
 );
 
 const deleteUserMutation = fs.readFileSync(
-  path.resolve(__dirname, "../mutations/delete-user.graphql"),
+  path.resolve(__dirname, "../../test/mutations/delete-user.graphql"),
   "utf8"
 );
 const deleteTenantMutation = fs.readFileSync(
-  path.resolve(__dirname, "../mutations/delete-tenant.graphql"),
+  path.resolve(__dirname, "../../test/mutations/delete-tenant.graphql"),
   "utf8"
 );
 const signUp = fs.readFileSync(
-  path.resolve(__dirname, "../mutations/sign-up.graphql"),
+  path.resolve(__dirname, "../../test/mutations/sign-up.graphql"),
   "utf8"
 );
 

@@ -6,14 +6,8 @@ import { getMongodbConnectionWithClient } from "/opt/utils/db";
 import { ApolloTestServer } from "../utils/server-test";
 import type { User } from "../generated";
 
-const deleteUserMutation = fs.readFileSync(
-  path.resolve(__dirname, "../mutations/delete-user.graphql"),
-  "utf8"
-);
-const signUp = fs.readFileSync(
-  path.resolve(__dirname, "../mutations/sign-up.graphql"),
-  "utf8"
-);
+const deleteUserMutation = fs.readFileSync(path.resolve(__dirname, "../../test/mutations/delete-user.graphql"), "utf8");
+const signUp = fs.readFileSync(path.resolve(__dirname, "../../test/mutations/sign-up.graphql"), "utf8");
 
 describe("sign-up", () => {
   let user: User;
