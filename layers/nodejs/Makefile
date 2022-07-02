@@ -1,3 +1,4 @@
-build-SchemasLayer:
-	echo "Copy schemas layer"
-	cp -r schemas $(ARTIFACTS_DIR)/schemas
+build-NodejsLayer:
+	echo "Build nodejs layer"
+	cd nodejs && npm ci
+	cp -r nodejs $(ARTIFACTS_DIR)/nodejs
