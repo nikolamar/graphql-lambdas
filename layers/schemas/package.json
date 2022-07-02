@@ -10,9 +10,14 @@
     "unit": "jest",
     "lint": "eslint '*.ts' --quiet --fix",
     "compile": "tsc",
-    "test": "npm run compile && npm run unit"
+    "test": "npm run compile && npm run unit",
+    "graphql:gen": "graphql-codegen --config codegen.yml"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "^2.6.2",
+    "@graphql-codegen/introspection": "^2.1.1",
+    "@graphql-codegen/typescript": "^2.5.1",
+    "@graphql-codegen/typescript-resolvers": "^2.6.6",
     "@types/aws-lambda": "^8.10.92",
     "@types/aws-sdk": "^2.7.0",
     "@types/jest": "^27.5.2",
