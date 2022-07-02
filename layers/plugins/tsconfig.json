@@ -11,12 +11,11 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "paths": {
+      "/opt/utils/*": ["../../layers/utils/utils/*"],
       "/opt/configs/*": ["../../layers/configs/configs/*"],
-      "/opt/schemas/*": ["../../layers/schemas/schemas/*"],
-      "dayjs": ["../../layers/nodejs/nodejs/node_modules/dayjs"],
-      "dayjs/*": ["../../layers/nodejs/nodejs/node_modules/dayjs/*"],
-      "nanoid": ["../../layers/nodejs/nodejs/node_modules/nanoid"],
-      "mongodb": ["../../layers/nodejs/nodejs/node_modules/mongodb"]
+      "/opt/datasources/*": ["../../layers/datasources/datasources/*"],
+      "dataloader": ["../../layers/nodejs/nodejs/node_modules/dataloader"],
+      "mongodb": ["../../layers/nodejs/nodejs/node_modules/mongodb"],
     }
   },
   "exclude": ["node_modules"]

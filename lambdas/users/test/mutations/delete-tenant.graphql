@@ -1,0 +1,3 @@
+mutation deleteTenant ($where: TenantFilter!) {
+  deleteTenant (where: $where)
+}

@@ -1,5 +1,5 @@
 {
-  "name": "nodejs-layer",
+  "name": "plugins-layer",
   "version": "0.2.3",
   "description": "",
   "main": "app.js",
@@ -25,7 +25,6 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
     "jest": "^27.5.0",
-    "node-prune": "^1.0.2",
     "prettier": "^2.5.1",
     "ts-node": "^10.4.0",
     "typescript": "^4.5.5"

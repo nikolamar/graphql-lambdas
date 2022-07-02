@@ -29,6 +29,29 @@ Globals:
         CLIENT_ID: !Ref CognitoUserPoolClient
         NODE_ENV: !Ref Stage
         VERSION: !Ref Version
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        UseNpmCi: True
+        Minify: false
+        Target: "es2020"
+        Sourcemap: false
+        External:
+          - "/opt/utils/*"
+          - "/opt/configs/*"
+          - "aws-sdk"
+          - "dataloader"
+          - "@graphql-tools/*"
+          - "dayjs"
+          - "dayjs/*"
+          - "mongodb"
+          - "apollo-datasource"
+          - "apollo-datasource-rest"
+          - "graphql-middleware"
+          - "apollo-server-core"
+          - "apollo-server-lambda"
+        EntryPoints:
+        - src/app.ts
 
 ###################
 #   PARAMETERS    #
@@ -150,32 +173,6 @@ Resources:
           Mutable: true
           Required: false
 
-  # CognitoSMSRole:
-  #   Type: AWS::IAM::Role
-  #   Properties:
-  #     AssumeRolePolicyDocument:
-  #       Version: 2012-10-17
-  #       Statement:
-  #         - Effect: Allow
-  #           Principal:
-  #             Service: 'cognito-idp.amazonaws.com'
-  #           Action:
-  #             - 'sts:AssumeRole'
-  #           Condition:
-  #             StringEquals:
-  #               'sts:ExternalId': 'xxx-xxx-xxx'
-  #     Policies:
-  #       - PolicyDocument:
-  #           Version: 2012-10-17
-  #           Statement:
-  #             - Effect: Allow
-  #               Action:
-  #                 - 'sns:Publish'
-  #               Resource:
-  #                 - '*'
-  #         PolicyName: CognitoSendSMS
-  #     RoleName: CognitoSMSRole
-
   CognitoUserPoolClient:
     Type: AWS::Cognito::UserPoolClient
     Properties:
@@ -237,19 +234,6 @@ Resources:
         given_name: "given_name"
         family_name: "family_name"
 
-  # FacebookUserPoolIdentityProvider:
-  #   Type: AWS::Cognito::UserPoolIdentityProvider
-  #   Properties:
-  #     UserPoolId: !Ref CognitoUserPool
-  #     ProviderName: "Facebook"
-  #     ProviderDetails:
-  #       client_id: "YourFacebookAppId"
-  #       client_secret: "YourFacebookAppSecret"
-  #       authorize_scopes: "public_profile,email"
-  #     ProviderType: "Facebook"
-  #     AttributeMapping:
-  #       email: "email"
-
   ###################
   #       HTTP      #
   ###################
@@ -274,9 +258,13 @@ Resources:
       RouteSettings:
         "GET /hello":
           ThrottlingBurstLimit: 200
-        "GET /graphql":
+        "GET /users":
           ThrottlingBurstLimit: 200
-        "POST /graphql":
+        "POST /users":
+          ThrottlingBurstLimit: 200
+        "GET /tenants":
+          ThrottlingBurstLimit: 200
+        "POST /tenants":
           ThrottlingBurstLimit: 200
       StageVariables:
         StageVar: Value
@@ -342,45 +330,25 @@ Resources:
             ApiId: !Ref HttpApi
             Method: GET
             Path: /hello
-            TimeoutInMillis: 5000
+            TimeoutInMillis: 1000
             PayloadFormatVersion: "2.0"
             RouteSettings:
               ThrottlingBurstLimit: 10
 
-  GraphqlFunction:
+  UsersFunction:
     Type: AWS::Serverless::Function
-    Metadata:
-      BuildMethod: esbuild
-      BuildProperties:
-        UseNpmCi: True
-        Minify: false
-        Target: "es2020"
-        Sourcemap: false
-        External:
-          - "/opt/utils/*"
-          - "/opt/configs/*"
-          - "aws-sdk"
-          - "dataloader"
-          - "@graphql-tools/*"
-          - "dayjs"
-          - "dayjs/*"
-          - "mongodb"
-          - "apollo-datasource"
-          - "apollo-datasource-rest"
-          - "graphql-middleware"
-          - "apollo-server-core"
-          - "apollo-server-lambda"
-        EntryPoints:
-        - src/app.ts
     Properties:
-      FunctionName: !Sub ${ProjectName}-graphql-${Stage}
-      Description: !Sub ${ProjectName} - graphql function
-      CodeUri: lambdas/graphql/
+      FunctionName: !Sub ${ProjectName}-users-${Stage}
+      Description: !Sub ${ProjectName} - users function
+      CodeUri: lambdas/users/
       Handler: app.handler
       Layers:
         - !Ref NodejsLayer
         - !Ref ConfigsLayer
         - !Ref UtilsLayer
+        - !Ref PluginsLayer
+        - !Ref DatasourcesLayer
+        - !Ref SchemasLayer
       Policies:
       - Statement:
         - Effect: Allow
@@ -394,25 +362,135 @@ Resources:
           - !Sub 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${WebSocketApi}/*'
           - !Sub 'arn:aws:cognito-idp:${AWS::Region}:${AWS::AccountId}:userpool/${CognitoUserPool}'
       Events:
-        GraphqlGetEvent:
+        UsersGetEvent:
           Type: HttpApi
           Properties:
             ApiId: !Ref HttpApi
             Method: GET
-            Path: /graphql
+            Path: /users
             TimeoutInMillis: 5000
             PayloadFormatVersion: "2.0"
             RouteSettings:
               ThrottlingBurstLimit: 10
-        GraphqlPostEvent:
+        UsersPostEvent:
           Type: HttpApi
           Properties:
             ApiId: !Ref HttpApi
             Method: POST
-            Path: /graphql
+            Path: /users
             Auth:
               Authorizer: CognitoAuthorizer
             TimeoutInMillis: 5000
+            PayloadFormatVersion: "2.0"
+            RouteSettings:
+              ThrottlingBurstLimit: 600
+
+  TenantsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub ${ProjectName}-tenants-${Stage}
+      Description: !Sub ${ProjectName} - tenants function
+      CodeUri: lambdas/tenants/
+      Handler: app.handler
+      Layers:
+        - !Ref NodejsLayer
+        - !Ref ConfigsLayer
+        - !Ref UtilsLayer
+        - !Ref PluginsLayer
+        - !Ref DatasourcesLayer
+        - !Ref SchemasLayer
+      Events:
+        TenantsGetEvent:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Method: GET
+            Path: /tenants
+            TimeoutInMillis: 5000
+            PayloadFormatVersion: "2.0"
+            RouteSettings:
+              ThrottlingBurstLimit: 10
+        TenantsPostEvent:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Method: POST
+            Path: /tenants
+            Auth:
+              Authorizer: CognitoAuthorizer
+            TimeoutInMillis: 5000
+            PayloadFormatVersion: "2.0"
+            RouteSettings:
+              ThrottlingBurstLimit: 600
+
+  EnvironmentFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub ${ProjectName}-environment-${Stage}
+      Description: !Sub ${ProjectName} - environment function
+      CodeUri: lambdas/environment/
+      Handler: app.handler
+      Layers:
+        - !Ref NodejsLayer
+        - !Ref ConfigsLayer
+        - !Ref PluginsLayer
+        - !Ref SchemasLayer
+      Events:
+        TenantsGetEvent:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Method: GET
+            Path: /environment
+            TimeoutInMillis: 1000
+            PayloadFormatVersion: "2.0"
+            RouteSettings:
+              ThrottlingBurstLimit: 10
+        TenantsPostEvent:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Method: POST
+            Path: /environment
+            Auth:
+              Authorizer: CognitoAuthorizer
+            TimeoutInMillis: 1000
+            PayloadFormatVersion: "2.0"
+            RouteSettings:
+              ThrottlingBurstLimit: 600
+
+  CognitoFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub ${ProjectName}-cognito-${Stage}
+      Description: !Sub ${ProjectName} - cognito function
+      CodeUri: lambdas/cognito/
+      Handler: app.handler
+      Layers:
+        - !Ref NodejsLayer
+        - !Ref ConfigsLayer
+        - !Ref PluginsLayer
+        - !Ref SchemasLayer
+      Events:
+        TenantsGetEvent:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Method: GET
+            Path: /cognito
+            TimeoutInMillis: 1000
+            PayloadFormatVersion: "2.0"
+            RouteSettings:
+              ThrottlingBurstLimit: 10
+        TenantsPostEvent:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Method: POST
+            Path: /cognito
+            Auth:
+              Authorizer: CognitoAuthorizer
+            TimeoutInMillis: 1000
             PayloadFormatVersion: "2.0"
             RouteSettings:
               ThrottlingBurstLimit: 600
@@ -649,6 +727,45 @@ Resources:
       LicenseInfo: MIT
       RetentionPolicy: Retain
 
+  DatasourcesLayer:
+    Type: AWS::Serverless::LayerVersion
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      LayerName: !Sub ${ProjectName}-datasources-layer-${Stage}
+      Description: !Sub ${ProjectName} - datasources layer
+      ContentUri: layers/datasources/
+      CompatibleRuntimes:
+        - nodejs16.x
+      LicenseInfo: MIT
+      RetentionPolicy: Retain
+
+  PluginsLayer:
+    Type: AWS::Serverless::LayerVersion
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      LayerName: !Sub ${ProjectName}-plugins-layer-${Stage}
+      Description: !Sub ${ProjectName} - plugins layer
+      ContentUri: layers/plugins/
+      CompatibleRuntimes:
+        - nodejs16.x
+      LicenseInfo: MIT
+      RetentionPolicy: Retain
+
+  SchemasLayer:
+    Type: AWS::Serverless::LayerVersion
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      LayerName: !Sub ${ProjectName}-schemas-layer-${Stage}
+      Description: !Sub ${ProjectName} - schemas layer
+      ContentUri: layers/schemas/
+      CompatibleRuntimes:
+        - nodejs16.x
+      LicenseInfo: MIT
+      RetentionPolicy: Retain
+
   ###################
   #   PERMISSIONS   #
   ###################
@@ -689,13 +806,22 @@ Resources:
       FunctionName: !Ref HelloWorldFunction
       Principal: apigateway.amazonaws.com
 
-  GraphqlPermission:
+  UsersPermission:
     Type: AWS::Lambda::Permission
     DependsOn:
       - HttpApi
     Properties:
       Action: lambda:InvokeFunction
-      FunctionName: !Ref GraphqlFunction
+      FunctionName: !Ref UsersFunction
+      Principal: apigateway.amazonaws.com
+
+  TenantsPermission:
+    Type: AWS::Lambda::Permission
+    DependsOn:
+      - HttpApi
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref TenantsFunction
       Principal: apigateway.amazonaws.com
 
 ###################
