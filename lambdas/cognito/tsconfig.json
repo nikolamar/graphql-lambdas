@@ -8,9 +8,9 @@
     "baseUrl": ".",
     "paths": {
       "/opt/utils/*": ["../../layers/utils/utils/*"],
-      "/opt/configs/*": ["../../layers/configs/configs/*"],
+      "/opt/configs/*": ["../../layers/utils/configs/*"],
       "/opt/schemas/*": ["../../layers/schemas/schemas/*"],
-      "/opt/plugins/*": ["../../layers/plugins/plugins/*"],
+      "/opt/plugins/*": ["../../layers/utils/plugins/*"],
       "/opt/datasources/*": ["../../layers/datasources/datasources/*"],
       "@graphql-tools/*": ["../../layers/nodejs/nodejs/node_modules/@graphql-tools/*"],
       "dayjs": ["../../layers/nodejs/nodejs/node_modules/dayjs"],

@@ -1,7 +1,7 @@
 import AWS from "aws-sdk";
 import { DataSource } from "apollo-datasource";
-import { rndchars, rndletters, rndnums } from "/opt/utils/nanoid";
-import { REGION, POOL_ID } from "/opt/configs/cognito";
+import { rndchars, rndletters, rndnums } from "../utils/nanoid";
+import { REGION, POOL_ID } from "../configs/cognito";
 
 export class CognitoDataSource extends DataSource {
   getCognitoUser(username: string) {

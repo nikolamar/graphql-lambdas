@@ -16,7 +16,9 @@
       "dayjs": ["../../layers/nodejs/nodejs/node_modules/dayjs"],
       "dayjs/*": ["../../layers/nodejs/nodejs/node_modules/dayjs/*"],
       "nanoid": ["../../layers/nodejs/nodejs/node_modules/nanoid"],
-      "mongodb": ["../../layers/nodejs/nodejs/node_modules/mongodb"]
+      "mongodb": ["../../layers/nodejs/nodejs/node_modules/mongodb"],
+      "dataloader": ["../../layers/nodejs/nodejs/node_modules/dataloader"],
+      "apollo-datasource": ["../../layers/nodejs/nodejs/node_modules/apollo-datasource"]
     }
   },
   "exclude": ["node_modules"]

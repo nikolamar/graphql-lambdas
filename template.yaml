@@ -324,8 +324,6 @@ Resources:
         External:
           - "/opt/utils/*"
           - "/opt/configs/*"
-          - "/opt/datasources/*"
-          - "/opt/plugins/*"
           - "/opt/schemas/*"
           - "@graphql-tools/*"
           - "graphql-middleware"
@@ -342,8 +340,6 @@ Resources:
         - !Ref NodejsLayer
         - !Ref ConfigsLayer
         - !Ref UtilsLayer
-        - !Ref PluginsLayer
-        - !Ref DatasourcesLayer
         - !Ref SchemasLayer
       Policies:
       - Statement:
@@ -393,8 +389,6 @@ Resources:
         External:
           - "/opt/utils/*"
           - "/opt/configs/*"
-          - "/opt/datasources/*"
-          - "/opt/plugins/*"
           - "/opt/schemas/*"
           - "@graphql-tools/*"
           - "graphql-middleware"
@@ -411,8 +405,6 @@ Resources:
         - !Ref NodejsLayer
         - !Ref ConfigsLayer
         - !Ref UtilsLayer
-        - !Ref PluginsLayer
-        - !Ref DatasourcesLayer
         - !Ref SchemasLayer
       Events:
         TenantsGetEvent:
@@ -450,8 +442,6 @@ Resources:
         External:
           - "/opt/utils/*"
           - "/opt/configs/*"
-          - "/opt/datasources/*"
-          - "/opt/plugins/*"
           - "/opt/schemas/*"
           - "@graphql-tools/*"
           - "graphql-middleware"
@@ -467,7 +457,6 @@ Resources:
       Layers:
         - !Ref NodejsLayer
         - !Ref ConfigsLayer
-        - !Ref PluginsLayer
         - !Ref SchemasLayer
       Events:
         TenantsGetEvent:
@@ -505,8 +494,6 @@ Resources:
         External:
           - "/opt/utils/*"
           - "/opt/configs/*"
-          - "/opt/datasources/*"
-          - "/opt/plugins/*"
           - "/opt/schemas/*"
           - "aws-sdk"
           - "@graphql-tools/*"
@@ -523,7 +510,6 @@ Resources:
       Layers:
         - !Ref NodejsLayer
         - !Ref ConfigsLayer
-        - !Ref PluginsLayer
         - !Ref SchemasLayer
       Events:
         TenantsGetEvent:

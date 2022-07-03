@@ -1,5 +1,5 @@
 import DataLoader from "dataloader";
-import { DatabaseDataSource } from "/opt/datasources/database";
+import { DatabaseDataSource } from "../datasources/database";
 
 export class DataLoaderPlugin {
   private _tenant: DataLoader<string, any>;
@@ -9,7 +9,7 @@ export class DataLoaderPlugin {
       const records = await db.tenantsByMany({ list });
 
       if (!records) {
-        return records.map(() => ({}));
+        return list.map(() => ({}));
       }
 
       const keyValue: Record<string, any> = {};

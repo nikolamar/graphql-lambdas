@@ -1,8 +1,8 @@
 import { ObjectId } from "mongodb";
-import { toId } from "/opt/utils/db";
+import { toId } from "../utils/db";
 import { DatabasePluginInterface } from "./interfaces";
-import { ASC } from "/opt/configs/orders";
-import { createMatchFromOperators } from "/opt/utils/operators";
+import { ASC } from "../configs/orders";
+import { createMatchFromOperators } from "../utils/operators";
 import type { Db } from "mongodb";
 
 export interface ItemChangeParams {

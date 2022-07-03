@@ -1,5 +1,5 @@
 import { MongoClient, ServerApiVersion, ObjectId } from "mongodb";
-import { isNodeEnvOneOf } from "/opt/configs/environment";
+import { isNodeEnvOneOf } from "../configs/environment";
 
 const uri: string = isNodeEnvOneOf("test")
   ? process.env.MONGO_URL || ""

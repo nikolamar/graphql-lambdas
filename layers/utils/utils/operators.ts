@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { $or, EQ, GTE, ID, IN, LTE, OR, REGEX } from "/opt/configs/fields";
+import { $or, EQ, GTE, ID, IN, LTE, OR, REGEX } from "../configs/fields";
 
 export const createMatchFromOperators = (where: any) => {
   const match: any = {};
