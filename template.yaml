@@ -462,7 +462,7 @@ Resources:
         - !Ref ShareLayer
         - !Ref SchemasLayer
       Events:
-        TenantsGetEvent:
+        EnvironmentGetEvent:
           Type: HttpApi
           Properties:
             ApiId: !Ref HttpApi
@@ -472,7 +472,7 @@ Resources:
             PayloadFormatVersion: "2.0"
             RouteSettings:
               ThrottlingBurstLimit: 10
-        TenantsPostEvent:
+        EnvironmentPostEvent:
           Type: HttpApi
           Properties:
             ApiId: !Ref HttpApi
