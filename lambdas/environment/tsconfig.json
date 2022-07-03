@@ -9,8 +9,8 @@
     "paths": {
       "/opt/utils/*": ["../../layers/utils/utils/*"],
       "/opt/configs/*": ["../../layers/utils/configs/*"],
-      "/opt/schemas/*": ["../../layers/schemas/schemas/*"],
       "/opt/plugins/*": ["../../layers/utils/plugins/*"],
+      "/opt/schemas/*": ["../../layers/schemas/schemas/*"],
       "@graphql-tools/*": ["../../layers/nodejs/nodejs/node_modules/@graphql-tools/*"],
       "dayjs": ["../../layers/nodejs/nodejs/node_modules/dayjs"],
       "dayjs/*": ["../../layers/nodejs/nodejs/node_modules/dayjs/*"],

@@ -7,11 +7,11 @@
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "/opt/schemas/*": ["../../layers/schemas/schemas/*"],
       "/opt/utils/*": ["../../layers/utils/utils/*"],
       "/opt/configs/*": ["../../layers/utils/configs/*"],
-      "/opt/schemas/*": ["../../layers/schemas/schemas/*"],
       "/opt/plugins/*": ["../../layers/utils/plugins/*"],
-      "/opt/datasources/*": ["../../layers/datasources/datasources/*"],
+      "/opt/datasources/*": ["../../layers/utils/datasources/*"],
       "@graphql-tools/*": ["../../layers/nodejs/nodejs/node_modules/@graphql-tools/*"],
       "dayjs": ["../../layers/nodejs/nodejs/node_modules/dayjs"],
       "dayjs/*": ["../../layers/nodejs/nodejs/node_modules/dayjs/*"],
