@@ -827,6 +827,24 @@ Resources:
       FunctionName: !Ref TenantsFunction
       Principal: apigateway.amazonaws.com
 
+  CognitoPermission:
+    Type: AWS::Lambda::Permission
+    DependsOn:
+      - HttpApi
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref CognitoFunction
+      Principal: apigateway.amazonaws.com
+
+  EnvironmentPermission:
+    Type: AWS::Lambda::Permission
+    DependsOn:
+      - HttpApi
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref EnvironmentFunction
+      Principal: apigateway.amazonaws.com
+
 ###################
 #     OUTPUTS     #
 ###################
