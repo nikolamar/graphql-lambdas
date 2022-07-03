@@ -362,7 +362,6 @@ Resources:
             ApiId: !Ref HttpApi
             Method: GET
             Path: /users
-            TimeoutInMillis: 5000
             PayloadFormatVersion: "2.0"
             RouteSettings:
               ThrottlingBurstLimit: 10
@@ -374,7 +373,6 @@ Resources:
             Path: /users
             Auth:
               Authorizer: CognitoAuthorizer
-            TimeoutInMillis: 5000
             PayloadFormatVersion: "2.0"
             RouteSettings:
               ThrottlingBurstLimit: 600
@@ -412,7 +410,6 @@ Resources:
             ApiId: !Ref HttpApi
             Method: GET
             Path: /tenants
-            TimeoutInMillis: 5000
             PayloadFormatVersion: "2.0"
             RouteSettings:
               ThrottlingBurstLimit: 10
@@ -424,7 +421,6 @@ Resources:
             Path: /tenants
             Auth:
               Authorizer: CognitoAuthorizer
-            TimeoutInMillis: 5000
             PayloadFormatVersion: "2.0"
             RouteSettings:
               ThrottlingBurstLimit: 600
@@ -462,7 +458,6 @@ Resources:
             ApiId: !Ref HttpApi
             Method: GET
             Path: /environment
-            TimeoutInMillis: 1000
             PayloadFormatVersion: "2.0"
             RouteSettings:
               ThrottlingBurstLimit: 10
@@ -474,7 +469,6 @@ Resources:
             Path: /environment
             Auth:
               Authorizer: CognitoAuthorizer
-            TimeoutInMillis: 1000
             PayloadFormatVersion: "2.0"
             RouteSettings:
               ThrottlingBurstLimit: 600
@@ -513,7 +507,6 @@ Resources:
             ApiId: !Ref HttpApi
             Method: GET
             Path: /cognito
-            TimeoutInMillis: 1000
             PayloadFormatVersion: "2.0"
             RouteSettings:
               ThrottlingBurstLimit: 10
@@ -525,7 +518,6 @@ Resources:
             Path: /cognito
             Auth:
               Authorizer: CognitoAuthorizer
-            TimeoutInMillis: 1000
             PayloadFormatVersion: "2.0"
             RouteSettings:
               ThrottlingBurstLimit: 600
