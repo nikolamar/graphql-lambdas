@@ -1,0 +1,18 @@
+query tenants ($where: UserFilter, $order: Order, $first: Int, $offset: Int, $after: String, $sortBy: String) {
+  tenants (where: $where, order: $order, first: $first, offset: $offset, after: $after, sortBy: $sortBy) {
+    edges {
+      cursor
+      node {
+        _id
+      }
+    }
+    pageInfo {
+      hasPreviousPage
+      hasNextPage
+      startCursor
+      endCursor
+      count
+      totalCount
+    }
+  }
+}

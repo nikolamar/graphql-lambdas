@@ -1,0 +1,7 @@
+query cognito {
+  cognito {
+    region
+    poolId
+    clientId
+  }
+}

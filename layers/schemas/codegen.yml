@@ -1,0 +1,11 @@
+overwrite: true
+schema: "schemas/*"
+documents: null
+generates:
+  schemas/generated.d.ts:
+    plugins:
+      - "typescript"
+      - "typescript-resolvers"
+  schemas/graphql.schema.json:
+    plugins:
+      - "introspection"

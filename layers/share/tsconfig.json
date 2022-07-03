@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "es2020",
+    "strict": true,
+    "preserveConstEnums": true,
+    "noEmit": true,
+    "sourceMap": false,
+    "module":"es2015",
+    "moduleResolution":"node",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "paths": {
+      "/opt/configs/*": ["../../layers/configs/configs/*"],
+      "/opt/schemas/*": ["../../layers/schemas/schemas/*"],
+      "dayjs": ["../../layers/nodejs/nodejs/node_modules/dayjs"],
+      "dayjs/*": ["../../layers/nodejs/nodejs/node_modules/dayjs/*"],
+      "nanoid": ["../../layers/nodejs/nodejs/node_modules/nanoid"],
+      "mongodb": ["../../layers/nodejs/nodejs/node_modules/mongodb"],
+      "dataloader": ["../../layers/nodejs/nodejs/node_modules/dataloader"],
+      "apollo-datasource": ["../../layers/nodejs/nodejs/node_modules/apollo-datasource"]
+    }
+  },
+  "exclude": ["node_modules"]
+}

@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "lib": ["es2020"],
+    "module": "commonjs",
+    "target": "es2020",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "/opt/utils/*": ["../../layers/share/utils/*"],
+      "/opt/configs/*": ["../../layers/share/configs/*"],
+      "/opt/plugins/*": ["../../layers/share/plugins/*"],
+      "/opt/schemas/*": ["../../layers/schemas/schemas/*"],
+      "@graphql-tools/*": ["../../layers/nodejs/nodejs/node_modules/@graphql-tools/*"],
+      "dayjs": ["../../layers/nodejs/nodejs/node_modules/dayjs"],
+      "dayjs/*": ["../../layers/nodejs/nodejs/node_modules/dayjs/*"],
+      "mongodb": ["../../layers/nodejs/nodejs/node_modules/mongodb"],
+      "apollo-datasource": ["../../layers/nodejs/nodejs/node_modules/apollo-datasource"],
+      "apollo-datasource-rest": ["../../layers/nodejs/nodejs/node_modules/apollo-datasource-rest"],
+      "graphql-middleware": ["../../layers/nodejs/nodejs/node_modules/graphql-middleware"],
+      "apollo-server-core": ["../../layers/nodejs/nodejs/node_modules/apollo-server-core"],
+      "apollo-server-lambda": ["../../layers/nodejs/nodejs/node_modules/apollo-server-lambda"]
+    }
+  },
+  "exclude": ["node_modules"]
+}

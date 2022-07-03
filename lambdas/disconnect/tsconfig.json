@@ -11,8 +11,8 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "paths": {
-      "/opt/utils/*": ["../utils/utils/*"],
-      "/opt/configs/*": ["../configs/configs/*"],
+      "/opt/utils/*": ["../../layers/share/utils/*"],
+      "/opt/configs/*": ["../../layers/share/configs/*"],
     }
   },
   "exclude": ["node_modules", "**/*.test.ts"]
