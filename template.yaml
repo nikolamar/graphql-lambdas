@@ -239,9 +239,13 @@ Resources:
           ThrottlingBurstLimit: 200
         "POST /tenants":
           ThrottlingBurstLimit: 200
+        "GET /environment":
+          ThrottlingBurstLimit: 200
+        "POST /environment":
+          ThrottlingBurstLimit: 200
         "GET /cognito":
           ThrottlingBurstLimit: 200
-        "GET /environment":
+        "POST /cognito":
           ThrottlingBurstLimit: 200
       StageVariables:
         StageVar: Value
