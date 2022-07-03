@@ -340,7 +340,7 @@ Resources:
       Handler: app.handler
       Layers:
         - !Ref NodejsLayer
-        - !Ref UtilsLayer
+        - !Ref ShareLayer
         - !Ref SchemasLayer
       Policies:
       - Statement:
@@ -406,7 +406,7 @@ Resources:
       Handler: app.handler
       Layers:
         - !Ref NodejsLayer
-        - !Ref UtilsLayer
+        - !Ref ShareLayer
         - !Ref SchemasLayer
       Events:
         TenantsGetEvent:
@@ -459,7 +459,7 @@ Resources:
       Handler: app.handler
       Layers:
         - !Ref NodejsLayer
-        - !Ref UtilsLayer
+        - !Ref ShareLayer
         - !Ref SchemasLayer
       Events:
         TenantsGetEvent:
@@ -514,7 +514,7 @@ Resources:
       Handler: app.handler
       Layers:
         - !Ref NodejsLayer
-        - !Ref UtilsLayer
+        - !Ref ShareLayer
         - !Ref SchemasLayer
       Events:
         TenantsGetEvent:
@@ -671,7 +671,7 @@ Resources:
       Handler: app.handler
       Layers:
         - !Ref NodejsLayer
-        - !Ref UtilsLayer
+        - !Ref ShareLayer
 
   DisconnectFunction:
     Type: AWS::Serverless::Function
@@ -694,7 +694,7 @@ Resources:
       Handler: app.handler
       Layers:
         - !Ref NodejsLayer
-        - !Ref UtilsLayer
+        - !Ref ShareLayer
 
   DefaultFunction:
     Type: AWS::Serverless::Function
@@ -717,7 +717,7 @@ Resources:
       Handler: app.handler
       Layers:
         - !Ref NodejsLayer
-        - !Ref UtilsLayer
+        - !Ref ShareLayer
       Policies:
       - Statement:
         - Effect: Allow
@@ -743,14 +743,14 @@ Resources:
       LicenseInfo: MIT
       RetentionPolicy: Retain
 
-  UtilsLayer:
+  ShareLayer:
     Type: AWS::Serverless::LayerVersion
     Metadata:
       BuildMethod: makefile
     Properties:
-      LayerName: !Sub ${ProjectName}-utils-layer-${Stage}
-      Description: !Sub ${ProjectName} - utils layer
-      ContentUri: layers/utils/
+      LayerName: !Sub ${ProjectName}-share-layer-${Stage}
+      Description: !Sub ${ProjectName} - share layer
+      ContentUri: layers/share/
       CompatibleRuntimes:
         - nodejs16.x
       LicenseInfo: MIT

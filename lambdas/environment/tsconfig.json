@@ -7,9 +7,9 @@
     "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "/opt/utils/*": ["../../layers/utils/utils/*"],
-      "/opt/configs/*": ["../../layers/utils/configs/*"],
-      "/opt/plugins/*": ["../../layers/utils/plugins/*"],
+      "/opt/utils/*": ["../../layers/share/utils/*"],
+      "/opt/configs/*": ["../../layers/share/configs/*"],
+      "/opt/plugins/*": ["../../layers/share/plugins/*"],
       "/opt/schemas/*": ["../../layers/schemas/schemas/*"],
       "@graphql-tools/*": ["../../layers/nodejs/nodejs/node_modules/@graphql-tools/*"],
       "dayjs": ["../../layers/nodejs/nodejs/node_modules/dayjs"],
