@@ -323,7 +323,10 @@ Resources:
         Sourcemap: false
         External:
           - "/opt/utils/*"
+          - "/opt/configs/*"
+          - "/opt/plugins/*"
           - "/opt/schemas/*"
+          - "/opt/datasources/*"
           - "@graphql-tools/*"
           - "graphql-middleware"
           - "apollo-server-core"
@@ -386,7 +389,10 @@ Resources:
         Sourcemap: false
         External:
           - "/opt/utils/*"
+          - "/opt/configs/*"
+          - "/opt/plugins/*"
           - "/opt/schemas/*"
+          - "/opt/datasources/*"
           - "@graphql-tools/*"
           - "graphql-middleware"
           - "apollo-server-core"
@@ -437,6 +443,8 @@ Resources:
         Sourcemap: false
         External:
           - "/opt/utils/*"
+          - "/opt/configs/*"
+          - "/opt/plugins/*"
           - "/opt/schemas/*"
           - "@graphql-tools/*"
           - "graphql-middleware"
@@ -488,7 +496,10 @@ Resources:
         Sourcemap: false
         External:
           - "/opt/utils/*"
+          - "/opt/configs/*"
+          - "/opt/plugins/*"
           - "/opt/schemas/*"
+          - "/opt/datasources/*"
           - "aws-sdk"
           - "@graphql-tools/*"
           - "graphql-middleware"
@@ -650,6 +661,7 @@ Resources:
         Sourcemap: false
         External:
           - "/opt/utils/*"
+          - "/opt/configs/*"
         EntryPoints:
         - src/app.ts
     Properties:
@@ -672,6 +684,7 @@ Resources:
         Sourcemap: false
         External:
           - "/opt/utils/*"
+          - "/opt/configs/*"
         EntryPoints:
         - src/app.ts
     Properties:
@@ -694,6 +707,7 @@ Resources:
         Sourcemap: false
         External:
           - "/opt/utils/*"
+          - "/opt/configs/*"
         EntryPoints:
         - src/app.ts
     Properties:
