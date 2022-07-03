@@ -326,11 +326,7 @@ Resources:
         Target: "es2020"
         Sourcemap: false
         External:
-          - "/opt/utils/*"
-          - "/opt/configs/*"
-          - "/opt/plugins/*"
-          - "/opt/schemas/*"
-          - "/opt/datasources/*"
+          c
           - "@graphql-tools/*"
           - "graphql-middleware"
           - "apollo-server-core"
@@ -392,11 +388,7 @@ Resources:
         Target: "es2020"
         Sourcemap: false
         External:
-          - "/opt/utils/*"
-          - "/opt/configs/*"
-          - "/opt/plugins/*"
-          - "/opt/schemas/*"
-          - "/opt/datasources/*"
+          - "/opt/*"
           - "@graphql-tools/*"
           - "graphql-middleware"
           - "apollo-server-core"
@@ -446,10 +438,7 @@ Resources:
         Target: "es2020"
         Sourcemap: false
         External:
-          - "/opt/utils/*"
-          - "/opt/configs/*"
-          - "/opt/plugins/*"
-          - "/opt/schemas/*"
+          - "/opt/*"
           - "@graphql-tools/*"
           - "graphql-middleware"
           - "apollo-server-core"
@@ -499,11 +488,7 @@ Resources:
         Target: "es2020"
         Sourcemap: false
         External:
-          - "/opt/utils/*"
-          - "/opt/configs/*"
-          - "/opt/plugins/*"
-          - "/opt/schemas/*"
-          - "/opt/datasources/*"
+          - "/opt/*"
           - "aws-sdk"
           - "@graphql-tools/*"
           - "graphql-middleware"
@@ -664,8 +649,7 @@ Resources:
         Target: "es2020"
         Sourcemap: false
         External:
-          - "/opt/utils/*"
-          - "/opt/configs/*"
+          - "/opt/*"
         EntryPoints:
         - src/app.ts
     Properties:
@@ -687,8 +671,7 @@ Resources:
         Target: "es2020"
         Sourcemap: false
         External:
-          - "/opt/utils/*"
-          - "/opt/configs/*"
+          - "/opt/*"
         EntryPoints:
         - src/app.ts
     Properties:
@@ -710,8 +693,7 @@ Resources:
         Target: "es2020"
         Sourcemap: false
         External:
-          - "/opt/utils/*"
-          - "/opt/configs/*"
+          - "/opt/*"
         EntryPoints:
         - src/app.ts
     Properties:
