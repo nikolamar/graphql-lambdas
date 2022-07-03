@@ -338,7 +338,6 @@ Resources:
       Handler: app.handler
       Layers:
         - !Ref NodejsLayer
-        - !Ref ConfigsLayer
         - !Ref UtilsLayer
         - !Ref SchemasLayer
       Policies:
@@ -403,7 +402,6 @@ Resources:
       Handler: app.handler
       Layers:
         - !Ref NodejsLayer
-        - !Ref ConfigsLayer
         - !Ref UtilsLayer
         - !Ref SchemasLayer
       Events:
@@ -456,7 +454,7 @@ Resources:
       Handler: app.handler
       Layers:
         - !Ref NodejsLayer
-        - !Ref ConfigsLayer
+        - !Ref UtilsLayer
         - !Ref SchemasLayer
       Events:
         TenantsGetEvent:
@@ -509,7 +507,7 @@ Resources:
       Handler: app.handler
       Layers:
         - !Ref NodejsLayer
-        - !Ref ConfigsLayer
+        - !Ref UtilsLayer
         - !Ref SchemasLayer
       Events:
         TenantsGetEvent:
@@ -666,7 +664,6 @@ Resources:
       Handler: app.handler
       Layers:
         - !Ref NodejsLayer
-        - !Ref ConfigsLayer
         - !Ref UtilsLayer
 
   DisconnectFunction:
@@ -690,7 +687,6 @@ Resources:
       Handler: app.handler
       Layers:
         - !Ref NodejsLayer
-        - !Ref ConfigsLayer
         - !Ref UtilsLayer
 
   DefaultFunction:
@@ -714,7 +710,6 @@ Resources:
       Handler: app.handler
       Layers:
         - !Ref NodejsLayer
-        - !Ref ConfigsLayer
         - !Ref UtilsLayer
       Policies:
       - Statement:
@@ -762,32 +757,6 @@ Resources:
       LayerName: !Sub ${ProjectName}-utils-layer-${Stage}
       Description: !Sub ${ProjectName} - utils layer
       ContentUri: layers/utils/
-      CompatibleRuntimes:
-        - nodejs16.x
-      LicenseInfo: MIT
-      RetentionPolicy: Retain
-
-  DatasourcesLayer:
-    Type: AWS::Serverless::LayerVersion
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      LayerName: !Sub ${ProjectName}-datasources-layer-${Stage}
-      Description: !Sub ${ProjectName} - datasources layer
-      ContentUri: layers/datasources/
-      CompatibleRuntimes:
-        - nodejs16.x
-      LicenseInfo: MIT
-      RetentionPolicy: Retain
-
-  PluginsLayer:
-    Type: AWS::Serverless::LayerVersion
-    Metadata:
-      BuildMethod: makefile
-    Properties:
-      LayerName: !Sub ${ProjectName}-plugins-layer-${Stage}
-      Description: !Sub ${ProjectName} - plugins layer
-      ContentUri: layers/plugins/
       CompatibleRuntimes:
         - nodejs16.x
       LicenseInfo: MIT
