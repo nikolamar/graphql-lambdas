@@ -29,29 +29,6 @@ Globals:
         CLIENT_ID: !Ref CognitoUserPoolClient
         NODE_ENV: !Ref Stage
         VERSION: !Ref Version
-    Metadata:
-      BuildMethod: esbuild
-      BuildProperties:
-        UseNpmCi: True
-        Minify: false
-        Target: "es2020"
-        Sourcemap: false
-        External:
-          - "/opt/utils/*"
-          - "/opt/configs/*"
-          - "aws-sdk"
-          - "dataloader"
-          - "@graphql-tools/*"
-          - "dayjs"
-          - "dayjs/*"
-          - "mongodb"
-          - "apollo-datasource"
-          - "apollo-datasource-rest"
-          - "graphql-middleware"
-          - "apollo-server-core"
-          - "apollo-server-lambda"
-        EntryPoints:
-        - src/app.ts
 
 ###################
 #   PARAMETERS    #
@@ -149,10 +126,6 @@ Resources:
           EmailSubject: Your temporary password
       AutoVerifiedAttributes:
         - email
-      #   - phone_number
-      # SmsConfiguration:
-      #   ExternalId: 'xxx-xxx-xxx'
-      #   SnsCallerArn: !GetAtt CognitoSMSRole.Arn
       EnabledMfas:
         - SOFTWARE_TOKEN_MFA
       MfaConfiguration: OPTIONAL
@@ -337,6 +310,25 @@ Resources:
 
   UsersFunction:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        UseNpmCi: True
+        Minify: false
+        Target: "es2020"
+        Sourcemap: false
+        External:
+          - "/opt/utils/*"
+          - "/opt/configs/*"
+          - "/opt/datasources/*"
+          - "/opt/plugins/*"
+          - "/opt/schemas/*"
+          - "@graphql-tools/*"
+          - "graphql-middleware"
+          - "apollo-server-core"
+          - "apollo-server-lambda"
+        EntryPoints:
+        - src/app.ts
     Properties:
       FunctionName: !Sub ${ProjectName}-users-${Stage}
       Description: !Sub ${ProjectName} - users function
@@ -387,6 +379,25 @@ Resources:
 
   TenantsFunction:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        UseNpmCi: True
+        Minify: false
+        Target: "es2020"
+        Sourcemap: false
+        External:
+          - "/opt/utils/*"
+          - "/opt/configs/*"
+          - "/opt/datasources/*"
+          - "/opt/plugins/*"
+          - "/opt/schemas/*"
+          - "@graphql-tools/*"
+          - "graphql-middleware"
+          - "apollo-server-core"
+          - "apollo-server-lambda"
+        EntryPoints:
+        - src/app.ts
     Properties:
       FunctionName: !Sub ${ProjectName}-tenants-${Stage}
       Description: !Sub ${ProjectName} - tenants function
@@ -425,6 +436,25 @@ Resources:
 
   EnvironmentFunction:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        UseNpmCi: True
+        Minify: false
+        Target: "es2020"
+        Sourcemap: false
+        External:
+          - "/opt/utils/*"
+          - "/opt/configs/*"
+          - "/opt/datasources/*"
+          - "/opt/plugins/*"
+          - "/opt/schemas/*"
+          - "@graphql-tools/*"
+          - "graphql-middleware"
+          - "apollo-server-core"
+          - "apollo-server-lambda"
+        EntryPoints:
+        - src/app.ts
     Properties:
       FunctionName: !Sub ${ProjectName}-environment-${Stage}
       Description: !Sub ${ProjectName} - environment function
@@ -461,6 +491,26 @@ Resources:
 
   CognitoFunction:
     Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        UseNpmCi: True
+        Minify: false
+        Target: "es2020"
+        Sourcemap: false
+        External:
+          - "/opt/utils/*"
+          - "/opt/configs/*"
+          - "/opt/datasources/*"
+          - "/opt/plugins/*"
+          - "/opt/schemas/*"
+          - "aws-sdk"
+          - "@graphql-tools/*"
+          - "graphql-middleware"
+          - "apollo-server-core"
+          - "apollo-server-lambda"
+        EntryPoints:
+        - src/app.ts
     Properties:
       FunctionName: !Sub ${ProjectName}-cognito-${Stage}
       Description: !Sub ${ProjectName} - cognito function
