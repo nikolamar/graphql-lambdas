@@ -1,25 +1,24 @@
 ![alt text](https://github.com/nikolatec/app-designer-backend/blob/master/repo_heaad.jpg?raw=true)
 
-
 Apollo client + micro-services architecture 
 ==============
 
-
+Someone came up with a similar idea like me there is an article for this so I don't want to repeat it, the difference here is that I'm using lambdas: https://www.habx.com/tech/micro-graphql-schema
 
 ### Stages:
 
 1. `dev`
 2. `prod`
 
-
-
-### Running in `local`:
-
+### Prepare you local environment:
 
 1. Make sure you install `AWS SAM CLI`:
 
 https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html
 
+1. Set up AWS Credentials and Region for Development:
+
+https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html
 
 2. Updated your `env.json` with secrets like this:
 
@@ -45,62 +44,25 @@ https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/s
 
 ```
 
+### Running in `sync`:
 
-3. Build `lambdas from template` with AWS SAM CLI running beta features that introduce esbuild:
+1. This will sync your local code changes with deployed lamda while you editing the `ts` source files it take max 5 seconds to updae lambda it is really fast:
+
+```sam sync —beta-features ```
+
+`NOTE: it will ask for app name (stack name on AWS) to sync your code.`
+
+### Running in `local`:
+
+1. Build `lambdas from template` with AWS SAM CLI running beta features that introduce esbuild:
 ```
 sam build --beta-features
 ```
 
-
-4. Start local APIs
+2. Start local APIs using docker containers:
 
 ```
 sam local start-api --warm-containers LAZY --skip-pull-image --host 0.0.0.0 --env-vars env.json --port 3000
 ```
 
-5. `TODO:` For hot reload we need a simple esbuild script here to watch changes and copy files to `.aws-sam/build` where all `javascript` transformed lambdas sits or run the esbuild CLI command with watch option
-
-For example:
-```
-#!/usr/bin/env node
-
-const fs = require("fs");
-const path = require("path");
-
-const getFilePaths = (folderPath) => {
-  const entryPaths = fs.readdirSync(folderPath).map(entry => path.join(folderPath, entry));
-  const filePaths = entryPaths.filter(entryPath => fs.statSync(entryPath).isFile());
-  const dirPaths = entryPaths.filter(entryPath => !filePaths.includes(entryPath));
-  const dirFiles = dirPaths.reduce((prev, curr) => prev.concat(getFilePaths(curr)), []);
-  return [...filePaths, ...dirFiles];
-};
-
-const srcPath = path.join(__dirname, "../src");
-
-const entryPoints = getFilePaths(srcPath).filter(filePath =>
-  !["node_modules"].some(path => filePath.includes(path)) &&
-  !filePath.endsWith(".d.ts") &&
-  !filePath.endsWith(".test.ts") &&
-  !filePath.endsWith(".test.js") &&
-  (filePath.endsWith(".ts") || filePath.endsWith(".js"))
-);
-
-const options = {
-  logLevel: "info",
-  entryPoints,
-  outdir: ".aws-sam/build",
-  platform: "node",
-  minify: false,
-  bundle: false,
-  tsconfig: "./tsconfig.json",
-  format: "cjs",
-  minifyIdentifiers:false,
-  minifySyntax:false,
-  minifyWhitespace:false,
-  target: [ "es2020" ],
-};
-
-require("esbuild")
-  .build(options)
-  .catch(() => process.exit(1));
-```
+3. `TODO:` For hot reload we need a simple esbuild script here to watch changes and copy files to `.aws-sam/build` where all `javascript` transformed lambdas sits or run the esbuild CLI command with watch option.
