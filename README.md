@@ -1,6 +1,6 @@
-![alt text](https://github.com/nikolatec/app-designer-backend/blob/master/repo_head.png?raw=true)
+![alt text](https://github.com/nikolamar/graphql-lambdas/blob/master/repo_head.png?raw=true)
 
-Apollo client + micro-services architecture 
+Apollo client + micro-services architecture
 ==============
 
 ### Microservices architecture:
@@ -25,7 +25,7 @@ git push origin v0.3.2
 ```
 You'll get this:
 
-![alt text](https://github.com/nikolatec/app-designer-backend/blob/master/release.png?raw=true)
+![alt text](https://github.com/nikolamar/graphql-lambdas/blob/master/release.png?raw=true)
 
 ### Stages:
 
