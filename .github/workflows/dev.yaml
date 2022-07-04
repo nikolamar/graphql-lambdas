@@ -36,7 +36,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Build App Designer Website
+      - name: Build Graphql Lambdas Website
         run: |
           chmod +x ./.scripts/build.sh
           ./.scripts/build.sh
@@ -71,7 +71,7 @@ jobs:
       - name: Deploy
         env:
           STAGE: dev
-          SUB_DOMAIN_NAME: app-designer-backend.dev
+          SUB_DOMAIN_NAME: graphql-lambdas-backend.dev
           REGION:  ${{ secrets.REGION }}
           AWS_ACCESS_KEY_ID:  ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

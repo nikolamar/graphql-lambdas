@@ -4,9 +4,9 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
-  App Designer Backend
+  Graphql Lambdas
 
-  Services for the App Designer
+  Services for the Graphql Lambdas
 
 ###################
 #     GLOBALS     #
