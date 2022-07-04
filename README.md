@@ -3,7 +3,31 @@
 Apollo client + micro-services architecture 
 ==============
 
-Someone came up with a similar idea like me there is an article for this so I don't want to repeat it, the difference here is that I'm using lambdas: https://www.habx.com/tech/micro-graphql-schema
+### Microservices architecture:
+
+Someone came up with a similar idea like me there is an article for this so I don't want to repeat it, there are some differences and I'm using lambdas but please check this link for more infos: https://www.habx.com/tech/micro-graphql-schema
+
+This is research that works great on my side project :) and I'm not done here. I really do hope that you will take some things learn along the way. This repo shows this architecture that use microservices + domains structure and it uses lambda layers to share common schema, logic, nodejs dependenceis or if projects demands you can bundle some lambdas whatever you think is better for your project. Sam beta features work fast! One things that i like the most is `sam sync` which updates you lambda code on the fly even if you are writing `typescript` it takes max 5 seconds. The next cool thing is how each lambda is packaged and sam beta uses now esbuild and it way faster to build then before, no more some custom esbuild scripts.
+
+Key things to take here:
+
+- no single point of failure
+- each lambda can be tweaked as they are intended to
+- split your backend into domains e.g. users, tenants, etc.
+- sync your local code with sam cli watch and it will deploy code to lambda under 5 sec.
+- of course you can run local still works but better now (before we had huge lambda over one adapter this is not an issue anymore)
+- you can write graphql lambda in nodejs and other in go and they can share same schema, logic
+- github actions are here too, when you trigger release like this:
+```
+git push origin
+git tag v0.3.2
+git push origin v0.3.2
+```
+You'll get releases automatically looking like this:
+
+![alt text](https://github.com/nikolatec/app-designer-backend/blob/master/release.png?raw=true)
+
+
 
 ### Stages:
 
