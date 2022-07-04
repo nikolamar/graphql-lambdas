@@ -1,4 +1,4 @@
-![alt text](https://github.com/nikolatec/app-designer-backend/blob/master/repo_heaad.jpg?raw=true)
+![alt text](https://github.com/nikolatec/app-designer-backend/blob/refactor/repo_heaad.jpg?raw=true)
 
 
 Apollo client + micro-services architecture 
