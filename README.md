@@ -1,35 +1,26 @@
-App Designer
+![alt text](https://github.com/nikolatec/app-designer-backend/blob/master/repo_heaad.jpg?raw=true)
+
+Apollo client + micro-services architecture 
 ==============
 
-
+Someone came up with a similar idea like me there is an article for this so I don't want to repeat it, the difference here is that I'm using lambdas: https://www.habx.com/tech/micro-graphql-schema
 
 ### Stages:
 
-1. `local`
-2. `dev`
-3. `prod`
+1. `dev`
+2. `prod`
 
-
-### Running in `local`:
-
-
-
-
----
-
-
+### Prepare you local environment:
 
 1. Make sure you install `AWS SAM CLI`:
 
 https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html
 
+1. Set up AWS Credentials and Region for Development:
 
+https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html
 
----
-
-
-
-3. Updated your `env.json` with secrets like this:
+2. Update your `env.json` with secrets like this:
 
 ```
 {
@@ -53,29 +44,25 @@ https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/s
 
 ```
 
+### Running in `sync`:
 
+1. This will sync your local code changes with deployed lamda while you editing the `ts` source files it take max 5 seconds to updae lambda it is really fast:
 
----
+```sam sync —beta-features ```
 
+`NOTE: it will ask for app name (stack name on AWS) to sync your code.`
 
+### Running in `local`:
 
-4. Build `lambdas` with AWS SAM CLI running:
-
+1. Build `lambdas from template` with AWS SAM CLI running beta features that introduce esbuild:
 ```
 sam build --beta-features
 ```
 
-
-
----
-
-
-
-5. Start local APIs
+2. Start local APIs using docker containers:
 
 ```
-sam local start-api --warm-containers LAZY --env-vars env.json --port 3000
+sam local start-api --warm-containers LAZY --skip-pull-image --host 0.0.0.0 --env-vars env.json --port 3000
 ```
 
-
----
+3. `TODO:` For hot reload we need a simple esbuild script here to watch changes and copy files to `.aws-sam/build` where all `javascript` transformed lambdas sits or run the esbuild CLI command with watch option.
