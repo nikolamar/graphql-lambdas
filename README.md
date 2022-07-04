@@ -20,7 +20,7 @@ https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/s
 
 https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html
 
-2. Updated your `env.json` with secrets like this:
+2. Update your `env.json` with secrets like this:
 
 ```
 {
