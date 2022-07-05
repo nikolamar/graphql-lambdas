@@ -161,7 +161,7 @@ import { createHttpLink } from "apollo-link-http";
 new ApolloClient({
  link: ApolloLink.from([
    new MultiAPILink({
-      httpSuffix: "",
+       httpSuffix: "",
        endpoints: {
            users: 'https://fake.domain.com/users',
            tenants: 'https://fake.domain.com/tenants',
