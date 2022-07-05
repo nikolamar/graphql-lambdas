@@ -12,12 +12,12 @@ This repo shows this architecture that use microservices and domains structure a
 Key things to take here:
 
 - no single point of failure
-- each lambda can be tweaked as they are intended to
+- each lambda can be tweaked independent as they are intended to
 - split your backend into domains e.g. users, tenants, etc.
 - sync your local code with sam cli watch and it will deploy code to lambda under 5 sec.
-- of course you can run local still works but better now (before we had huge lambda over one adapter this is not an issue anymore)
+- local works even better now (if it is one graphql lambda all requests are processed over one adapter this is not an issue anymore)
 - you can write graphql lambdas in nodejs and other in go and they can share same schema
-- github actions are here too, when you trigger release like this:
+- github actions can trigger auto release like this:
 ```
 git push origin
 git tag v0.3.2
@@ -29,10 +29,12 @@ You'll get this:
 
 ### Stages:
 
-You can add more stages in github actions.
+This project has 2 stages:
 
 1. `dev`
 2. `prod`
+
+You can add more in github actions.
 
 Deploy script required secret keys to be on github:
 
@@ -159,9 +161,10 @@ import { createHttpLink } from "apollo-link-http";
 new ApolloClient({
  link: ApolloLink.from([
    new MultiAPILink({
+      httpSuffix: "",
        endpoints: {
-           housings: 'https://housings.api',
-           projects: 'https://projects.api',
+           users: 'https://fake.domain.com/users',
+           tenants: 'https://fake.domain.com/tenants',
            ...
        },
        createHttpLink: () => createHttpLink(),
