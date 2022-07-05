@@ -148,7 +148,7 @@ query users ($where: UserFilter, $order: Order, $first: Int, $offset: Int, $afte
 }
 ```
 
-1. Install:
+2. Install:
 
 ```
 npm i @habx/apollo-multi-endpoint-link
