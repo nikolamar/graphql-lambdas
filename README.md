@@ -5,7 +5,7 @@ Apollo client + micro-services architecture
 
 ### Microservices architecture:
 
-Someone came up with a similar idea like mine before me and I don't want to repeat it, there is everything in the article. There are some differences because here we are using lambdas and they dont'. Check this link for more info it will be more clear after reading this article: https://www.habx.com/tech/micro-graphql-schema
+Someone came up with a similar idea like mine before me and I don't want to repeat it, there is everything in the article. There are some differences because here we are using lambdas and they don't. Check this link for more info it will be more clear after reading this article: https://www.habx.com/tech/micro-graphql-schema
 
 This repo shows this architecture that uses microservices and domains structure and it uses lambda layers to share a common schema, logic, and nodejs dependencies. If your projects demands you can bundle some lambdas or all of them and you don't need to share `node_modules` at all if you don't want to. Whatever works for you. There is a `sam sync` which updates you lambda code on the fly even if you are writing `typescript` it takes max 5 seconds. Bundling is faster now each lambda is package and sam beta uses now esbuild. It is more convenient now as we don't have to use our esbuild scripts.
 
@@ -65,7 +65,7 @@ export VERSION=$VERSION
 
 ```
 
-### Prepare you local environment:
+### Prepare you local `environment`:
 
 1. Make sure you install `AWS SAM CLI`:
 
@@ -122,9 +122,9 @@ sam local start-api --warm-containers LAZY --skip-pull-image --host 0.0.0.0 --en
 
 3. `TODO:` For hot reload we need a simple esbuild script here to watch changes and copy files to `.aws-sam/build` where all `javascript` transformed lambdas sit or run the esbuild CLI command with watch option.
 
-### Runing on frontend:
+### Runing on `frontend`:
 
-#### Queries:
+1. Update queries and mutations with graphql directives:
 
 Schema has to be updated with `@api(name: users)`:
 ```
@@ -154,7 +154,7 @@ query users ($where: UserFilter, $order: Order, $first: Int, $offset: Int, $afte
 npm i @habx/apollo-multi-endpoint-link
 ```
 
-2. Setup:
+3. Setup:
 ```
 import { createHttpLink } from "apollo-link-http";
 
