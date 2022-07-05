@@ -36,7 +36,9 @@ This project has 2 stages:
 
 You can add more in github actions.
 
-Deploy script required secret keys to be on github:
+### Scripts:
+
+1. Deploy script requires secret keys to deploy:
 
 ```
 #!/bin/bash
