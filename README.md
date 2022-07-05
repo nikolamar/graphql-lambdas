@@ -71,11 +71,11 @@ export VERSION=$VERSION
 
 https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html
 
-1. Set up AWS Credentials and Region for Development:
+2. Set up AWS Credentials and Region for Development:
 
 https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html
 
-2. Update your `env.json` with secrets like this:
+3. Update your `env.json` with secrets like this:
 
 ```
 {
