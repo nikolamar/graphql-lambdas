@@ -67,7 +67,7 @@ export VERSION=$VERSION
 
 ```
 
-### Prepare you local `environment`:
+### Prepare your local `environment`:
 
 1. Make sure you install `AWS SAM CLI`:
 
