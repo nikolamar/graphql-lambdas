@@ -5,9 +5,9 @@ Apollo client + micro-services architecture
 
 ### Microservices architecture:
 
-Someone came up with a similar idea like me before there is an article for this so I don't want to repeat it, there are some differences and I'm using lambdas here but please check this link for more infos: https://www.habx.com/tech/micro-graphql-schema
+Someone came up with a similar idea like mine before me and I don't want to repeat it, there is everything in the article. There are some differences because here we are using lambdas and they dont'. Check this link for more info it will be more clear after reading this article: https://www.habx.com/tech/micro-graphql-schema
 
-This repo shows this architecture that use microservices and domains structure and it uses lambda layers to share common schema, logic, nodejs dependenceis or if your projects demands you can bundle some lambdas or all of them and you don't need to share `node_modules` at all. Whatever it works for you. Sam beta features work fast! One things that i like the most is `sam sync` which updates you lambda code on the fly even if you are writing `typescript` it takes max 5 seconds. The next cool thing is how each lambda is packaged and sam beta uses now esbuild and it is way faster then webpack.  And I want to avoid custom esbuild scripts.
+This repo shows this architecture that uses microservices and domains structure and it uses lambda layers to share a common schema, logic, and nodejs dependencies. If your projects demands you can bundle some lambdas or all of them and you don't need to share `node_modules` at all if you don't want to. Whatever works for you. There is a `sam sync` which updates you lambda code on the fly even if you are writing `typescript` it takes max 5 seconds. Bundling is faster now each lambda is package and sam beta uses now esbuild. It is more convenient now as we don't have to use our esbuild scripts.
 
 Key things to take here:
 
@@ -101,7 +101,7 @@ https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html
 
 ### Running in `sync`:
 
-1. This will sync your local code changes with deployed lamda while you editing the `ts` source files it take max 5 seconds to updae lambda it is really fast:
+1. This will sync your local code changes with deployed lambda while you editing the `ts` source files it takes a max 5 seconds to update lambda:
 
 ```sam sync —beta-features ```
 
@@ -120,7 +120,7 @@ sam build --beta-features
 sam local start-api --warm-containers LAZY --skip-pull-image --host 0.0.0.0 --env-vars env.json --port 3000
 ```
 
-3. `TODO:` For hot reload we need a simple esbuild script here to watch changes and copy files to `.aws-sam/build` where all `javascript` transformed lambdas sits or run the esbuild CLI command with watch option.
+3. `TODO:` For hot reload we need a simple esbuild script here to watch changes and copy files to `.aws-sam/build` where all `javascript` transformed lambdas sit or run the esbuild CLI command with watch option.
 
 ### Runing on frontend:
 
