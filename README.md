@@ -1,4 +1,4 @@
-![alt text](https://github.com/nikolamar/graphql-lambdas/.assets/blob/master/repo_head.png?raw=true)
+![alt text](https://raw.githubusercontent.com/nikolamar/graphql-lambdas/master/.assets/repo_head.png)
 
 Apollo client + micro-services architecture
 ==============
@@ -25,7 +25,7 @@ git push origin v0.3.2
 ```
 You'll get this:
 
-![alt text](https://github.com/nikolamar/graphql-lambdas/.assets/blob/master/release.png?raw=true)
+![alt text](https://github.com/nikolamar/graphql-lambdas/blob/master/.assets/release.png?raw=true)
 
 ### Stages:
 
