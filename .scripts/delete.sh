@@ -4,7 +4,7 @@ MY_DIR=$(realpath $0)
 CICD_DIR=$(dirname $MY_DIR)
 PROJECT_ROOT=$(dirname $CICD_DIR)
 
-export PROJECT_NAME=${PROJECT_NAME:-app-designer}
+export PROJECT_NAME=${PROJECT_NAME:-app-name}
 
 # These vars are needed to inject into the SAM template
 export STAGE=$STAGE
