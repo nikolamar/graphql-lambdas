@@ -1,4 +1,4 @@
-import type { DatabaseDataSource } from "./sources/database";
+import type { DatabaseDataSource } from "/opt/datasources/database";
 import type { Express } from "express";
 import type { KeyValueCache } from "apollo-server-core";
 

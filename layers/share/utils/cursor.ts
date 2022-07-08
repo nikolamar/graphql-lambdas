@@ -1,4 +1,5 @@
-import { Maybe, PageInfo, Scalars } from "/opt/schemas/generated";
+import { InputMaybe, Maybe, PageInfo, Scalars } from "/opt/schemas/generated";
+import type { ObjectId } from "mongodb";
 
 type Entity = {
   __typename?: any;
@@ -14,10 +15,24 @@ type ReturnEdges = {
   totalCount?: number;
 };
 
-export function createEdgesWithPageInfo(
-  { data, totalCount, firstRecordId }: any,
-  { first = Infinity, sortBy = "_id" },
-): ReturnEdges {
+type DataResponse = {
+  data: any[];
+  totalCount: number;
+  firstRecordId: ObjectId;
+};
+
+type Args = {
+  first?: InputMaybe<number>;
+  sortBy?: InputMaybe<string>;
+};
+
+export function createEdgesWithPageInfo(dataResponse: DataResponse, args: Args): ReturnEdges {
+  const data = dataResponse?.data ?? [];
+  const totalCount = dataResponse?.totalCount ?? 0;
+  const firstRecordId = dataResponse?.firstRecordId ?? {}; // this is mongodb object id
+  const first = args?.first ?? Infinity;
+  const sortBy = args?.sortBy ?? "_id";
+
   const edges = data?.map((node: any) => ({
     node,
     cursor: Buffer.from(node?.[sortBy] ? node?.[sortBy].toString() : "").toString("base64"), // making opaque
