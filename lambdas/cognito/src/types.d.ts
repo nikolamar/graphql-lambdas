@@ -1,4 +1,4 @@
-import type { CognitoDataSource } from "./sources/cognito";
+import type { CognitoDataSource } from "/opt/datasources/cognito";
 import type { Express } from "express";
 import type { KeyValueCache } from "apollo-server-core";
 
