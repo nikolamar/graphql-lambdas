@@ -126,7 +126,7 @@ export class CognitoDataSource extends DataSource {
         if (error) {
           reject(error);
         }
-        const mfaTitle = "App_Designer";
+        const mfaTitle = "App_Name";
         const url = `otpauth://totp/${decodeURI(mfaTitle)}?secret=${result.SecretCode}`;
         resolve(url);
       });
