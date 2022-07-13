@@ -15,12 +15,10 @@ export interface ItemChangeParams {
 export class CollectionPlugin implements DatabasePluginInterface {
   private readonly _dbClient: Db;
   private readonly _collection: string;
-  private readonly _streamsEnabled: boolean;
 
-  constructor(dbClient: any, streamsEnabled: boolean, collection: string) {
+  constructor(dbClient: any, collection: string) {
     this._dbClient = dbClient;
     this._collection = collection;
-    this._streamsEnabled = streamsEnabled;
   }
 
   async create({ input }: any) {
