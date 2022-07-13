@@ -17,6 +17,8 @@ Globals:
     Runtime: nodejs16.x
     Timeout: 5
     MemorySize: 1024
+    Architectures:
+      - arm64
     Environment:
       Variables:
         STAGE: !Ref Stage
@@ -70,6 +72,14 @@ Parameters:
   GoogleClientSecret:
     Type: String
     Description: Google client secret
+
+  FacebookClientId:
+    Type: String
+    Description: Facebook client id
+
+  FacebookClientSecret:
+    Type: String
+    Description: Facebook client secret
 
   DBPassword:
     Type: String
@@ -171,6 +181,7 @@ Resources:
       SupportedIdentityProviders:
         - Google
         - COGNITO
+        - Facebook
       GenerateSecret: false
       ExplicitAuthFlows:
         - ALLOW_CUSTOM_AUTH
@@ -202,6 +213,23 @@ Resources:
         client_secret: !Ref GoogleClientSecret
         authorize_scopes: "profile email openid"
       ProviderType: "Google"
+      AttributeMapping:
+        email: "email"
+        picture: "picture"
+        email_verified: "email_verified"
+        given_name: "given_name"
+        family_name: "family_name"
+
+  FacebookUserPoolIdentityProvider:
+    Type: AWS::Cognito::UserPoolIdentityProvider
+    Properties:
+      UserPoolId: !Ref CognitoUserPool
+      ProviderName: "Facebook"
+      ProviderDetails:
+        client_id: !Ref FacebookClientId
+        client_secret: !Ref FacebookClientSecret
+        authorize_scopes: "profile email openid"
+      ProviderType: "Facebook"
       AttributeMapping:
         email: "email"
         picture: "picture"
@@ -288,7 +316,7 @@ Resources:
           Value: !Sub ${SubDomainName}.${DomainName}
 
   ###################
-  # HTTP FUNCTIONS  #
+  #    FUNCTIONS    #
   ###################
 
   HelloWorldFunction:
@@ -313,7 +341,7 @@ Resources:
             ApiId: !Ref HttpApi
             Method: GET
             Path: /hello
-            TimeoutInMillis: 1000
+            TimeoutInMillis: 5000
             PayloadFormatVersion: "2.0"
             RouteSettings:
               ThrottlingBurstLimit: 10
@@ -375,6 +403,7 @@ Resources:
             Path: /users
             Auth:
               Authorizer: CognitoAuthorizer
+            TimeoutInMillis: 5000
             PayloadFormatVersion: "2.0"
             RouteSettings:
               ThrottlingBurstLimit: 600
@@ -423,6 +452,7 @@ Resources:
             Path: /tenants
             Auth:
               Authorizer: CognitoAuthorizer
+            TimeoutInMillis: 5000
             PayloadFormatVersion: "2.0"
             RouteSettings:
               ThrottlingBurstLimit: 600
@@ -471,6 +501,7 @@ Resources:
             Path: /environment
             Auth:
               Authorizer: CognitoAuthorizer
+            TimeoutInMillis: 5000
             PayloadFormatVersion: "2.0"
             RouteSettings:
               ThrottlingBurstLimit: 600
@@ -520,6 +551,7 @@ Resources:
             Path: /cognito
             Auth:
               Authorizer: CognitoAuthorizer
+            TimeoutInMillis: 5000
             PayloadFormatVersion: "2.0"
             RouteSettings:
               ThrottlingBurstLimit: 600
@@ -881,3 +913,8 @@ Outputs:
     Description: Federate sign in with Google
     Value:
       Ref: GoogleUserPoolIdentityProvider
+
+  FacebookUserPoolIdentityProviderId:
+    Description: Federate sign in with Facebook
+    Value:
+      Ref: FacebookUserPoolIdentityProvider
