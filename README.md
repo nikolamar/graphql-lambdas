@@ -5,19 +5,15 @@ Apollo client + micro-services architecture
 
 ##### Microservices architecture
 
-Someone came up with a similar idea like mine before me and I don't want to repeat it, there is everything in the article. There are some differences because here we are using lambdas and they don't. Check this link for more info it will be more clear after reading this article: https://www.habx.com/tech/micro-graphql-schema
+This is a architecture with microservices and domain structure. Lambda layers help to share a common code, schema, logic, etc. With the minimal change, you can bundle each lambda. Each lambda is a separate package then. Sam has a CLI sync option that updates remote code. Sam's new beta features support es-build bundler.
 
-This repo shows this architecture that uses microservices and domains structure and it uses lambda layers to share a common schema, logic, and nodejs dependencies. If your projects demands you can bundle some lambdas or all of them and you don't need to share `node_modules` at all if you don't want to. Whatever works for you. There is a `sam sync` which updates you lambda code on the fly even if you are writing `typescript` it takes max 5 seconds. Bundling is faster now each lambda is package and sam beta uses now esbuild. It is more convenient now as we don't have to use our esbuild scripts.
-
-##### Key things
+##### Pros
 
 - no single point of failure
-- each lambda can be tweaked independent as they are intended to
-- split your backend into domains e.g. users, tenants, etc.
-- sync your local code with sam cli watch and it will deploy code to lambda under 5 sec.
-- local works even better now (if it is one graphql lambda all requests are processed over one adapter this is not an issue anymore)
-- you can write graphql lambdas in nodejs and other in go and they can share same schema
-
+- each lambda can be tweaked
+- split into domains structure
+- sync your local with remote code
+- since the schema is shared you can write in any language
 
 ##### Github actions can trigger auto release
 
