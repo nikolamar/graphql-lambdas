@@ -123,13 +123,13 @@ sam build --beta-features
 sam local start-api --warm-containers LAZY --skip-pull-image --host 0.0.0.0 --env-vars env.json --port 3000
 ```
 
-> **_NOTE:_** For hot reload we need a simple esbuild script here to watch changes and copy files to `.aws-sam/build` where all `javascript` transformed lambdas sit or run the esbuild CLI command with watch option.
+> **_NOTE:_** for hot reload we need a simple esbuild script here to watch changes and copy files to `.aws-sam/build` where all `javascript` transformed lambdas sit or run the esbuild CLI command with watch option.
 
 ## Configure client
 
 ##### Update queries and mutations with graphql directives
 
-> **_NOTE:_** Schema has to be updated by adding `@api(name: users)`
+> **_NOTE:_** schema has to be updated by adding `@api(name: users)`
 ```graphql
 query users ($where: UserFilter, $order: Order, $first: Int, $offset: Int, $after: String, $sortBy: String) @api(name: users) {
   users (where: $where, order: $order, first: $first, offset: $offset, after: $after, sortBy: $sortBy) {
@@ -180,8 +180,8 @@ new ApolloClient({
 ## TODO
 
 - [ ] Husky
+- [ ] Hot reload in local
 - [ ] Pnpm manager
 - [ ] Commit conventions
 - [ ] Trigger release script with git tag version
-- [ ] Hot reload in local
-- [ ] Forgot password
+- [ ] Apple sign in
