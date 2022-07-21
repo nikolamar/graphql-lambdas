@@ -50,7 +50,7 @@ MY_DIR=$(realpath $0)
 CICD_DIR=$(dirname $MY_DIR)
 PROJECT_ROOT=$(dirname $CICD_DIR)
 
-export PROJECT_NAME=${PROJECT_NAME:-user-management}
+export PROJECT_NAME=${PROJECT_NAME:-name}
 export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
 export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
 
@@ -133,7 +133,7 @@ sam local start-api --warm-containers LAZY --skip-pull-image --host 0.0.0.0 --en
 
 ##### Update queries and mutations with graphql directives
 
-> **_NOTE:_**Schema has to be updated by adding `@api(name: users)`:
+> **_NOTE:_** Schema has to be updated by adding `@api(name: users)`
 ```graphql
 query users ($where: UserFilter, $order: Order, $first: Int, $offset: Int, $after: String, $sortBy: String) @api(name: users) {
   users (where: $where, order: $order, first: $first, offset: $offset, after: $after, sortBy: $sortBy) {
@@ -171,8 +171,8 @@ new ApolloClient({
    new MultiAPILink({
       httpSuffix: "",
       endpoints: {
-        users: 'https://fake.domain.com/users',
-        tenants: 'https://fake.domain.com/tenants',
+        users: 'https://fakedomain.com/users',
+        tenants: 'https://fakedomain.com/tenants',
         ...
       },
       createHttpLink: () => createHttpLink(),
