@@ -3,13 +3,13 @@
 Apollo client + micro-services architecture
 ==============
 
-### Microservices architecture:
+##### Microservices architecture
 
 Someone came up with a similar idea like mine before me and I don't want to repeat it, there is everything in the article. There are some differences because here we are using lambdas and they don't. Check this link for more info it will be more clear after reading this article: https://www.habx.com/tech/micro-graphql-schema
 
 This repo shows this architecture that uses microservices and domains structure and it uses lambda layers to share a common schema, logic, and nodejs dependencies. If your projects demands you can bundle some lambdas or all of them and you don't need to share `node_modules` at all if you don't want to. Whatever works for you. There is a `sam sync` which updates you lambda code on the fly even if you are writing `typescript` it takes max 5 seconds. Bundling is faster now each lambda is package and sam beta uses now esbuild. It is more convenient now as we don't have to use our esbuild scripts.
 
-Key things to take here:
+##### Key things
 
 - no single point of failure
 - each lambda can be tweaked independent as they are intended to
@@ -17,37 +17,40 @@ Key things to take here:
 - sync your local code with sam cli watch and it will deploy code to lambda under 5 sec.
 - local works even better now (if it is one graphql lambda all requests are processed over one adapter this is not an issue anymore)
 - you can write graphql lambdas in nodejs and other in go and they can share same schema
-- github actions can trigger auto release like this:
+
+
+##### Github actions can trigger auto release
+
 ```
 git push origin
 git tag v0.3.2
 git push origin v0.3.2
 ```
-You'll get this:
 
 ![alt text](https://github.com/nikolamar/graphql-lambdas/blob/master/.assets/release.png?raw=true)
 
-### Stages:
+## Stages
 
-This project has 2 stages:
+- dev
+- prod
 
-1. `dev`
-2. `prod`
+## Scripts
 
-You can add more in github actions.
+- build
+- delete
+- deploy
+- test
 
-### Scripts:
+##### Deploy script requires secrets
 
-1. Deploy script requires secret keys to deploy:
-
-```
+```bash
 #!/bin/bash
 
 MY_DIR=$(realpath $0)
 CICD_DIR=$(dirname $MY_DIR)
 PROJECT_ROOT=$(dirname $CICD_DIR)
 
-export PROJECT_NAME=${PROJECT_NAME:-graphql-lambdas}
+export PROJECT_NAME=${PROJECT_NAME:-user-management}
 export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
 export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
 
@@ -66,22 +69,21 @@ export FACEBOOK_CLIENT_ID=$FACEBOOK_CLIENT_ID
 export FACEBOOK_CLIENT_SECRET=$FACEBOOK_CLIENT_SECRET
 
 ...
-
 ```
 
-### Prepare your local `environment`:
+## Local environment
 
-1. Make sure you install `AWS SAM CLI`:
+##### Install AWS SAM CLI
 
 https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html
 
-2. Set up AWS Credentials and Region for Development:
+#####  Set up AWS Credentials and Region
 
 https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html
 
-3. Update your `env.json` with secrets like this:
+##### Update env.json with secrets
 
-```
+```bash
 {
   "Parameters": {
     "STAGE": "dev",
@@ -100,38 +102,39 @@ https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html
     "GoogleClientSecret": "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"
   }
 }
-
 ```
 
-### Running in `sync`:
+##### Local in sync
 
-1. This will sync your local code changes with deployed lambda while you editing the `ts` source files it takes a max 5 seconds to update lambda:
+This will sync your local code changes with deployed lambda
 
-```sam sync —beta-features ```
+```
+sam sync —-beta-features
+```
 
-`NOTE: it will ask for app name (stack name on AWS) to sync your code.`
+> **_NOTE:_** it will ask for app name (stack name on AWS) to sync your code.
 
-### Running in `local`:
+## How to start local development
 
-1. Build `lambdas from template` with AWS SAM CLI running beta features that introduce esbuild:
+##### Build lambdas with AWS SAM CLI
+
 ```
 sam build --beta-features
 ```
 
-2. Start local APIs using docker containers:
-
+##### Start local APIs with AWS SAM CLI
 ```
 sam local start-api --warm-containers LAZY --skip-pull-image --host 0.0.0.0 --env-vars env.json --port 3000
 ```
 
-3. `TODO:` For hot reload we need a simple esbuild script here to watch changes and copy files to `.aws-sam/build` where all `javascript` transformed lambdas sit or run the esbuild CLI command with watch option.
+> **_NOTE:_** For hot reload we need a simple esbuild script here to watch changes and copy files to `.aws-sam/build` where all `javascript` transformed lambdas sit or run the esbuild CLI command with watch option.
 
-### Runing on `frontend`:
+## Configure client
 
-1. Update queries and mutations with graphql directives:
+##### Update queries and mutations with graphql directives
 
-Schema has to be updated with `@api(name: users)`:
-```
+> **_NOTE:_**Schema has to be updated by adding `@api(name: users)`:
+```graphql
 query users ($where: UserFilter, $order: Order, $first: Int, $offset: Int, $after: String, $sortBy: String) @api(name: users) {
   users (where: $where, order: $order, first: $first, offset: $offset, after: $after, sortBy: $sortBy) {
     edges {
@@ -152,27 +155,37 @@ query users ($where: UserFilter, $order: Order, $first: Int, $offset: Int, $afte
 }
 ```
 
-2. Install:
+##### Install apollo multi link library
 
 ```
 npm i @habx/apollo-multi-endpoint-link
 ```
 
-3. Setup:
-```
+##### Configure http link
+
+```javascript
 import { createHttpLink } from "apollo-link-http";
 
 new ApolloClient({
  link: ApolloLink.from([
    new MultiAPILink({
-       httpSuffix: "",
-       endpoints: {
-           users: 'https://fake.domain.com/users',
-           tenants: 'https://fake.domain.com/tenants',
-           ...
-       },
-       createHttpLink: () => createHttpLink(),
-     }),
- ])
-})
+      httpSuffix: "",
+      endpoints: {
+        users: 'https://fake.domain.com/users',
+        tenants: 'https://fake.domain.com/tenants',
+        ...
+      },
+      createHttpLink: () => createHttpLink(),
+    }),
+  ]),
+});
 ```
+
+## TODO
+
+- [ ] Husky
+- [ ] Pnpm manager
+- [ ] Commit conventions
+- [ ] Trigger release script with git tag version
+- [ ] Hot reload in local
+- [ ] Forgot password
