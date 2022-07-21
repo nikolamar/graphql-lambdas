@@ -183,5 +183,4 @@ new ApolloClient({
 - [ ] Hot reload in local
 - [ ] Pnpm manager
 - [ ] Commit conventions
-- [ ] Trigger release script with git tag version
 - [ ] Apple sign in
