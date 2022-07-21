@@ -180,6 +180,8 @@ new ApolloClient({
 ## TODO
 
 - [ ] Husky
+- [ ] Migrations
+- [ ] ACID transaction
 - [ ] Hot reload in local
 - [ ] Pnpm manager
 - [ ] Commit conventions
